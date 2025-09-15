@@ -1,0 +1,30 @@
+# Enable Passenger (FastComet/cPanel)
+
+PassengerEnabled on
+PassengerAppEnv production
+PassengerNodejs /opt/cpanel/ea-nodejs20/bin/node
+
+# If your app lives in a subfolder (e.g., /app), point to it:
+
+# PassengerAppRoot /home/USERNAME/nodeapps/gold-ore <-- adjust if needed
+
+# Your app’s startup file (the one we created above)
+
+PassengerStartupFile app.js
+
+# Force HTTPS (optional but recommended)
+
+#RewriteEngine On
+#RewriteCond %{HTTPS} !=on
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ----------- SMTP ENV VARS (cPanel mail) -----------
+
+# Use your actual mailbox credentials and hostname from cPanel > Email Accounts > Connect Devices
+
+SetEnv SMTP_HOST mail.goldoresa.com
+SetEnv SMTP_PORT 465
+SetEnv SMTP_USER info@goldoresa.com
+SetEnv SMTP_PASS yourEmailPassword
+
+# ---------------------------------------------------

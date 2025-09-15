@@ -1,0 +1,21 @@
+# node / package managers
+node_modules/
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+# next.js build + caches
+.next/
+out/
+dist/
+.vercel/
+.turbo/
+.cache/
+coverage/
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+
+# env files
+.env*
