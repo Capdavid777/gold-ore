@@ -1,9 +1,25 @@
 'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import type { Route } from 'next'; // <-- typedRoutes support
 import GoldWordmark from '@/components/ui/GoldWordmark';
+
+type NavItem = {
+  label: string;
+  href: Route; // require a real route path
+};
+
+/** Keep hrefs as string literals so they satisfy `Route`. */
+const NAV_ITEMS: readonly NavItem[] = [
+  { label: 'About',      href: '/about' },
+  { label: 'Operations', href: '/operations' },
+  { label: 'ESG',        href: '/esg' },        // menu link to ESG
+  { label: 'Investors',  href: '/investors' },
+  { label: 'News',       href: '/news' },
+] as const;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -61,17 +77,12 @@ export default function Navbar() {
           id="primary-nav"
           className={`md:flex items-center gap-8 ${open ? 'block' : 'hidden'} md:block`}
         >
-          {[
-            ['About', '/about'],
-            ['Operations', '/operations'],
-            ['ESG', '/esg'],
-            ['Investors', '/investors'],
-            ['News', '/news'],
-          ].map(([label, href]) => (
+          {NAV_ITEMS.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
               className="block py-2 md:py-0 text-[hsl(var(--text))] hover:text-brand-gold-400"
+              prefetch={false}
             >
               {label}
             </Link>
