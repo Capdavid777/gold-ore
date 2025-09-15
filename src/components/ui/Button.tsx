@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import type { Route } from 'next';
 import type { UrlObject } from 'url';
+// Next exports the Link prop type `Href` from this internal path:
+import type { Href } from 'next/dist/shared/lib/router/router';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
 
@@ -24,13 +25,10 @@ const button = cva(
   }
 );
 
-// Allow typed Next routes, UrlObject, URL, or string literal.
-type Href = Route | UrlObject | URL | string;
-
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof button> & {
-    /** If provided, renders as a Next.js Link */
-    href?: Href;
+    /** When provided, renders as a Next.js <Link>. Use route literals (e.g., "/esg"). */
+    href?: Href | UrlObject;
     className?: string;
   };
 
@@ -40,8 +38,7 @@ export function Button({ variant, size, className, href, children, ...props }: B
   if (href) {
     return (
       <Link
-        // cast to the union Next's <Link> accepts to satisfy typedRoutes
-        href={href as Route | UrlObject | string}
+        href={href as Href}
         className={cls}
         prefetch={false}
         aria-label={typeof children === 'string' ? (children as string) : undefined}
