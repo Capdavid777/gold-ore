@@ -10,7 +10,8 @@ export default function ContactCTA() {
         <h2 className="font-display text-3xl md:text-5xl tracking-tight text-[hsl(var(--text))]">
           Partner with a performance-driven team
         </h2>
-        <p className="mt-4 text-lg text-[hsl(var(--text-muted))]">
+        {/* Changed to darker, reusable utility */}
+        <p className="mt-4 text-lg text-cta-dark">
           Speak to our leadership and investor relations team today.
         </p>
         <div className="mt-8">
