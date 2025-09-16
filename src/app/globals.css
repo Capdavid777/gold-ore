@@ -126,3 +126,8 @@
         animation: none;
     }
 }
+
+/* Footer hard spacing + alignment guards */
+#site-footer p { margin-top: 0.5rem !important; margin-bottom: 0 !important; }
+#site-footer img { display: block; } /* remove baseline gap under inline images */
+#site-footer .grid { align-items: start; } /* belt-and-braces top alignment */
