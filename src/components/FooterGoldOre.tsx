@@ -16,7 +16,7 @@ export default function FooterGoldOre() {
             <Link href="/" className="inline-flex">
               {/* The negative margin removes the PNG's internal top padding so the artwork aligns to column tops */}
               <Image
-                src="/brand/logo-goldore.png"   // ensure this exists under /public/brand/
+                src="/brand/logo-goldore.svg"   // ensure this exists under /public/brand/
                 width={900}
                 height={220}
                 alt="Gold Ore"
