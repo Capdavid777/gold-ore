@@ -66,6 +66,13 @@
     .hero-overlay {
         background: linear-gradient(180deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .7));
     }
+
+    /* New: darker, AA-compliant text for gold/orange banners */
+    .text-cta-dark {
+        @apply text-[hsl(var(--steel))];
+        /* If you want even more contrast, switch to obsidian: */
+        /* @apply text-[hsl(var(--obsidian))]; */
+    }
 }
 
 
