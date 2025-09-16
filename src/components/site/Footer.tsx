@@ -7,69 +7,49 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-white/10 bg-[#0F1215] text-white/80">
+    <footer id="site-footer" className="border-t border-white/10 bg-[#0F1215] text-white/80">
       <div className="mx-auto max-w-7xl px-6 py-12 md:py-16">
-        {/* Align all columns to the TOP so the logo lines up with the headings */}
+        {/* Force top alignment across columns */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4 items-start">
-          {/* Brand + Address (tight vertical stack) */}
+          {/* BRAND COLUMN */}
           <div className="md:col-span-1">
+            {/* Make image a block so no baseline gap; prevent external margins */}
             <Link href="/" className="inline-flex">
-              {/* Keep your 5× size; adjust here if you want smaller */}
               <Image
                 src="/brand/logo-goldore.svg"
                 width={900}
                 height={220}
                 alt="Gold Ore"
-                className="h-[220px] w-auto"
+                className="block h-[220px] w-auto"
                 priority={false}
               />
             </Link>
-            {/* Address sits directly under the logo: no big gap */}
-            <p className="mt-2 text-sm text-white/70">
+            {/* Address: lock spacing tight under logo regardless of global prose styles */}
+            <p className="!mt-2 !mb-0 leading-snug text-sm text-white/70">
               Sandton, Gauteng, South Africa
             </p>
           </div>
 
-          {/* Company */}
+          {/* COMPANY */}
           <nav aria-label="Company" className="md:col-span-1">
             <h3 className="text-sm font-semibold text-white/90">Company</h3>
             <ul className="mt-4 space-y-3 text-sm">
-              <li>
-                <Link className="hover:text-amber-400 transition-colors" href="/about">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link className="hover:text-amber-400 transition-colors" href="/operations">
-                  Operations
-                </Link>
-              </li>
-              <li>
-                <Link className="hover:text-amber-400 transition-colors" href="/esg">
-                  ESG
-                </Link>
-              </li>
+              <li><Link className="hover:text-amber-400 transition-colors" href="/about">About</Link></li>
+              <li><Link className="hover:text-amber-400 transition-colors" href="/operations">Operations</Link></li>
+              <li><Link className="hover:text-amber-400 transition-colors" href="/esg">ESG</Link></li>
             </ul>
           </nav>
 
-          {/* Investors */}
+          {/* INVESTORS */}
           <nav aria-label="Investors" className="md:col-span-1">
             <h3 className="text-sm font-semibold text-white/90">Investors</h3>
             <ul className="mt-4 space-y-3 text-sm">
-              <li>
-                <Link className="hover:text-amber-400 transition-colors" href="/investors">
-                  Overview
-                </Link>
-              </li>
-              <li>
-                <Link className="hover:text-amber-400 transition-colors" href="/news">
-                  News
-                </Link>
-              </li>
+              <li><Link className="hover:text-amber-400 transition-colors" href="/investors">Overview</Link></li>
+              <li><Link className="hover:text-amber-400 transition-colors" href="/news">News</Link></li>
             </ul>
           </nav>
 
-          {/* Optional spacer column for balance */}
+          {/* Spacer for balance */}
           <div className="md:col-span-1" />
         </div>
 
