@@ -9,17 +9,17 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-[#0F1215] text-white/80">
       <div className="mx-auto max-w-7xl px-6 py-12 md:py-16">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-4 items-start">
           {/* Brand + Address */}
           <div className="md:col-span-1">
             <Link href="/" className="inline-flex items-center">
-              {/* Local image from /public – cannot 404 */}
+              {/* 5× larger: 44px -> 220px height */}
               <Image
-                src="/brand/logo-goldore.svg"
-                width={180}
-                height={44}
+                src="/brand/logo-goldore.png"
+                width={900}        // intrinsic width (keeps aspect ratio crisp)
+                height={220}       // intrinsic height
                 alt="Gold Ore"
-                className="h-11 w-auto"
+                className="h-[220px] w-auto"  // rendered height (5×), width auto
                 priority={false}
               />
             </Link>
