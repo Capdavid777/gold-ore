@@ -9,25 +9,27 @@ export default function Footer() {
   return (
     <footer id="site-footer" className="border-t border-white/10 bg-[#0F1215] text-white/80">
       <div className="mx-auto max-w-7xl px-6 py-12 md:py-16">
-        {/* Force top alignment across columns */}
+        {/* All columns top-aligned */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4 items-start">
           {/* BRAND COLUMN */}
           <div className="md:col-span-1">
-            {/* Make image a block so no baseline gap; prevent external margins */}
-            <Link href="/" className="inline-flex">
-              <Image
-                src="/brand/logo-goldore.svg"
-                width={900}
-                height={220}
-                alt="Gold Ore"
-                className="block h-[220px] w-auto"
-                priority={false}
-              />
-            </Link>
-            {/* Address: lock spacing tight under logo regardless of global prose styles */}
-            <p className="!mt-2 !mb-0 leading-snug text-sm text-white/70">
-              Sandton, Gauteng, South Africa
-            </p>
+            {/* A tight, explicit vertical stack that ignores any prose/global margins */}
+            <div className="brand-stack not-prose flex flex-col items-start gap-2">
+              <Link href="/" className="inline-flex">
+                {/* Keep your 5× logo size. "block" removes baseline gap */}
+                <Image
+                  src="/brand/logo-goldore.svg"
+                  width={900}
+                  height={220}
+                  alt="Gold Ore"
+                  className="block h-[220px] w-auto"
+                  priority={false}
+                />
+              </Link>
+              <p className="m-0 leading-tight text-sm text-white/70">
+                Sandton, Gauteng, South Africa
+              </p>
+            </div>
           </div>
 
           {/* COMPANY */}
