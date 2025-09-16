@@ -15,7 +15,7 @@ export default function Footer() {
             <Link href="/" className="inline-flex items-center">
               {/* 5× larger: 44px -> 220px height */}
               <Image
-                src="/brand/logo-goldore.png"
+                src="/brand/logo-goldore.svg"
                 width={900}        // intrinsic width (keeps aspect ratio crisp)
                 height={220}       // intrinsic height
                 alt="Gold Ore"
