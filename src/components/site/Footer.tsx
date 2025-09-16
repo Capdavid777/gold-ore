@@ -9,24 +9,26 @@ export default function Footer() {
   return (
     <footer id="site-footer" className="border-t border-white/10 bg-[#0F1215] text-white/80">
       <div className="mx-auto max-w-7xl px-6 py-12 md:py-16">
-        {/* All columns top-aligned */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4 items-start">
+        {/* Inline style forces top alignment regardless of global CSS */}
+        <div
+          className="grid grid-cols-1 gap-10 md:grid-cols-4"
+          style={{ alignItems: 'flex-start' }}
+        >
           {/* BRAND COLUMN */}
           <div className="md:col-span-1">
-            {/* A tight, explicit vertical stack that ignores any prose/global margins */}
-            <div className="brand-stack not-prose flex flex-col items-start gap-2">
+            {/* Tight vertical stack; inline rowGap ensures no extra margin can sneak in */}
+            <div className="not-prose flex flex-col items-start" style={{ rowGap: 8, margin: 0 }}>
               <Link href="/" className="inline-flex">
-                {/* Keep your 5× logo size. "block" removes baseline gap */}
                 <Image
-                  src="/brand/logo-goldore.svg"
+                  src="/brand/logo-goldore.svg"   // ensure this file exists in /public/brand/
                   width={900}
                   height={220}
                   alt="Gold Ore"
-                  className="block h-[220px] w-auto"
-                  priority={false}
+                  className="block h-[220px] w-auto" // block removes baseline gap
                 />
               </Link>
-              <p className="m-0 leading-tight text-sm text-white/70">
+              {/* Inline margin wins over any global/prose rules */}
+              <p className="text-sm text-white/70 leading-tight" style={{ margin: '8px 0 0 0' }}>
                 Sandton, Gauteng, South Africa
               </p>
             </div>
