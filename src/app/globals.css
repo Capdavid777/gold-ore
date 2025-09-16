@@ -16,31 +16,25 @@
     --gold-800: 33 85% 28%;
     --gold-900: 30 78% 20%;
 
-
     --obsidian: 220 15% 8%;
     --steel: 220 6% 28%;
-
 
     --surface: 220 16% 9%;
     --surface-alt: 220 14% 12%;
     --surface-elevated: 220 13% 16%;
-
 
     --text: 210 22% 96%;
     --text-muted: 210 10% 75%;
     --text-on-dark: 0 0% 100%;
     --text-on-image: 0 0% 100%;
 
-
     --ring: 39 85% 50%;
     --border: 220 8% 22%;
     --border-subtle: 220 7% 18%;
 
-
     --radius-xl: 1rem;
     --radius-2xl: 1.25rem;
 }
-
 
 @layer base {
     html {
@@ -61,20 +55,18 @@
     }
 }
 
-
 @layer components {
     .hero-overlay {
         background: linear-gradient(180deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .7));
     }
 
-    /* New: darker, AA-compliant text for gold/orange banners */
+    /* AA-compliant dark text for gold/orange banners */
     .text-cta-dark {
         @apply text-[hsl(var(--steel))];
-        /* If you want even more contrast, switch to obsidian: */
+        /* For maximum contrast, switch to obsidian: */
         /* @apply text-[hsl(var(--obsidian))]; */
     }
 }
-
 
 /* Prose defaults */
 .prose {
@@ -85,13 +77,8 @@
 
 /* ========== Metallic Gold text effect ========== */
 @keyframes goldShift {
-    0% {
-        background-position: 0% 50%, -30% 50%;
-    }
-
-    100% {
-        background-position: 100% 50%, 130% 50%;
-    }
+    0% { background-position: 0% 50%, -30% 50%; }
+    100% { background-position: 100% 50%, 130% 50%; }
 }
 
 .metallic-gold {
@@ -111,23 +98,20 @@
     background-position: 0% 50%, -30% 50%;
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
-    /* reveal gradient within glyphs */
-    text-shadow: 0 2px 12px rgba(0, 0, 0, .55);
-    /* readability on imagery */
+    color: transparent; /* reveal gradient within glyphs */
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .55); /* readability on imagery */
 }
 
-.metallic-animate {
-    animation: goldShift 7.5s linear infinite;
-}
+.metallic-animate { animation: goldShift 7.5s linear infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-    .metallic-animate {
-        animation: none;
-    }
+    .metallic-animate { animation: none; }
 }
 
-/* Footer hard spacing + alignment guards */
+/* ===== Footer hard spacing + alignment guards =====
+   Ensures the logo column aligns to the top with "Company / Investors"
+   and the address sits directly beneath the logo (no big gap),
+   even if global prose styles are applied. */
 #site-footer p { margin-top: 0.5rem !important; margin-bottom: 0 !important; }
 #site-footer img { display: block; } /* remove baseline gap under inline images */
-#site-footer .grid { align-items: start; } /* belt-and-braces top alignment */
+#site-footer .grid { align-items: start; } /* enforce top alignment */
