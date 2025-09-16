@@ -62,7 +62,7 @@ export default function Home() {
         ctaLabel="Our ESG Approach"
         ctaHref="/esg" // ensure the CTA matches main menu + footer
         align="left"
-        minVH={70}
+        minVH={63}
       />
 
       {/* NEW: Contact CTA section */}
