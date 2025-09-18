@@ -84,7 +84,7 @@ const Icon = {
 
 type Stat = { label: string; value: string; sublabel?: string; icon?: React.ReactNode };
 
-// Only keeping Head Office stat (you asked to remove the other three)
+// Only keeping Head Office stat
 const COMPANY_STATS: Stat[] = [
   { label: "Head Office", value: "Sandton, Gauteng", sublabel: "South Africa", icon: <Icon.MapPin aria-hidden className="h-5 w-5" /> },
 ];
@@ -188,12 +188,19 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel */}
+          {/* Logo panel — updated path + container for perfect scaling */}
           <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="rounded-full border border-accent-gold/20 bg-black/20 p-8">
-                <Image src="/Logo Only_Transparent.png" alt="Gold Ore emblem" width={120} height={120} priority />
+              <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20">
+                <Image
+                  src="/Brand/Logo%20Only_Transparent.png"  // file lives at public/Brand/Logo Only_Transparent.png
+                  alt="Gold Ore emblem"
+                  fill
+                  sizes="(min-width: 768px) 192px, 160px"
+                  className="object-contain"
+                  priority
+                />
               </div>
             </div>
           </div>
@@ -388,7 +395,7 @@ export default function About() {
           animation: shimmer 4.5s linear infinite;
         }
         @keyframes shimmer {
-          0%   { background-position: 0% center; }
+          0% { background-position: 0% center; }
           100% { background-position: 200% center; }
         }
         @media (prefers-reduced-motion: reduce) {
