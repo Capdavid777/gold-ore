@@ -96,6 +96,14 @@ const PROJECT_SNAPSHOT: Stat[] = [
   { label: "Offtake", value: "Goldplat PLC", sublabel: "MOU – toll treatment", icon: <Icon.Factory aria-hidden className="h-5 w-5" /> },
 ];
 
+/** ✅ Restored VALUES constant */
+const VALUES = [
+  { title: "Safety by Design", body: "Engineer out risk. Every person home safe, every shift.", icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" /> },
+  { title: "Stewardship", body: "Water-wise, lower-carbon operations and regional restoration.", icon: <Icon.Tree aria-hidden className="h-6 w-6" /> },
+  { title: "Excellence", body: "World-class geology, disciplined capital allocation, continuous improvement.", icon: <Icon.Award aria-hidden className="h-6 w-6" /> },
+  { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
+];
+
 /** Emblem tries multiple likely filenames/extensions and falls back gracefully */
 function Emblem() {
   const candidates = [
@@ -429,15 +437,7 @@ export default function About() {
       {/* Scoped styles */}
       <style jsx>{`
         .text-gold-shimmer {
-          background: linear-gradient(
-            100deg,
-            #8f6b29 0%,
-            #e6c46d 20%,
-            #f7e7a1 40%,
-            #cf9f44 60%,
-            #e6c46d 80%,
-            #8f6b29 100%
-          );
+          background: linear-gradient(100deg,#8f6b29 0%,#e6c46d 20%,#f7e7a1 40%,#cf9f44 60%,#e6c46d 80%,#8f6b29 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -450,18 +450,11 @@ export default function About() {
           100% { background-position: 200% center; }
         }
 
+        /* Shimmering backdrop on the logo card */
         .gold-shimmer-bg {
           background:
             linear-gradient(180deg, rgba(8,9,10,0.0) 0%, rgba(8,9,10,0.0) 100%),
-            linear-gradient(
-              110deg,
-              rgba(143,107,41,0.28) 0%,
-              rgba(230,196,109,0.32) 22%,
-              rgba(247,231,161,0.20) 40%,
-              rgba(207,159,68,0.34) 60%,
-              rgba(230,196,109,0.32) 78%,
-              rgba(143,107,41,0.28) 100%
-            );
+            linear-gradient(110deg, rgba(143,107,41,0.28) 0%, rgba(230,196,109,0.32) 22%, rgba(247,231,161,0.20) 40%, rgba(207,159,68,0.34) 60%, rgba(230,196,109,0.32) 78%, rgba(143,107,41,0.28) 100%);
           background-size: 220% 100%;
           animation: shimmerBG 6s linear infinite;
         }
@@ -470,15 +463,11 @@ export default function About() {
           100% { background-position: 220% 50%; }
         }
 
+        /* Cursor spotlight (shows on hover) */
         .gold-spotlight {
           --px: 50%;
           --py: 50%;
-          background: radial-gradient(
-            280px 180px at var(--px) var(--py),
-            rgba(230,196,109,0.28),
-            rgba(230,196,109,0.10) 40%,
-            transparent 70%
-          );
+          background: radial-gradient(280px 180px at var(--px) var(--py), rgba(230,196,109,0.28), rgba(230,196,109,0.10) 40%, transparent 70%);
           pointer-events: none;
         }
 
