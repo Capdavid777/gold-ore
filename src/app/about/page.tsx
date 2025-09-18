@@ -95,7 +95,7 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
 ];
 
-/** Emblem + metallic gold ring that matches the logo */
+/** Emblem with a visible metallic gold border that matches the logo */
 function Emblem() {
   const candidates = [
     "/brand/logo-only-transparent.svg",
@@ -113,8 +113,9 @@ function Emblem() {
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className="gold-ring relative h-40 w-40 md:h-48 md:w-48 rounded-full p-[2.5px] z-10">
-      <div className="relative h-full w-full overflow-hidden rounded-full bg-black/20">
+    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full ring-gold z-10">
+      {/* Inner circle surface (kept) */}
+      <div className="absolute inset-[2px] rounded-full bg-black/20 overflow-hidden">
         {!failed ? (
           <Image
             src={candidates[idx]}
@@ -216,7 +217,7 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel — neutral background, metallic gold ring around the circle */}
+          {/* Logo panel (neutral background, gold ring kept) */}
           <motion.div
             className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
             initial={false}
@@ -242,7 +243,7 @@ export default function About() {
                 <span className="text-accent-gold">{v.icon}</span>
                 <h3 className="font-semibold">{v.title}</h3>
               </div>
-              <p className="mt-3 text-sm text-text-muted">{v.body}</p>
+                <p className="mt-3 text-sm text-text-muted">{v.body}</p>
             </article>
           ))}
         </div>
@@ -379,22 +380,19 @@ export default function About() {
           100% { background-position: 200% center; }
         }
 
-        /* Metallic gradient ring that matches the logo */
-        .gold-ring {
-          background:
-            conic-gradient(
-              from 0deg,
-              #f7e7a1 0%,
-              #e6c46d 15%,
-              #cf9f44 35%,
-              #8f6b29 55%,
-              #cf9f44 72%,
-              #e6c46d 88%,
-              #f7e7a1 100%
-            );
-          box-shadow:
-            0 0 0 1px rgba(207,159,68,0.35),
-            inset 0 0 14px rgba(0,0,0,0.25);
+        /* ✅ Real gold border that stays visible */
+        .ring-gold {
+          border: 2px solid transparent;
+          border-image: conic-gradient(
+            #f7e7a1 0%,
+            #e6c46d 18%,
+            #cf9f44 40%,
+            #8f6b29 62%,
+            #cf9f44 82%,
+            #e6c46d 92%,
+            #f7e7a1 100%
+          ) 1;
+          box-shadow: 0 0 0 0.5px rgba(207,159,68,0.35); /* subtle outer crispness on dark bg */
         }
 
         @media (prefers-reduced-motion: reduce) {
