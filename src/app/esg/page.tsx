@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
-/** Inline icons (stroke uses currentColor so color classes apply) */
+/** Inline icons (stroke uses currentColor so wrapper color applies) */
 const Icon = {
   Leaf: (p: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
@@ -54,7 +54,7 @@ type Stat = { label: string; value: string; sub?: string };
 
 const PILLARS: Pillar[] = [
   {
-    icon: <Icon.Shield className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
+    icon: <Icon.Shield className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Safety & Risk",
     body:
       "Zero-harm design is non-negotiable. We engineer out risk and secure legacy workings while ramping production.",
@@ -64,21 +64,21 @@ const PILLARS: Pillar[] = [
     ],
   },
   {
-    icon: <Icon.Leaf className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
+    icon: <Icon.Leaf className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Environment & Biodiversity",
     body:
       "Concurrent rehabilitation restores surface integrity and indigenous vegetation while shallow ounces are mined responsibly.",
     bullets: ["Topsoil preservation and re-seeding", "Dust/noise mitigation and progressive closure"],
   },
   {
-    icon: <Icon.Water className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
+    icon: <Icon.Water className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Water & Waste",
     body:
       "Prospecting-phase baseline completed. Mining Permits use Basic Assessment Reports; water/waste licensing sits with the offtake processor.",
     bullets: ["Closed-loop housekeeping at permits", "Haulage to toll treatment ~8 km"],
   },
   {
-    icon: <Icon.Users className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
+    icon: <Icon.Users className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Social & Local Value",
     body:
       "Local jobs, skills uplift and supplier inclusion—paired with actions that directly improve surface safety in nearby communities.",
@@ -109,7 +109,7 @@ export default function ESGPage() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <div className="flex items-center gap-3">
-              <Icon.Pickaxe aria-hidden className="h-6 w-6 text-accent-gold" />
+              <Icon.Pickaxe aria-hidden className="h-6 w-6 esg-gold" />
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">ESG & Sustainability</p>
             </div>
             <h1 id="esg-hero" className="mt-3 font-display text-4xl md:text-6xl lg:text-7xl">
@@ -126,7 +126,7 @@ export default function ESGPage() {
       {/* PILLARS */}
       <Section className="py-12 md:py-20">
         <h2 className="font-display text-2xl md:text-4xl">Our Pillars</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4 esg-pillars">
           {PILLARS.map((p) => (
             <motion.article
               key={p.title}
@@ -134,12 +134,12 @@ export default function ESGPage() {
               whileInView={r ? {} : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-accent-gold/50"
+              className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-[var(--go-gold,#caa132)]/50"
             >
-              {/* Header: force gold on both icon AND title */}
-              <div className="flex items-center gap-2 min-h-[28px]">
-                <span aria-hidden>{p.icon}</span>
-                <h3 className="text-accent-gold font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
+              {/* Header: gold icon + title, single line on desktop */}
+              <div className="flex items-center gap-2 min-h-[28px] pillar-header">
+                <span aria-hidden className="inline-block">{p.icon}</span>
+                <h3 className="font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
                   {p.title}
                 </h3>
               </div>
@@ -215,7 +215,7 @@ export default function ESGPage() {
           {COMPLIANCE.map((s) => (
             <div key={s.label} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
               <div className="flex items-center gap-3">
-                <span className="text-accent-gold">
+                <span className="esg-gold">
                   <Icon.CheckDoc className="h-5 w-5" />
                 </span>
                 <span className="text-sm text-text-muted">{s.label}</span>
@@ -292,19 +292,19 @@ export default function ESGPage() {
             <h2 className="font-display text-2xl md:text-3xl">Read more</h2>
             <ul className="mt-2 grid gap-3 text-sm text-text-secondary sm:grid-cols-2">
               <li className="flex items-start gap-2">
-                <Icon.Pickaxe className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.Pickaxe className="mt-0.5 h-5 w-5 esg-gold" />
                 <span>
                   Operations overview and ramp-up plan (Turnbridge & New Kleinfontein).{" "}
-                  <a className="underline hover:text-accent-gold" href="/operations">
+                  <a className="underline esg-gold hover:opacity-90" href="/operations">
                     View Operations
                   </a>
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <Icon.CheckDoc className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.CheckDoc className="mt-0.5 h-5 w-5 esg-gold" />
                 <span>
                   Investor materials and governance.{" "}
-                  <a className="underline hover:text-accent-gold" href="/investors">
+                  <a className="underline esg-gold hover:opacity-90" href="/investors">
                     Investor Overview
                   </a>
                 </span>
@@ -313,39 +313,33 @@ export default function ESGPage() {
           </div>
           <a
             href="/contact"
-            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-accent-gold/40 px-5 py-3 text-sm font-medium text-accent-gold"
+            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--go-gold,#caa132)] px-5 py-3 text-sm font-medium esg-gold"
           >
             Contact Us <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
           </a>
         </div>
       </Section>
 
-      {/* Scoped shimmer styles */}
+      {/* Scoped styles: force brand gold irrespective of theme token names */}
       <style jsx>{`
+        /* Brand gold, lifted from your Tailwind plugin focus ring (#caa132) */
+        :root { --go-gold: #caa132; }
+
+        .esg-gold { color: var(--go-gold) !important; }
+
+        /* Make pillar icon + title gold (and keep icons aligned with baseline) */
+        .pillar-header { color: var(--go-gold) !important; }
+        .pillar-header svg { color: inherit; }
+
+        /* Title shimmer (unchanged) */
         .text-gold-shimmer {
-          background: linear-gradient(
-            100deg,
-            #8f6b29 0%,
-            #e6c46d 20%,
-            #f7e7a1 40%,
-            #cf9f44 60%,
-            #e6c46d 80%,
-            #8f6b29 100%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-          background-size: 200% auto;
-          animation: shimmer 4.5s linear infinite;
+          background: linear-gradient(100deg,#8f6b29 0%,#e6c46d 20%,#f7e7a1 40%,#cf9f44 60%,#e6c46d 80%,#8f6b29 100%);
+          -webkit-background-clip: text; background-clip: text; color: transparent;
+          text-shadow: 0 2px 10px rgba(0,0,0,.35);
+          background-size: 200% auto; animation: shimmer 4.5s linear infinite;
         }
-        @keyframes shimmer {
-          0% { background-position: 0% center; }
-          100% { background-position: 200% center; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .text-gold-shimmer { animation: none; }
-        }
+        @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:200% center} }
+        @media (prefers-reduced-motion: reduce) { .text-gold-shimmer { animation: none; } }
       `}</style>
     </main>
   );
