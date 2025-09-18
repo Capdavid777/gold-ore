@@ -95,7 +95,7 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
 ];
 
-/** Emblem + circle (kept) */
+/** Emblem + metallic gold ring that matches the logo */
 function Emblem() {
   const candidates = [
     "/brand/logo-only-transparent.svg",
@@ -113,25 +113,27 @@ function Emblem() {
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20 z-10">
-      {!failed ? (
-        <Image
-          src={candidates[idx]}
-          alt="Gold Ore emblem"
-          fill
-          sizes="(min-width: 768px) 192px, 160px"
-          className="object-contain"
-          priority
-          onError={() => {
-            if (idx < candidates.length - 1) setIdx(i => i + 1);
-            else setFailed(true);
-          }}
-        />
-      ) : (
-        <div className="absolute inset-0 grid place-items-center text-accent-gold/70 font-semibold">
-          GOLD ORE
-        </div>
-      )}
+    <div className="gold-ring relative h-40 w-40 md:h-48 md:w-48 rounded-full p-[2.5px] z-10">
+      <div className="relative h-full w-full overflow-hidden rounded-full bg-black/20">
+        {!failed ? (
+          <Image
+            src={candidates[idx]}
+            alt="Gold Ore emblem"
+            fill
+            sizes="(min-width: 768px) 192px, 160px"
+            className="object-contain"
+            priority
+            onError={() => {
+              if (idx < candidates.length - 1) setIdx((i) => i + 1);
+              else setFailed(true);
+            }}
+          />
+        ) : (
+          <div className="absolute inset-0 grid place-items-center text-accent-gold/70 font-semibold">
+            GOLD ORE
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -214,7 +216,7 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel — neutral background (no photo) */}
+          {/* Logo panel — neutral background, metallic gold ring around the circle */}
           <motion.div
             className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
             initial={false}
@@ -222,10 +224,7 @@ export default function About() {
             transition={{ type: "spring", stiffness: 180, damping: 20 }}
             style={{ perspective: "800px" }}
           >
-            {/* Subtle neutral gradient only */}
             <div aria-hidden className="absolute inset-0 bg-[radial-gradient(900px_450px_at_50%_-15%,rgba(255,255,255,0.04),transparent_60%)]" />
-
-            {/* Circle + logo (unchanged) */}
             <div className="absolute inset-0 z-10 flex items-center justify-center">
               <Emblem />
             </div>
@@ -379,6 +378,25 @@ export default function About() {
           0% { background-position: 0% center; }
           100% { background-position: 200% center; }
         }
+
+        /* Metallic gradient ring that matches the logo */
+        .gold-ring {
+          background:
+            conic-gradient(
+              from 0deg,
+              #f7e7a1 0%,
+              #e6c46d 15%,
+              #cf9f44 35%,
+              #8f6b29 55%,
+              #cf9f44 72%,
+              #e6c46d 88%,
+              #f7e7a1 100%
+            );
+          box-shadow:
+            0 0 0 1px rgba(207,159,68,0.35),
+            inset 0 0 14px rgba(0,0,0,0.25);
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .text-gold-shimmer { animation: none; }
         }
