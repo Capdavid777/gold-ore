@@ -95,7 +95,7 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
 ];
 
-/** Emblem with a visible metallic gold border that matches the logo */
+/** Emblem with a solid gold border (reliable across browsers) */
 function Emblem() {
   const candidates = [
     "/brand/logo-only-transparent.svg",
@@ -113,9 +113,18 @@ function Emblem() {
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full ring-gold z-10">
-      {/* Inner circle surface (kept) */}
-      <div className="absolute inset-[2px] rounded-full bg-black/20 overflow-hidden">
+    <div
+      className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border-2 md:border-[3px] z-10"
+      style={{
+        // Use your token if present; otherwise fall back to a logo-matching gold
+        borderColor: "var(--go-gold, #CF9F44)",
+        // tiny glow so it stays crisp on dark backgrounds
+        boxShadow: "0 0 0 0.5px rgba(207,159,68,0.45)",
+      }}
+      aria-hidden={false}
+    >
+      {/* Inner circle surface */}
+      <div className="absolute inset-[1.5px] md:inset-[2px] rounded-full bg-black/20 overflow-hidden">
         {!failed ? (
           <Image
             src={candidates[idx]}
@@ -130,7 +139,7 @@ function Emblem() {
             }}
           />
         ) : (
-          <div className="absolute inset-0 grid place-items-center text-accent-gold/70 font-semibold">
+          <div className="absolute inset-0 grid place-items-center text-[color:var(--go-gold,#CF9F44)]/80 font-semibold">
             GOLD ORE
           </div>
         )}
@@ -217,7 +226,7 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel (neutral background, gold ring kept) */}
+          {/* Logo panel */}
           <motion.div
             className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
             initial={false}
@@ -243,7 +252,7 @@ export default function About() {
                 <span className="text-accent-gold">{v.icon}</span>
                 <h3 className="font-semibold">{v.title}</h3>
               </div>
-                <p className="mt-3 text-sm text-text-muted">{v.body}</p>
+              <p className="mt-3 text-sm text-text-muted">{v.body}</p>
             </article>
           ))}
         </div>
@@ -379,22 +388,6 @@ export default function About() {
           0% { background-position: 0% center; }
           100% { background-position: 200% center; }
         }
-
-        /* ✅ Real gold border that stays visible */
-        .ring-gold {
-          border: 2px solid transparent;
-          border-image: conic-gradient(
-            #f7e7a1 0%,
-            #e6c46d 18%,
-            #cf9f44 40%,
-            #8f6b29 62%,
-            #cf9f44 82%,
-            #e6c46d 92%,
-            #f7e7a1 100%
-          ) 1;
-          box-shadow: 0 0 0 0.5px rgba(207,159,68,0.35); /* subtle outer crispness on dark bg */
-        }
-
         @media (prefers-reduced-motion: reduce) {
           .text-gold-shimmer { animation: none; }
         }
