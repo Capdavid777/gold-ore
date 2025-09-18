@@ -88,7 +88,7 @@ const PILLARS: Pillar[] = [
 
 const COMPLIANCE: Stat[] = [
   { label: "Prospecting Right (PR)", value: "GP10448 PR", sub: "Valid to Oct 2025; extendable +3 years" },
-  { label: "Environmental Authorisations", value: "Approved", sub: "BARs for permits; compliance maintained" },
+  { label: "Environmental Authorisations", value: "APPROVED", sub: "BARs for permits; compliance" },
   { label: "Offtake / Processor", value: "Goldplat PLC (MOU)", sub: "Toll treatment ~8 km; licences at processor" },
   { label: "Start of Production (target)", value: "2026", sub: "Staged ramp-up" },
 ];
@@ -136,7 +136,6 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-[var(--go-gold,#caa132)]/50"
             >
-              {/* Header row: force gold via inline style so nothing can override */}
               <div
                 className="flex items-center gap-2 min-h-[28px]"
                 style={{ color: "var(--go-gold, #caa132)" }}
@@ -223,7 +222,12 @@ export default function ESGPage() {
                 </span>
                 <span className="text-sm text-text-muted">{s.label}</span>
               </div>
-              <div className="mt-3 font-display text-2xl">{s.value}</div>
+
+              {/* ONE-LINE VALUE HEADING */}
+              <div className="mt-3 font-display whitespace-nowrap overflow-hidden text-ellipsis tracking-tight text-lg sm:text-xl md:text-[1.4rem] lg:text-[1.55rem]">
+                {s.value}
+              </div>
+
               {s.sub && <div className="mt-1 text-sm text-text-muted/80">{s.sub}</div>}
             </div>
           ))}
