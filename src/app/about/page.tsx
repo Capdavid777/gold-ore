@@ -157,7 +157,7 @@ export default function About() {
 
   // spotlight cursor tracking (card only)
   const cardRef = useRef<HTMLDivElement | null>(null);
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const el = cardRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
@@ -257,7 +257,7 @@ export default function About() {
             initial={false}
             whileHover={prefersReducedMotion ? {} : { scale: 1.01 }}
             transition={{ type: "spring", stiffness: 180, damping: 20 }}
-            style={{ transformPerspective: 800 } as any}
+            style={{ perspective: "800px" }}
           >
             {/* Strong gold shimmer in the background */}
             <div aria-hidden className="gold-shimmer-bg absolute inset-0" />
@@ -375,37 +375,6 @@ export default function About() {
         </div>
       </Section>
 
-      {/* Leadership */}
-      <Section className="py-12 md:py-20">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <h2 className="font-display text-2xl md:text-4xl">Leadership</h2>
-            <p className="mt-2 max-w-2xl text-text-muted">
-              A senior team blending deep operational experience with modern digital, ESG, and finance capability.
-            </p>
-          </div>
-        </div>
-        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {LEADERSHIP.map((p) => (
-            <li key={p.name} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
-              <div className="flex items-center gap-4">
-                <div
-                  aria-hidden
-                  className="grid h-14 w-14 place-items-center rounded-full border border-accent-gold/40 bg-gradient-to-b from-stone-900 to-stone-950 font-display text-base tracking-wide text-accent-gold"
-                >
-                  {p.initials}
-                </div>
-                <div>
-                  <h3 className="font-semibold">{p.name}</h3>
-                  <p className="text-sm text-text-muted">{p.role}</p>
-                </div>
-              </div>
-              <p className="mt-3 text-sm text-text-secondary">{p.bio}</p>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
       {/* Commitments */}
       <Section className="pb-24">
         <div className="grid items-center gap-6 rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 md:grid-cols-3 md:p-8">
@@ -459,9 +428,8 @@ export default function About() {
           100% { background-position: 200% center; }
         }
 
-        /* ✨ Strong shimmering backdrop on the logo card */
+        /* ✨ Shimmering backdrop on the logo card */
         .gold-shimmer-bg {
-          /* dark base + moving gold highlight overlay */
           background:
             linear-gradient(180deg, rgba(8,9,10,0.0) 0%, rgba(8,9,10,0.0) 100%),
             linear-gradient(
@@ -475,7 +443,6 @@ export default function About() {
             );
           background-size: 220% 100%;
           animation: shimmerBG 6s linear infinite;
-          /* rounded shape respects the card radius */
         }
         @keyframes shimmerBG {
           0% { background-position: 0% 50%; }
