@@ -111,28 +111,28 @@ const LEADERSHIP = [
   { name: "Liam Pillay", role: "VP Sustainability", bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.", initials: "LP" },
 ];
 
-/** Logo circle that tries multiple possible public paths and falls back gracefully */
+/** Emblem tries multiple likely filenames/extensions and falls back gracefully */
 function Emblem() {
-  // Candidate public paths (handle spaces, case, and common variants)
   const candidates = [
-    "/Brand/Logo%20Only_Transparent.png",
-    "/Brand/Logo Only_Transparent.png",
-    "/brand/logo-only-transparent.png",
     "/brand/logo-only-transparent.svg",
+    "/brand/logo-only-transparent.png",
+    "/Brand/Logo%20Only_Transparent.svg",
+    "/Brand/Logo%20Only_Transparent.png",
+    "/Brand/Logo Only_Transparent.svg",
+    "/Brand/Logo Only_Transparent.png",
+    "/Logo%20Only_Transparent.svg",
     "/Logo%20Only_Transparent.png",
+    "/Logo Only_Transparent.svg",
     "/Logo Only_Transparent.png",
-    "/Logo%20Transparent.png",
-    "/Logo Transparent.png",
   ];
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
-  const src = candidates[idx];
 
   return (
-    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20">
+    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20 z-10">
       {!failed ? (
         <Image
-          src={src}
+          src={candidates[idx]}
           alt="Gold Ore emblem"
           fill
           sizes="(min-width: 768px) 192px, 160px"
@@ -230,10 +230,15 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel — uses Emblem() */}
-          <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
-            <div className="absolute inset-0 flex items-center justify-center">
+          {/* Logo panel — shimmering background, circle & logo untouched */}
+          <div className="group relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
+            {/* Gold shimmer overlay behind content */}
+            <div
+              aria-hidden
+              className="gold-shimmer-bg absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-35"
+            />
+            {/* Keep your circle & logo above the shimmer */}
+            <div className="absolute inset-0 z-10 flex items-center justify-center">
               <Emblem />
             </div>
           </div>
@@ -425,14 +430,35 @@ export default function About() {
           color: transparent;
           text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
           background-size: 200% auto;
-          animation: shimmer 4.5s linear infinite;
+          animation: shimmerText 4.5s linear infinite;
         }
-        @keyframes shimmer {
+        @keyframes shimmerText {
           0% { background-position: 0% center; }
           100% { background-position: 200% center; }
         }
+
+        /* Gold shimmer background for the logo card */
+        .gold-shimmer-bg {
+          background: linear-gradient(
+            110deg,
+            rgba(143,107,41,0.22) 0%,
+            rgba(230,196,109,0.22) 20%,
+            rgba(247,231,161,0.14) 40%,
+            rgba(207,159,68,0.22) 60%,
+            rgba(230,196,109,0.22) 80%,
+            rgba(143,107,41,0.22) 100%
+          );
+          background-size: 300% 100%;
+          animation: shimmerBG 8s linear infinite;
+        }
+        @keyframes shimmerBG {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 300% 50%; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .text-gold-shimmer { animation: none; }
+          .gold-shimmer-bg { animation: none; }
         }
       `}</style>
     </main>
