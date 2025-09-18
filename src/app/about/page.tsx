@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /** Inline SVG icons (no external deps) */
 const Icon = {
@@ -155,6 +155,18 @@ function Emblem() {
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
 
+  // spotlight cursor tracking (card only)
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    el.style.setProperty("--px", `${x}%`);
+    el.style.setProperty("--py", `${y}%`);
+  };
+
   return (
     <main id="main" className="relative">
       {/* Hero */}
@@ -230,18 +242,34 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel — shimmering background, circle & logo untouched */}
-          <div className="group relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
-            {/* Gold shimmer overlay behind content */}
-            <div
-              aria-hidden
-              className="gold-shimmer-bg absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-35"
-            />
-            {/* Keep your circle & logo above the shimmer */}
+          {/* Logo panel — shimmering background (card), circle & logo untouched */}
+          <motion.div
+            ref={cardRef}
+            onMouseMove={handleMove}
+            onMouseLeave={() => {
+              const el = cardRef.current;
+              if (el) {
+                el.style.setProperty("--px", "50%");
+                el.style.setProperty("--py", "50%");
+              }
+            }}
+            className="group relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
+            initial={false}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.01 }}
+            transition={{ type: "spring", stiffness: 180, damping: 20 }}
+            style={{ transformPerspective: 800 } as any}
+          >
+            {/* Strong gold shimmer in the background */}
+            <div aria-hidden className="gold-shimmer-bg absolute inset-0" />
+
+            {/* Cursor spotlight on hover */}
+            <div aria-hidden className="gold-spotlight absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+            {/* Keep your circle & logo above the effects */}
             <div className="absolute inset-0 z-10 flex items-center justify-center">
               <Emblem />
             </div>
-          </div>
+          </motion.div>
         </div>
       </Section>
 
@@ -356,12 +384,6 @@ export default function About() {
               A senior team blending deep operational experience with modern digital, ESG, and finance capability.
             </p>
           </div>
-          <a
-            href="/investors"
-            className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/60"
-          >
-            Investor Overview <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-          </a>
         </div>
         <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {LEADERSHIP.map((p) => (
@@ -413,7 +435,7 @@ export default function About() {
         </div>
       </Section>
 
-      {/* Scoped shimmer styles */}
+      {/* Scoped styles */}
       <style jsx>{`
         .text-gold-shimmer {
           background: linear-gradient(
@@ -437,23 +459,40 @@ export default function About() {
           100% { background-position: 200% center; }
         }
 
-        /* Gold shimmer background for the logo card */
+        /* ✨ Strong shimmering backdrop on the logo card */
         .gold-shimmer-bg {
-          background: linear-gradient(
-            110deg,
-            rgba(143,107,41,0.22) 0%,
-            rgba(230,196,109,0.22) 20%,
-            rgba(247,231,161,0.14) 40%,
-            rgba(207,159,68,0.22) 60%,
-            rgba(230,196,109,0.22) 80%,
-            rgba(143,107,41,0.22) 100%
-          );
-          background-size: 300% 100%;
-          animation: shimmerBG 8s linear infinite;
+          /* dark base + moving gold highlight overlay */
+          background:
+            linear-gradient(180deg, rgba(8,9,10,0.0) 0%, rgba(8,9,10,0.0) 100%),
+            linear-gradient(
+              110deg,
+              rgba(143,107,41,0.28) 0%,
+              rgba(230,196,109,0.32) 22%,
+              rgba(247,231,161,0.20) 40%,
+              rgba(207,159,68,0.34) 60%,
+              rgba(230,196,109,0.32) 78%,
+              rgba(143,107,41,0.28) 100%
+            );
+          background-size: 220% 100%;
+          animation: shimmerBG 6s linear infinite;
+          /* rounded shape respects the card radius */
         }
         @keyframes shimmerBG {
           0% { background-position: 0% 50%; }
-          100% { background-position: 300% 50%; }
+          100% { background-position: 220% 50%; }
+        }
+
+        /* ✨ Cursor spotlight (shows on hover) */
+        .gold-spotlight {
+          --px: 50%;
+          --py: 50%;
+          background: radial-gradient(
+            280px 180px at var(--px) var(--py),
+            rgba(230,196,109,0.28),
+            rgba(230,196,109,0.10) 40%,
+            transparent 70%
+          );
+          pointer-events: none;
         }
 
         @media (prefers-reduced-motion: reduce) {
