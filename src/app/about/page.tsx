@@ -136,7 +136,7 @@ export default function About() {
             </h1>
 
             <p className="mt-4 max-w-2xl text-text-muted">
-              South African gold producer headquartered in Sandton, Gauteng—combining responsible mining,
+              South African gold producer headquartered in Sandton, Gauteng. Combining responsible mining,
               rigorous engineering, and a long-term partnership mindset across our Benoni South assets.
             </p>
           </motion.div>
@@ -170,8 +170,8 @@ export default function About() {
           <div className="md:col-span-2">
             <h2 className="font-display text-2xl md:text-4xl">Our Mission</h2>
             <p className="mt-4 text-text-secondary">
-              Responsibly unlock South Africa’s gold resources and create enduring value—for our people,
-              communities, partners, and shareholders—through operational excellence, innovation, and stewardship.
+              Responsibly unlock South Africa’s gold resources and create enduring value for our people,
+              communities, partners, and shareholders through operational excellence, innovation, and stewardship.
             </p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2">
               {[
