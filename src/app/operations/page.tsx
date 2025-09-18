@@ -2,8 +2,9 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
+import type { ReactNode } from "react";
 
-/** Minimal, inline icons to avoid extra deps */
+/** Minimal, inline icons (no extra deps) */
 const Icon = {
   Pickaxe: (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -48,7 +49,7 @@ const Icon = {
   ),
 };
 
-type Stat = { label: string; value: string; sublabel?: string; icon?: JSX.Element };
+type Stat = { label: string; value: string; sublabel?: string; icon?: ReactNode };
 type Asset = {
   key: "NK" | "TB";
   name: string;
@@ -241,7 +242,7 @@ export default function OperationsPage() {
         </div>
       </Section>
 
-      {/* ESG & REHABILITATION (operations-linked) */}
+      {/* ESG & REHABILITATION */}
       <Section className="py-12 md:py-20">
         <div className="grid gap-8 md:grid-cols-2">
           <div>
@@ -292,17 +293,11 @@ export default function OperationsPage() {
           animation: shimmer 4.5s linear infinite;
         }
         @keyframes shimmer {
-          0% {
-            background-position: 0% center;
-          }
-          100% {
-            background-position: 200% center;
-          }
+          0% { background-position: 0% center; }
+          100% { background-position: 200% center; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .text-gold-shimmer {
-            animation: none;
-          }
+          .text-gold-shimmer { animation: none; }
         }
       `}</style>
     </main>
