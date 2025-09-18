@@ -95,52 +95,7 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
 ];
 
-/** Background image for the logo card with graceful fallback */
-function MiningBackdrop() {
-  const candidates = [
-    "/media/mining-card.svg",
-    "/media/mining-card.jpg",
-    "/media/mining-card.png",
-    "/images/mining-card.jpg",
-    "/images/mining-card.png",
-    "/brand/mining-card.jpg",
-    "/brand/mining-card.png",
-  ];
-  const [idx, setIdx] = useState(0);
-  const [failedAll, setFailedAll] = useState(false);
-
-  if (failedAll) {
-    // Fallback: subtle dark vignette
-    return (
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(1000px_500px_at_50%_-10%,rgba(0,0,0,.35),transparent_60%)]"
-      />
-    );
-  }
-
-  return (
-    <>
-      <Image
-        src={candidates[idx]}
-        alt=""
-        aria-hidden
-        fill
-        className="object-cover"
-        sizes="(min-width: 1024px) 640px, 100vw"
-        priority
-        onError={() => {
-          if (idx < candidates.length - 1) setIdx(i => i + 1);
-          else setFailedAll(true);
-        }}
-      />
-      {/* Darken for contrast with the logo + keep the premium look */}
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/40" />
-    </>
-  );
-}
-
-/** Emblem + circle (kept as-is) */
+/** Emblem + circle (kept) */
 function Emblem() {
   const candidates = [
     "/brand/logo-only-transparent.svg",
@@ -201,6 +156,7 @@ export default function About() {
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Company</p>
             </div>
 
+            {/* ✨ Gold shimmer title */}
             <h1 id="about-hero" className="font-display text-4xl md:text-6xl lg:text-7xl mt-3">
               <span className="text-gold-shimmer">About Gold Ore</span>
             </h1>
@@ -258,7 +214,7 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel — now with MINING IMAGE background */}
+          {/* Logo panel — neutral background (no photo) */}
           <motion.div
             className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
             initial={false}
@@ -266,8 +222,8 @@ export default function About() {
             transition={{ type: "spring", stiffness: 180, damping: 20 }}
             style={{ perspective: "800px" }}
           >
-            {/* Background photo + soft dark overlay */}
-            <MiningBackdrop />
+            {/* Subtle neutral gradient only */}
+            <div aria-hidden className="absolute inset-0 bg-[radial-gradient(900px_450px_at_50%_-15%,rgba(255,255,255,0.04),transparent_60%)]" />
 
             {/* Circle + logo (unchanged) */}
             <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -377,43 +333,6 @@ export default function About() {
             </div>
           </div>
         </div>
-      </Section>
-
-      {/* Leadership */}
-      <Section className="py-12 md:py-20">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <h2 className="font-display text-2xl md:text-4xl">Leadership</h2>
-            <p className="mt-2 max-w-2xl text-text-muted">
-              A senior team blending deep operational experience with modern digital, ESG, and finance capability.
-            </p>
-          </div>
-        </div>
-
-        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { name: "Nomsa Khumalo", role: "Chief Executive Officer", bio: "25 years across underground and open-pit operations. Led multi-shaft optimisation and technology modernisation.", initials: "NK" },
-            { name: "Daniel van Rensburg", role: "Chief Operating Officer", bio: "Mining engineer focused on safety automation, throughput, and cost discipline across processing plants.", initials: "DvR" },
-            { name: "Anita Mokoena", role: "Chief Financial Officer", bio: "CA(SA). Project finance, treasury, and investor relations leadership.", initials: "AM" },
-            { name: "Liam Pillay", role: "VP Sustainability", bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.", initials: "LP" },
-          ].map((p) => (
-            <li key={p.name} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
-              <div className="flex items-center gap-4">
-                <div
-                  aria-hidden
-                  className="grid h-14 w-14 place-items-center rounded-full border border-accent-gold/40 bg-gradient-to-b from-stone-900 to-stone-950 font-display text-base tracking-wide text-accent-gold"
-                >
-                  {p.initials}
-                </div>
-                <div>
-                  <h3 className="font-semibold">{p.name}</h3>
-                  <p className="text-sm text-text-muted">{p.role}</p>
-                </div>
-              </div>
-              <p className="mt-3 text-sm text-text-secondary">{p.bio}</p>
-            </li>
-          ))}
-        </ul>
       </Section>
 
       {/* Commitments */}
