@@ -85,7 +85,6 @@ const Icon = {
 
 type Stat = { label: string; value: string; sublabel?: string; icon?: React.ReactNode };
 
-// Only keeping Head Office stat
 const COMPANY_STATS: Stat[] = [
   { label: "Head Office", value: "Sandton, Gauteng", sublabel: "South Africa", icon: <Icon.MapPin aria-hidden className="h-5 w-5" /> },
 ];
@@ -95,20 +94,6 @@ const PROJECT_SNAPSHOT: Stat[] = [
   { label: "Gold (Combined)", value: "≈3,038 kg", sublabel: "LoM production target", icon: <Icon.Coin aria-hidden className="h-5 w-5" /> },
   { label: "NPV (illustrative)", value: "$55m+", sublabel: "At 15–20% discount rates", icon: <Icon.Award aria-hidden className="h-5 w-5" /> },
   { label: "Offtake", value: "Goldplat PLC", sublabel: "MOU – toll treatment", icon: <Icon.Factory aria-hidden className="h-5 w-5" /> },
-];
-
-const VALUES = [
-  { title: "Safety by Design", body: "Engineer out risk. Every person home safe, every shift.", icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" /> },
-  { title: "Stewardship", body: "Water-wise, lower-carbon operations and regional restoration.", icon: <Icon.Tree aria-hidden className="h-6 w-6" /> },
-  { title: "Excellence", body: "World-class geology, disciplined capital allocation, continuous improvement.", icon: <Icon.Award aria-hidden className="h-6 w-6" /> },
-  { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
-];
-
-const LEADERSHIP = [
-  { name: "Nomsa Khumalo", role: "Chief Executive Officer", bio: "25 years across underground and open-pit operations. Led multi-shaft optimisation and technology modernisation.", initials: "NK" },
-  { name: "Daniel van Rensburg", role: "Chief Operating Officer", bio: "Mining engineer focused on safety automation, throughput, and cost discipline across processing plants.", initials: "DvR" },
-  { name: "Anita Mokoena", role: "Chief Financial Officer", bio: "CA(SA). Project finance, treasury, and investor relations leadership.", initials: "AM" },
-  { name: "Liam Pillay", role: "VP Sustainability", bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.", initials: "LP" },
 ];
 
 /** Emblem tries multiple likely filenames/extensions and falls back gracefully */
@@ -375,6 +360,43 @@ export default function About() {
         </div>
       </Section>
 
+      {/* Leadership */}
+      <Section className="py-12 md:py-20">
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <h2 className="font-display text-2xl md:text-4xl">Leadership</h2>
+            <p className="mt-2 max-w-2xl text-text-muted">
+              A senior team blending deep operational experience with modern digital, ESG, and finance capability.
+            </p>
+          </div>
+        </div>
+
+        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { name: "Nomsa Khumalo", role: "Chief Executive Officer", bio: "25 years across underground and open-pit operations. Led multi-shaft optimisation and technology modernisation.", initials: "NK" },
+            { name: "Daniel van Rensburg", role: "Chief Operating Officer", bio: "Mining engineer focused on safety automation, throughput, and cost discipline across processing plants.", initials: "DvR" },
+            { name: "Anita Mokoena", role: "Chief Financial Officer", bio: "CA(SA). Project finance, treasury, and investor relations leadership.", initials: "AM" },
+            { name: "Liam Pillay", role: "VP Sustainability", bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.", initials: "LP" },
+          ].map((p) => (
+            <li key={p.name} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
+              <div className="flex items-center gap-4">
+                <div
+                  aria-hidden
+                  className="grid h-14 w-14 place-items-center rounded-full border border-accent-gold/40 bg-gradient-to-b from-stone-900 to-stone-950 font-display text-base tracking-wide text-accent-gold"
+                >
+                  {p.initials}
+                </div>
+                <div>
+                  <h3 className="font-semibold">{p.name}</h3>
+                  <p className="text-sm text-text-muted">{p.role}</p>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-text-secondary">{p.bio}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
       {/* Commitments */}
       <Section className="pb-24">
         <div className="grid items-center gap-6 rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 md:grid-cols-3 md:p-8">
@@ -428,7 +450,6 @@ export default function About() {
           100% { background-position: 200% center; }
         }
 
-        /* ✨ Shimmering backdrop on the logo card */
         .gold-shimmer-bg {
           background:
             linear-gradient(180deg, rgba(8,9,10,0.0) 0%, rgba(8,9,10,0.0) 100%),
@@ -449,7 +470,6 @@ export default function About() {
           100% { background-position: 220% 50%; }
         }
 
-        /* ✨ Cursor spotlight (shows on hover) */
         .gold-spotlight {
           --px: 50%;
           --py: 50%;
