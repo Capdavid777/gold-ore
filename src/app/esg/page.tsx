@@ -136,10 +136,14 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-accent-gold/50"
             >
-              <div className="flex items-center gap-3">
+              {/* Header row normalized so titles align and stay on one line on xl+ */}
+              <div className="flex items-center gap-3 min-h-[28px]">
                 <span className="text-accent-gold">{p.icon}</span>
-                <h3 className="font-semibold">{p.title}</h3>
+                <h3 className="font-semibold text-[15px] md:text-[16px] xl:text-[17px] xl:whitespace-nowrap">
+                  {p.title}
+                </h3>
               </div>
+
               <p className="mt-3 text-sm text-text-secondary">{p.body}</p>
               {p.bullets && (
                 <ul className="mt-3 space-y-1.5 text-sm text-text-muted">
@@ -319,15 +323,7 @@ export default function ESGPage() {
       {/* Scoped shimmer styles */}
       <style jsx>{`
         .text-gold-shimmer {
-          background: linear-gradient(
-            100deg,
-            #8f6b29 0%,
-            #e6c46d 20%,
-            #f7e7a1 40%,
-            #cf9f44 60%,
-            #e6c46d 80%,
-            #8f6b29 100%
-          );
+          background: linear-gradient(100deg, #8f6b29 0%, #e6c46d 20%, #f7e7a1 40%, #cf9f44 60%, #e6c46d 80%, #8f6b29 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
