@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
-/** Inline icons (stroke uses currentColor so wrapper color applies) */
+/** Inline icons (stroke uses currentColor so color classes apply) */
 const Icon = {
   Leaf: (p: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
@@ -54,7 +54,7 @@ type Stat = { label: string; value: string; sub?: string };
 
 const PILLARS: Pillar[] = [
   {
-    icon: <Icon.Shield className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
+    icon: <Icon.Shield className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
     title: "Safety & Risk",
     body:
       "Zero-harm design is non-negotiable. We engineer out risk and secure legacy workings while ramping production.",
@@ -64,21 +64,21 @@ const PILLARS: Pillar[] = [
     ],
   },
   {
-    icon: <Icon.Leaf className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
+    icon: <Icon.Leaf className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
     title: "Environment & Biodiversity",
     body:
       "Concurrent rehabilitation restores surface integrity and indigenous vegetation while shallow ounces are mined responsibly.",
     bullets: ["Topsoil preservation and re-seeding", "Dust/noise mitigation and progressive closure"],
   },
   {
-    icon: <Icon.Water className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
+    icon: <Icon.Water className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
     title: "Water & Waste",
     body:
       "Prospecting-phase baseline completed. Mining Permits use Basic Assessment Reports; water/waste licensing sits with the offtake processor.",
     bullets: ["Closed-loop housekeeping at permits", "Haulage to toll treatment ~8 km"],
   },
   {
-    icon: <Icon.Users className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
+    icon: <Icon.Users className="h-5 w-5 align-middle relative -top-0.5 shrink-0 text-accent-gold" />,
     title: "Social & Local Value",
     body:
       "Local jobs, skills uplift and supplier inclusion—paired with actions that directly improve surface safety in nearby communities.",
@@ -136,10 +136,10 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-accent-gold/50"
             >
-              {/* Header: gold icon + title, single line on desktop */}
-              <div className="flex items-center gap-2 min-h-[28px] text-accent-gold">
+              {/* Header: force gold on both icon AND title */}
+              <div className="flex items-center gap-2 min-h-[28px]">
                 <span aria-hidden>{p.icon}</span>
-                <h3 className="font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
+                <h3 className="text-accent-gold font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
                   {p.title}
                 </h3>
               </div>
