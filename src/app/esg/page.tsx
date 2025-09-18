@@ -136,10 +136,8 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-[var(--go-gold,#caa132)]/50"
             >
-              <div
-                className="flex items-center gap-2 min-h-[28px]"
-                style={{ color: "var(--go-gold, #caa132)" }}
-              >
+              {/* Force gold icon + title via inline style (bulletproof) */}
+              <div className="flex items-center gap-2 min-h-[28px]" style={{ color: "var(--go-gold, #caa132)" }}>
                 <span aria-hidden className="inline-block">{p.icon}</span>
                 <h3 className="font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
                   {p.title}
@@ -223,8 +221,8 @@ export default function ESGPage() {
                 <span className="text-sm text-text-muted">{s.label}</span>
               </div>
 
-              {/* ONE-LINE VALUE HEADING */}
-              <div className="mt-3 font-display whitespace-nowrap overflow-hidden text-ellipsis tracking-tight text-lg sm:text-xl md:text-[1.4rem] lg:text-[1.55rem]">
+              {/* ONE-LINE VALUE HEADING, 1 SIZE SMALLER */}
+              <div className="mt-3 font-display whitespace-nowrap overflow-hidden text-ellipsis tracking-tight text-base sm:text-lg md:text-[1.25rem] lg:text-[1.35rem]">
                 {s.value}
               </div>
 
@@ -236,7 +234,10 @@ export default function ESGPage() {
         <ul className="mt-6 space-y-2 text-sm text-text-muted">
           <li>PR validity & extension: valid to Oct 2025 with potential 3-year extension.</li>
           <li>Environmental status: authorisations approved; Mining Permits utilise Basic Assessment Reports.</li>
-          <li>Licensing & logistics: water/waste licences at the offtake processor; ore haul ~8 km to toll treatment under MOU.</li>
+          <li>
+            Licensing & logistics: water/waste licences at the offtake processor; ore haul ~8 km to toll treatment
+            under MOU.
+          </li>
         </ul>
       </Section>
 
@@ -257,9 +258,15 @@ export default function ESGPage() {
           <div className="rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6">
             <h3 className="font-semibold">Local Value Focus</h3>
             <ul className="mt-3 grid gap-3 text-sm">
-              <li className="rounded-xl border border-surface-3/50 p-4">Local hiring & training for operators and supervisors</li>
-              <li className="rounded-xl border border-surface-3/50 p-4">Inclusive procurement for approved regional suppliers</li>
-              <li className="rounded-xl border border-surface-3/50 p-4">Transparent grievance & engagement channels</li>
+              <li className="rounded-xl border border-surface-3/50 p-4">
+                Local hiring & training for operators and supervisors
+              </li>
+              <li className="rounded-xl border border-surface-3/50 p-4">
+                Inclusive procurement for approved regional suppliers
+              </li>
+              <li className="rounded-xl border border-surface-3/50 p-4">
+                Transparent grievance & engagement channels
+              </li>
             </ul>
           </div>
         </div>
