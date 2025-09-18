@@ -4,9 +4,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 
-/** ──────────────────────────────────────────────────────────────────────────────
- * Minimal inline icons (no external dependency) – inherit currentColor.
- * ──────────────────────────────────────────────────────────────────────────── */
+/** Inline SVG icons (no external deps) */
 const Icon = {
   MapPin: (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -84,12 +82,9 @@ const Icon = {
   ),
 };
 
-/** ──────────────────────────────────────────────────────────────────────────────
- * Content
- * ──────────────────────────────────────────────────────────────────────────── */
 type Stat = { label: string; value: string; sublabel?: string; icon?: React.ReactNode };
 
-// ⬇️ Removed the three requested cards; keeping only Head Office.
+// Only keeping Head Office stat (you asked to remove the other three)
 const COMPANY_STATS: Stat[] = [
   { label: "Head Office", value: "Sandton, Gauteng", sublabel: "South Africa", icon: <Icon.MapPin aria-hidden className="h-5 w-5" /> },
 ];
@@ -134,16 +129,19 @@ export default function About() {
               <Icon.Pickaxe aria-hidden className="h-6 w-6 text-accent-gold" />
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Company</p>
             </div>
+
+            {/* ✨ Gold shimmer title */}
             <h1 id="about-hero" className="font-display text-4xl md:text-6xl lg:text-7xl mt-3">
-              About Gold Ore
+              <span className="text-gold-shimmer">About Gold Ore</span>
             </h1>
+
             <p className="mt-4 max-w-2xl text-text-muted">
-              South African gold producer headquartered in Sandton, Gauteng. Combining responsible mining,
+              South African gold producer headquartered in Sandton, Gauteng—combining responsible mining,
               rigorous engineering, and a long-term partnership mindset across our Benoni South assets.
             </p>
           </motion.div>
 
-          {/* Company key stats */}
+          {/* Company key stat(s) */}
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {COMPANY_STATS.map((s) => (
               <motion.div
@@ -229,7 +227,7 @@ export default function About() {
             </p>
           </div>
           <a
-            href="/operations" // adjust if your route differs
+            href="/operations"
             className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/60"
           >
             View Projects <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -313,7 +311,7 @@ export default function About() {
               A senior team blending deep operational experience with modern digital, ESG, and finance capability.
             </p>
           </div>
-        <a
+          <a
             href="/investors"
             className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/60"
           >
@@ -341,7 +339,7 @@ export default function About() {
         </ul>
       </Section>
 
-      {/* Fine print / governance */}
+      {/* Commitments */}
       <Section className="pb-24">
         <div className="grid items-center gap-6 rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 md:grid-cols-3 md:p-8">
           <div className="md:col-span-2">
@@ -369,6 +367,34 @@ export default function About() {
           </a>
         </div>
       </Section>
+
+      {/* Scoped shimmer styles */}
+      <style jsx>{`
+        .text-gold-shimmer {
+          background: linear-gradient(
+            100deg,
+            #8f6b29 0%,
+            #e6c46d 20%,
+            #f7e7a1 40%,
+            #cf9f44 60%,
+            #e6c46d 80%,
+            #8f6b29 100%
+          );
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+          background-size: 200% auto;
+          animation: shimmer 4.5s linear infinite;
+        }
+        @keyframes shimmer {
+          0%   { background-position: 0% center; }
+          100% { background-position: 200% center; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .text-gold-shimmer { animation: none; }
+        }
+      `}</style>
     </main>
   );
 }
