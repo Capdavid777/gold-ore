@@ -136,10 +136,10 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-accent-gold/50"
             >
-              {/* Header row normalized so titles align and stay on one line on xl+ */}
+              {/* Header row normalized; titles forced to one line on xl+ and two sizes smaller */}
               <div className="flex items-center gap-3 min-h-[28px]">
                 <span className="text-accent-gold">{p.icon}</span>
-                <h3 className="font-semibold text-[15px] md:text-[16px] xl:text-[17px] xl:whitespace-nowrap">
+                <h3 className="font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
                   {p.title}
                 </h3>
               </div>
