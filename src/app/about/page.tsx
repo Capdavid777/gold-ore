@@ -96,7 +96,6 @@ const PROJECT_SNAPSHOT: Stat[] = [
   { label: "Offtake", value: "Goldplat PLC", sublabel: "MOU – toll treatment", icon: <Icon.Factory aria-hidden className="h-5 w-5" /> },
 ];
 
-/** ✅ Restored VALUES constant */
 const VALUES = [
   { title: "Safety by Design", body: "Engineer out risk. Every person home safe, every shift.", icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" /> },
   { title: "Stewardship", body: "Water-wise, lower-carbon operations and regional restoration.", icon: <Icon.Tree aria-hidden className="h-6 w-6" /> },
@@ -104,7 +103,7 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
 ];
 
-/** Emblem tries multiple likely filenames/extensions and falls back gracefully */
+/** Emblem + circle */
 function Emblem() {
   const candidates = [
     "/brand/logo-only-transparent.svg",
@@ -122,7 +121,10 @@ function Emblem() {
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20 z-10">
+    <div
+      className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 page-bg-fill z-10"
+      aria-hidden={false}
+    >
       {!failed ? (
         <Image
           src={candidates[idx]}
@@ -441,7 +443,7 @@ export default function About() {
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
-          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+          text-shadow: 0 2px 10px rgba(0,0,0,.35);
           background-size: 200% auto;
           animation: shimmerText 4.5s linear infinite;
         }
@@ -454,7 +456,10 @@ export default function About() {
         .gold-shimmer-bg {
           background:
             linear-gradient(180deg, rgba(8,9,10,0.0) 0%, rgba(8,9,10,0.0) 100%),
-            linear-gradient(110deg, rgba(143,107,41,0.28) 0%, rgba(230,196,109,0.32) 22%, rgba(247,231,161,0.20) 40%, rgba(207,159,68,0.34) 60%, rgba(230,196,109,0.32) 78%, rgba(143,107,41,0.28) 100%);
+            linear-gradient(110deg, rgba(143,107,41,0.28) 0%,
+              rgba(230,196,109,0.32) 22%, rgba(247,231,161,0.20) 40%,
+              rgba(207,159,68,0.34) 60%, rgba(230,196,109,0.32) 78%,
+              rgba(143,107,41,0.28) 100%);
           background-size: 220% 100%;
           animation: shimmerBG 6s linear infinite;
         }
@@ -467,8 +472,14 @@ export default function About() {
         .gold-spotlight {
           --px: 50%;
           --py: 50%;
-          background: radial-gradient(280px 180px at var(--px) var(--py), rgba(230,196,109,0.28), rgba(230,196,109,0.10) 40%, transparent 70%);
+          background: radial-gradient(280px 180px at var(--px) var(--py),
+            rgba(230,196,109,0.28), rgba(230,196,109,0.10) 40%, transparent 70%);
           pointer-events: none;
+        }
+
+        /* ✅ Circle fill = page background (override here; adjust --go-page-bg if you have tokens) */
+        .page-bg-fill {
+          background: var(--go-page-bg, #0c0f12);
         }
 
         @media (prefers-reduced-motion: reduce) {
