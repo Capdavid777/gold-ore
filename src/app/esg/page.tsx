@@ -54,7 +54,7 @@ type Stat = { label: string; value: string; sub?: string };
 
 const PILLARS: Pillar[] = [
   {
-    icon: <Icon.Shield className="h-6 w-6" />,
+    icon: <Icon.Shield className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Safety & Risk",
     body:
       "Zero-harm design is non-negotiable. We engineer out risk and secure legacy workings while ramping production.",
@@ -64,21 +64,21 @@ const PILLARS: Pillar[] = [
     ],
   },
   {
-    icon: <Icon.Leaf className="h-6 w-6" />,
+    icon: <Icon.Leaf className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Environment & Biodiversity",
     body:
       "Concurrent rehabilitation restores surface integrity and indigenous vegetation while shallow ounces are mined responsibly.",
     bullets: ["Topsoil preservation and re-seeding", "Dust/noise mitigation and progressive closure"],
   },
   {
-    icon: <Icon.Water className="h-6 w-6" />,
+    icon: <Icon.Water className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Water & Waste",
     body:
       "Prospecting-phase baseline completed. Mining Permits use Basic Assessment Reports; water/waste licensing sits with the offtake processor.",
     bullets: ["Closed-loop housekeeping at permits", "Haulage to toll treatment ~8 km"],
   },
   {
-    icon: <Icon.Users className="h-6 w-6" />,
+    icon: <Icon.Users className="h-5 w-5 align-middle relative -top-0.5 shrink-0" />,
     title: "Social & Local Value",
     body:
       "Local jobs, skills uplift and supplier inclusion—paired with actions that directly improve surface safety in nearby communities.",
@@ -136,8 +136,8 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-accent-gold/50"
             >
-              {/* Header row normalized; titles forced to one line on xl+ and two sizes smaller */}
-              <div className="flex items-center gap-3 min-h-[28px]">
+              {/* Header: icon baseline-aligned with title and forced to one line on desktop */}
+              <div className="flex items-center gap-2 min-h-[28px]">
                 <span className="text-accent-gold">{p.icon}</span>
                 <h3 className="font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
                   {p.title}
