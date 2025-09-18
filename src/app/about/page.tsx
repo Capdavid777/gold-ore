@@ -118,6 +118,7 @@ function Emblem() {
     "/Brand/Logo%20Only_Transparent.png",
     "/Brand/Logo Only_Transparent.png",
     "/brand/logo-only-transparent.png",
+    "/brand/logo-only-transparent.svg",
     "/Logo%20Only_Transparent.png",
     "/Logo Only_Transparent.png",
     "/Logo%20Transparent.png",
