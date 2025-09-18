@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 /** Inline SVG icons (no external deps) */
 const Icon = {
@@ -46,14 +46,6 @@ const Icon = {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
       <path strokeWidth="1.5" d="M3 8.5C6.5 6 10 5.5 13.5 7M21 8.5C17.5 6 14 5.5 10.5 7M12 7v13" />
       <path strokeWidth="1.5" d="m12 13 7 7" />
-    </svg>
-  ),
-  Recycle: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-      <path strokeWidth="1.5" d="M7 8 9.5 4 12 8H7Z" />
-      <path strokeWidth="1.5" d="M12 8h5l2 3-2 1" />
-      <path strokeWidth="1.5" d="M6 12 4 15l2 3h5" />
-      <path strokeWidth="1.5" d="M18 16l-2.5 4L13 16h5Z" />
     </svg>
   ),
   FileCheck: (props: React.SVGProps<SVGSVGElement>) => (
@@ -103,7 +95,52 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
 ];
 
-/** Emblem + circle */
+/** Background image for the logo card with graceful fallback */
+function MiningBackdrop() {
+  const candidates = [
+    "/media/mining-card.svg",
+    "/media/mining-card.jpg",
+    "/media/mining-card.png",
+    "/images/mining-card.jpg",
+    "/images/mining-card.png",
+    "/brand/mining-card.jpg",
+    "/brand/mining-card.png",
+  ];
+  const [idx, setIdx] = useState(0);
+  const [failedAll, setFailedAll] = useState(false);
+
+  if (failedAll) {
+    // Fallback: subtle dark vignette
+    return (
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(1000px_500px_at_50%_-10%,rgba(0,0,0,.35),transparent_60%)]"
+      />
+    );
+  }
+
+  return (
+    <>
+      <Image
+        src={candidates[idx]}
+        alt=""
+        aria-hidden
+        fill
+        className="object-cover"
+        sizes="(min-width: 1024px) 640px, 100vw"
+        priority
+        onError={() => {
+          if (idx < candidates.length - 1) setIdx(i => i + 1);
+          else setFailedAll(true);
+        }}
+      />
+      {/* Darken for contrast with the logo + keep the premium look */}
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/40" />
+    </>
+  );
+}
+
+/** Emblem + circle (kept as-is) */
 function Emblem() {
   const candidates = [
     "/brand/logo-only-transparent.svg",
@@ -121,10 +158,7 @@ function Emblem() {
   const [failed, setFailed] = useState(false);
 
   return (
-    <div
-      className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 page-bg-fill z-10"
-      aria-hidden={false}
-    >
+    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20 z-10">
       {!failed ? (
         <Image
           src={candidates[idx]}
@@ -134,7 +168,7 @@ function Emblem() {
           className="object-contain"
           priority
           onError={() => {
-            if (idx < candidates.length - 1) setIdx((i) => i + 1);
+            if (idx < candidates.length - 1) setIdx(i => i + 1);
             else setFailed(true);
           }}
         />
@@ -149,18 +183,6 @@ function Emblem() {
 
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
-
-  // spotlight cursor tracking (card only)
-  const cardRef = useRef<HTMLDivElement | null>(null);
-  const handleMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const el = cardRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * 100;
-    el.style.setProperty("--px", `${x}%`);
-    el.style.setProperty("--py", `${y}%`);
-  };
 
   return (
     <main id="main" className="relative">
@@ -179,7 +201,6 @@ export default function About() {
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Company</p>
             </div>
 
-            {/* ✨ Gold shimmer title */}
             <h1 id="about-hero" className="font-display text-4xl md:text-6xl lg:text-7xl mt-3">
               <span className="text-gold-shimmer">About Gold Ore</span>
             </h1>
@@ -202,7 +223,7 @@ export default function About() {
                 className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-surface-2/30"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-accent-gold">{s.icon}</span>
+                  <span className="text-accent-gold"><Icon.MapPin className="h-5 w-5" /></span>
                   <span className="text-sm text-text-muted">{s.label}</span>
                 </div>
                 <div className="mt-3 font-display text-2xl">{s.value}</div>
@@ -237,30 +258,18 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel — shimmering background (card), circle & logo untouched */}
+          {/* Logo panel — now with MINING IMAGE background */}
           <motion.div
-            ref={cardRef}
-            onMouseMove={handleMove}
-            onMouseLeave={() => {
-              const el = cardRef.current;
-              if (el) {
-                el.style.setProperty("--px", "50%");
-                el.style.setProperty("--py", "50%");
-              }
-            }}
-            className="group relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
+            className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
             initial={false}
             whileHover={prefersReducedMotion ? {} : { scale: 1.01 }}
             transition={{ type: "spring", stiffness: 180, damping: 20 }}
             style={{ perspective: "800px" }}
           >
-            {/* Strong gold shimmer in the background */}
-            <div aria-hidden className="gold-shimmer-bg absolute inset-0" />
+            {/* Background photo + soft dark overlay */}
+            <MiningBackdrop />
 
-            {/* Cursor spotlight on hover */}
-            <div aria-hidden className="gold-spotlight absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-            {/* Keep your circle & logo above the effects */}
+            {/* Circle + logo (unchanged) */}
             <div className="absolute inset-0 z-10 flex items-center justify-center">
               <Emblem />
             </div>
@@ -306,7 +315,7 @@ export default function About() {
           {PROJECT_SNAPSHOT.map((s) => (
             <div key={s.label} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
               <div className="flex items-center gap-3">
-                <span className="text-accent-gold">{s.icon}</span>
+                <span className="text-accent-gold"><Icon.Pickaxe className="h-5 w-5" /></span>
                 <span className="text-sm text-text-muted">{s.label}</span>
               </div>
               <div className="mt-3 font-display text-2xl">{s.value}</div>
@@ -451,40 +460,8 @@ export default function About() {
           0% { background-position: 0% center; }
           100% { background-position: 200% center; }
         }
-
-        /* Shimmering backdrop on the logo card */
-        .gold-shimmer-bg {
-          background:
-            linear-gradient(180deg, rgba(8,9,10,0.0) 0%, rgba(8,9,10,0.0) 100%),
-            linear-gradient(110deg, rgba(143,107,41,0.28) 0%,
-              rgba(230,196,109,0.32) 22%, rgba(247,231,161,0.20) 40%,
-              rgba(207,159,68,0.34) 60%, rgba(230,196,109,0.32) 78%,
-              rgba(143,107,41,0.28) 100%);
-          background-size: 220% 100%;
-          animation: shimmerBG 6s linear infinite;
-        }
-        @keyframes shimmerBG {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 220% 50%; }
-        }
-
-        /* Cursor spotlight (shows on hover) */
-        .gold-spotlight {
-          --px: 50%;
-          --py: 50%;
-          background: radial-gradient(280px 180px at var(--px) var(--py),
-            rgba(230,196,109,0.28), rgba(230,196,109,0.10) 40%, transparent 70%);
-          pointer-events: none;
-        }
-
-        /* ✅ Circle fill = page background (override here; adjust --go-page-bg if you have tokens) */
-        .page-bg-fill {
-          background: var(--go-page-bg, #0c0f12);
-        }
-
         @media (prefers-reduced-motion: reduce) {
           .text-gold-shimmer { animation: none; }
-          .gold-shimmer-bg { animation: none; }
         }
       `}</style>
     </main>
