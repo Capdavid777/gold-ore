@@ -1,11 +1,11 @@
-// src/app/about/page.tsx
+"use client";
+
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 
 /** ──────────────────────────────────────────────────────────────────────────────
  * Minimal inline icons (no external dependency)
- * All icons inherit currentColor; size via className (e.g., h-6 w-6).
  * ──────────────────────────────────────────────────────────────────────────── */
 const Icon = {
   MapPin: (props: React.SVGProps<SVGSVGElement>) => (
@@ -59,9 +59,7 @@ const Icon = {
   ),
 };
 
-/** ──────────────────────────────────────────────────────────────────────────────
- * Content data
- * ──────────────────────────────────────────────────────────────────────────── */
+/** Content */
 type Stat = { label: string; value: string; sublabel?: string; icon?: React.ReactNode };
 type Value = { title: string; body: string; icon: React.ReactNode };
 type Leader = { name: string; role: string; bio: string; initials: string };
@@ -74,53 +72,17 @@ const STATS: Stat[] = [
 ];
 
 const VALUES: Value[] = [
-  {
-    title: "Safety by Design",
-    body: "We engineer out risk and stop work when unsure—no exceptions. Every person home safe, every shift.",
-    icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" />,
-  },
-  {
-    title: "Stewardship",
-    body: "Long-horizon thinking for land, water, energy, and communities—measurable ESG targets guide decisions.",
-    icon: <Icon.Tree aria-hidden className="h-6 w-6" />,
-  },
-  {
-    title: "Excellence",
-    body: "World-class geology, disciplined capital allocation, and continuous improvement across the value chain.",
-    icon: <Icon.Award aria-hidden className="h-6 w-6" />,
-  },
-  {
-    title: "People First",
-    body: "We grow leaders, champion diversity, and create opportunities in the regions where we operate.",
-    icon: <Icon.Users aria-hidden className="h-6 w-6" />,
-  },
+  { title: "Safety by Design", body: "We engineer out risk and stop work when unsure—no exceptions. Every person home safe, every shift.", icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" /> },
+  { title: "Stewardship", body: "Long-horizon thinking for land, water, energy, and communities—measurable ESG targets guide decisions.", icon: <Icon.Tree aria-hidden className="h-6 w-6" /> },
+  { title: "Excellence", body: "World-class geology, disciplined capital allocation, and continuous improvement across the value chain.", icon: <Icon.Award aria-hidden className="h-6 w-6" /> },
+  { title: "People First", body: "We grow leaders, champion diversity, and create opportunities in the regions where we operate.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
 ];
 
 const LEADERSHIP: Leader[] = [
-  {
-    name: "Nomsa Khumalo",
-    role: "Chief Executive Officer",
-    bio: "25 years across underground and open-pit operations. Led multi-shaft optimisation programmes and technology modernisation.",
-    initials: "NK",
-  },
-  {
-    name: "Daniel van Rensburg",
-    role: "Chief Operating Officer",
-    bio: "Mining engineer with focus on safety automation, throughput, and cost discipline across processing plants.",
-    initials: "DvR",
-  },
-  {
-    name: "Anita Mokoena",
-    role: "Chief Financial Officer",
-    bio: "Chartered Accountant (SA). Deep experience in project finance, treasury, and investor relations.",
-    initials: "AM",
-  },
-  {
-    name: "Liam Pillay",
-    role: "VP Sustainability",
-    bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.",
-    initials: "LP",
-  },
+  { name: "Nomsa Khumalo", role: "Chief Executive Officer", bio: "25 years across underground and open-pit operations. Led multi-shaft optimisation programmes and technology modernisation.", initials: "NK" },
+  { name: "Daniel van Rensburg", role: "Chief Operating Officer", bio: "Mining engineer with focus on safety automation, throughput, and cost discipline across processing plants.", initials: "DvR" },
+  { name: "Anita Mokoena", role: "Chief Financial Officer", bio: "Chartered Accountant (SA). Deep experience in project finance, treasury, and investor relations.", initials: "AM" },
+  { name: "Liam Pillay", role: "VP Sustainability", bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.", initials: "LP" },
 ];
 
 const MILESTONES = [
@@ -138,10 +100,7 @@ export default function About() {
     <main id="main" className="relative">
       {/* Hero */}
       <section aria-labelledby="about-hero" className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,#a17838_12%,transparent_60%)] opacity-10"
-        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,#a17838_12%,transparent_60%)] opacity-10" />
         <Section className="pt-20 pb-10 md:pt-28 md:pb-16">
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
@@ -213,13 +172,7 @@ export default function About() {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="rounded-full border border-accent-gold/20 bg-black/20 p-8">
-                <Image
-                  src="/Logo Transparent.png"
-                  alt="Gold Ore emblem"
-                  width={120}
-                  height={120}
-                  priority
-                />
+                <Image src="/Logo Transparent.png" alt="Gold Ore emblem" width={120} height={120} priority />
               </div>
             </div>
           </div>
@@ -231,10 +184,7 @@ export default function About() {
         <h2 className="font-display text-2xl md:text-4xl">Our Values</h2>
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {VALUES.map((v) => (
-            <article
-              key={v.title}
-              className="group rounded-2xl border border-surface-3/50 bg-surface-2/30 p-5 transition hover:border-accent-gold/50"
-            >
+            <article key={v.title} className="group rounded-2xl border border-surface-3/50 bg-surface-2/30 p-5 transition hover:border-accent-gold/50">
               <div className="flex items-center gap-3">
                 <span className="text-accent-gold">{v.icon}</span>
                 <h3 className="font-semibold">{v.title}</h3>
@@ -251,8 +201,7 @@ export default function About() {
           <div>
             <h2 className="font-display text-2xl md:text-4xl">Leadership</h2>
             <p className="mt-2 max-w-2xl text-text-muted">
-              A senior team blending deep operational experience with modern digital, ESG, and finance
-              capability.
+              A senior team blending deep operational experience with modern digital, ESG, and finance capability.
             </p>
           </div>
           <a
@@ -264,10 +213,7 @@ export default function About() {
         </div>
         <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {LEADERSHIP.map((p) => (
-            <li
-              key={p.name}
-              className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5"
-            >
+            <li key={p.name} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
               <div className="flex items-center gap-4">
                 <div
                   aria-hidden
@@ -292,23 +238,18 @@ export default function About() {
         <ol className="relative mt-8 space-y-8 before:absolute before:left-4 before:top-0 before:h-full before:w-px before:bg-surface-3/60 md:before:left-1/2">
           {MILESTONES.map((m, idx) => (
             <li key={m.year} className="relative md:grid md:grid-cols-2 md:gap-8">
-              <span
-                aria-hidden
-                className="absolute left-4 top-2 inline-block h-2 w-2 -translate-x-1/2 rounded-full bg-accent-gold md:left-1/2"
-              />
+              <span aria-hidden className="absolute left-4 top-2 inline-block h-2 w-2 -translate-x-1/2 rounded-full bg-accent-gold md:left-1/2" />
               <div className={`md:text-right ${idx % 2 === 1 ? "md:order-2" : ""}`}>
                 <div className="font-display text-2xl text-accent-gold">{m.year}</div>
                 <div className="mt-1 font-semibold">{m.title}</div>
               </div>
-              <p className={`mt-2 text-text-muted md:mt-0 ${idx % 2 === 1 ? "md:order-1" : ""}`}>
-                {m.copy}
-              </p>
+              <p className={`mt-2 text-text-muted md:mt-0 ${idx % 2 === 1 ? "md:order-1" : ""}`}>{m.copy}</p>
             </li>
           ))}
         </ol>
       </Section>
 
-      {/* ESG highlight banner */}
+      {/* ESG banner */}
       <Section className="pb-24">
         <div className="grid items-center gap-6 rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 md:grid-cols-3 md:p-8">
           <div className="md:col-span-2">
@@ -316,34 +257,23 @@ export default function About() {
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               <li className="flex items-start gap-3">
                 <Icon.Tree className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">
-                  30% reduction in operational emissions intensity (baseline 2022).
-                </span>
+                <span className="text-sm text-text-secondary">30% reduction in operational emissions intensity (baseline 2022).</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon.Recycle className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">
-                  ≥90% recycled process water at all sites, supported by closed-loop circuits.
-                </span>
+                <span className="text-sm text-text-secondary">≥90% recycled process water at all sites, supported by closed-loop circuits.</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon.ShieldCheck className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">
-                  TRIFR ≤ 1.0 with design-led safety and autonomous-ready operations.
-                </span>
+                <span className="text-sm text-text-secondary">TRIFR ≤ 1.0 with design-led safety and autonomous-ready operations.</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon.Users className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">
-                  60% local procurement and continued investment in community skills.
-                </span>
+                <span className="text-sm text-text-secondary">60% local procurement and continued investment in community skills.</span>
               </li>
             </ul>
           </div>
-          <a
-            href="/esg"
-            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-accent-gold/40 px-5 py-3 text-sm font-medium text-accent-gold"
-          >
+          <a href="/esg" className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-accent-gold/40 px-5 py-3 text-sm font-medium text-accent-gold">
             Explore ESG <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
           </a>
         </div>
@@ -351,3 +281,4 @@ export default function About() {
     </main>
   );
 }
+
