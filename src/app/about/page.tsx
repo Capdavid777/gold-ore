@@ -193,7 +193,7 @@ export default function About() {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="rounded-full border border-accent-gold/20 bg-black/20 p-8">
-                <Image src="/Logo Transparent.png" alt="Gold Ore emblem" width={120} height={120} priority />
+                <Image src="/Logo Only_Transparent.svg" alt="Gold Ore emblem" width={120} height={120} priority />
               </div>
             </div>
           </div>
