@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
+import { useState } from "react";
 
 /** Inline SVG icons (no external deps) */
 const Icon = {
@@ -110,6 +111,46 @@ const LEADERSHIP = [
   { name: "Liam Pillay", role: "VP Sustainability", bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.", initials: "LP" },
 ];
 
+/** Logo circle that tries multiple possible public paths and falls back gracefully */
+function Emblem() {
+  // Candidate public paths (handle spaces, case, and common variants)
+  const candidates = [
+    "/Brand/Logo%20Only_Transparent.png",
+    "/Brand/Logo Only_Transparent.png",
+    "/brand/logo-only-transparent.png",
+    "/Logo%20Only_Transparent.png",
+    "/Logo Only_Transparent.png",
+    "/Logo%20Transparent.png",
+    "/Logo Transparent.png",
+  ];
+  const [idx, setIdx] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const src = candidates[idx];
+
+  return (
+    <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20">
+      {!failed ? (
+        <Image
+          src={src}
+          alt="Gold Ore emblem"
+          fill
+          sizes="(min-width: 768px) 192px, 160px"
+          className="object-contain"
+          priority
+          onError={() => {
+            if (idx < candidates.length - 1) setIdx((i) => i + 1);
+            else setFailed(true);
+          }}
+        />
+      ) : (
+        <div className="absolute inset-0 grid place-items-center text-accent-gold/70 font-semibold">
+          GOLD ORE
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
 
@@ -188,20 +229,11 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel — updated path + container for perfect scaling */}
+          {/* Logo panel — uses Emblem() */}
           <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border border-accent-gold/20 bg-black/20">
-                <Image
-                  src="/Brand/Logo%20Only_Transparent.png"  // file lives at public/Brand/Logo Only_Transparent.png
-                  alt="Gold Ore emblem"
-                  fill
-                  sizes="(min-width: 768px) 192px, 160px"
-                  className="object-contain"
-                  priority
-                />
-              </div>
+              <Emblem />
             </div>
           </div>
         </div>
