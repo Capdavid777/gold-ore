@@ -140,7 +140,7 @@ export default function About() {
               About Gold Ore
             </h1>
             <p className="mt-4 max-w-2xl text-text-muted">
-              South African gold producer headquartered in Sandton, Gauteng—combining responsible mining,
+              South African gold producer headquartered in Sandton, Gauteng. Combining responsible mining,
               rigorous engineering, and a long-term partnership mindset across our Benoni South assets.
             </p>
           </motion.div>
