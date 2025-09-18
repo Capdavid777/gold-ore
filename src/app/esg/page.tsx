@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
-/** Inline icons (no extra deps) */
+/** Inline icons (stroke uses currentColor so wrapper color applies) */
 const Icon = {
   Leaf: (p: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
@@ -136,9 +136,9 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-accent-gold/50"
             >
-              {/* Header: icon baseline-aligned with title and forced to one line on desktop */}
-              <div className="flex items-center gap-2 min-h-[28px]">
-                <span className="text-accent-gold">{p.icon}</span>
+              {/* Header: gold icon + title, single line on desktop */}
+              <div className="flex items-center gap-2 min-h-[28px] text-accent-gold">
+                <span aria-hidden>{p.icon}</span>
                 <h3 className="font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
                   {p.title}
                 </h3>
@@ -323,7 +323,15 @@ export default function ESGPage() {
       {/* Scoped shimmer styles */}
       <style jsx>{`
         .text-gold-shimmer {
-          background: linear-gradient(100deg, #8f6b29 0%, #e6c46d 20%, #f7e7a1 40%, #cf9f44 60%, #e6c46d 80%, #8f6b29 100%);
+          background: linear-gradient(
+            100deg,
+            #8f6b29 0%,
+            #e6c46d 20%,
+            #f7e7a1 40%,
+            #cf9f44 60%,
+            #e6c46d 80%,
+            #8f6b29 100%
+          );
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
