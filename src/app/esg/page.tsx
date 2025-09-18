@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
-/** Inline icons to avoid external deps */
+/** Inline icons (no extra deps) */
 const Icon = {
   Leaf: (p: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
@@ -57,7 +57,7 @@ const PILLARS: Pillar[] = [
     icon: <Icon.Shield className="h-6 w-6" />,
     title: "Safety & Risk",
     body:
-      "Zero-harm design is non-negotiable. We engineer out risk and secure legacy workings while ramping up production.",
+      "Zero-harm design is non-negotiable. We engineer out risk and secure legacy workings while ramping production.",
     bullets: [
       "Formal access control & monitoring at historic shafts.",
       "Design-led hazard elimination across pits and declines.",
@@ -74,26 +74,25 @@ const PILLARS: Pillar[] = [
     icon: <Icon.Water className="h-6 w-6" />,
     title: "Water & Waste",
     body:
-      "Baseline work in the prospecting phase completed. Mining Permits use Basic Assessment Reports; water/waste licensing held at the offtake processor.",
+      "Prospecting-phase baseline completed. Mining Permits use Basic Assessment Reports; water/waste licensing sits with the offtake processor.",
     bullets: ["Closed-loop housekeeping at permits", "Haulage to toll treatment ~8 km"],
   },
   {
     icon: <Icon.Users className="h-6 w-6" />,
     title: "Social & Local Value",
     body:
-      "Meaningful local jobs, skills uplift and supplier inclusion—paired with actions that directly improve surface safety in nearby communities.",
+      "Local jobs, skills uplift and supplier inclusion—paired with actions that directly improve surface safety in nearby communities.",
     bullets: ["Local employment and procurement", "Stakeholder engagement and SLP planning"],
   },
 ];
 
 const COMPLIANCE: Stat[] = [
   { label: "Prospecting Right (PR)", value: "GP10448 PR", sub: "Valid to Oct 2025; extendable +3 years" },
-  { label: "Environmental Authorisations", value: "Approved", sub: "Compliance maintained; BARs for permits" },
-  { label: "Offtake / Processor", value: "Goldplat PLC (MOU)", sub: "Toll treatment ~8 km; licenses at processor" },
+  { label: "Environmental Authorisations", value: "Approved", sub: "BARs for permits; compliance maintained" },
+  { label: "Offtake / Processor", value: "Goldplat PLC (MOU)", sub: "Toll treatment ~8 km; licences at processor" },
   { label: "Start of Production (target)", value: "2026", sub: "Staged ramp-up" },
 ];
 
-/** Page */
 export default function ESGPage() {
   const r = useReducedMotion();
 
@@ -155,10 +154,6 @@ export default function ESGPage() {
             </motion.article>
           ))}
         </div>
-        <p className="sr-only">
-          Evidence: PR validity & extension, environmental approvals, BAR requirement and processor licensing, and ~8 km
-          haulage route are available in uploaded docs. See citations where referenced below.
-        </p>
       </Section>
 
       {/* REHABILITATION PROGRAM */}
@@ -168,17 +163,17 @@ export default function ESGPage() {
             <h2 className="font-display text-2xl md:text-4xl">Rehabilitation-Led Safety Program</h2>
             <p className="mt-3 text-text-secondary">
               In New Kleinfontein, we will expose and seal historic openings along the outcrop to deter illegal access
-              and stabilise the surface near homes, schools, roads, rail and services. Steps: deep trenching to reveal
-              voids, removal of shallow ore, backfilling with broken waste rock, compaction to form an impassable plug,
-              and finally topsoil replacement and re-seeding of indigenous species. :contentReference[oaicite:0]{index=0}
+              and stabilise the surface near homes, schools, roads, rail and services. Steps include deep trenching to
+              reveal voids, removal of shallow ore, backfilling with broken waste rock, compaction to form an
+              impassable plug, and finally topsoil replacement and re-seeding of indigenous species.
             </p>
             <p className="mt-3 text-text-muted">
               This program directly addresses community safety risks caused by illegal access and undermining of
-              critical infrastructure adjacent to residential areas and rail. :contentReference[oaicite:1]{index=1}
+              critical infrastructure adjacent to residential areas and rail.
             </p>
             <div className="mt-4 rounded-2xl border border-surface-3/50 bg-surface-2/30 p-4 text-xs leading-relaxed text-text-muted">
               Why it matters: without sealing, the area faces long-term environmental, social and economic harm,
-              impacting thousands of residents. :contentReference[oaicite:2]{index=2}
+              impacting thousands of residents.
             </div>
           </div>
           <div className="rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6">
@@ -228,18 +223,9 @@ export default function ESGPage() {
         </div>
 
         <ul className="mt-6 space-y-2 text-sm text-text-muted">
-          <li>
-            PR validity & extension: Prospecting right granted Oct 2020; valid to Oct 2025 with possible 3-year
-            extension. :contentReference[oaicite:3]{index=3}
-          </li>
-          <li>
-            Environmental status: authorisations approved and in compliance; Mining Permits use Basic Assessment
-            Reports; water/waste licenses held by the offtake plant. :contentReference[oaicite:4]{index=4} :contentReference[oaicite:5]{index=5}
-          </li>
-          <li>
-            Logistics & processor: surface infrastructure mobile; ore hauled by road ~8&nbsp;km to toll treatment at
-            Goldplat PLC under MOU. :contentReference[oaicite:6]{index=6} :contentReference[oaicite:7]{index=7}
-          </li>
+          <li>PR validity & extension: valid to Oct 2025 with potential 3-year extension.</li>
+          <li>Environmental status: authorisations approved; Mining Permits utilise Basic Assessment Reports.</li>
+          <li>Licensing & logistics: water/waste licences at the offtake processor; ore haul ~8 km to toll treatment under MOU.</li>
         </ul>
       </Section>
 
@@ -253,8 +239,8 @@ export default function ESGPage() {
               opportunities, scaling with the ramp-up and life-of-mine.
             </p>
             <p className="mt-3 text-text-muted">
-              Planning indicates a minimum of ~600 sustained jobs, with potential to exceed 800 if New Kleinfontein’s
-              access is incorporated under the controlled plan and illegal access is sealed. :contentReference[oaicite:8]{index=8}
+              Planning indicates a minimum of ~600 sustained jobs, with potential to exceed 800 as access is formalised
+              and legacy openings are sealed.
             </p>
           </div>
           <div className="rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6">
@@ -268,7 +254,7 @@ export default function ESGPage() {
         </div>
       </Section>
 
-      {/* TARGETS (editable framework) */}
+      {/* TARGETS */}
       <Section className="py-12 md:py-20">
         <h2 className="font-display text-2xl md:text-4xl">2025–2027 Targets</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
