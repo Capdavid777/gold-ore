@@ -89,11 +89,9 @@ const Icon = {
  * ──────────────────────────────────────────────────────────────────────────── */
 type Stat = { label: string; value: string; sublabel?: string; icon?: React.ReactNode };
 
+// ⬇️ Removed the three requested cards; keeping only Head Office.
 const COMPANY_STATS: Stat[] = [
   { label: "Head Office", value: "Sandton, Gauteng", sublabel: "South Africa", icon: <Icon.MapPin aria-hidden className="h-5 w-5" /> },
-  { label: "Prospecting Right", value: "GP10448 PR", sublabel: "Valid to Oct 2025 (extendable)", icon: <Icon.FileCheck aria-hidden className="h-5 w-5" /> },
-  { label: "Target Production Start", value: "2026", sublabel: "Benoni South (staged ramp-up)", icon: <Icon.Calendar aria-hidden className="h-5 w-5" /> },
-  { label: "Local Jobs (Planned)", value: "600–800+", sublabel: "During sustained operations", icon: <Icon.Users aria-hidden className="h-5 w-5" /> },
 ];
 
 const PROJECT_SNAPSHOT: Stat[] = [
@@ -315,7 +313,7 @@ export default function About() {
               A senior team blending deep operational experience with modern digital, ESG, and finance capability.
             </p>
           </div>
-          <a
+        <a
             href="/investors"
             className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/60"
           >
