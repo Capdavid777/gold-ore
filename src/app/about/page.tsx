@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 
 /** ──────────────────────────────────────────────────────────────────────────────
- * Minimal inline icons (no external dependency)
+ * Minimal inline icons (no external dependency) – inherit currentColor.
  * ──────────────────────────────────────────────────────────────────────────── */
 const Icon = {
   MapPin: (props: React.SVGProps<SVGSVGElement>) => (
@@ -57,40 +57,64 @@ const Icon = {
       <path strokeWidth="1.5" d="M18 16l-2.5 4L13 16h5Z" />
     </svg>
   ),
+  FileCheck: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <path strokeWidth="1.5" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5Z" />
+      <path strokeWidth="1.5" d="M14 2v5h5" />
+      <path strokeWidth="1.5" d="m9 14 2 2 4-4" />
+    </svg>
+  ),
+  Factory: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <path strokeWidth="1.5" d="M3 21V9l6 4V9l6 4V9l6 4v8H3Z" />
+      <path strokeWidth="1.5" d="M7 21v-3M11 21v-3M15 21v-3M19 21v-3" />
+    </svg>
+  ),
+  Calendar: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth="1.5" />
+      <path strokeWidth="1.5" d="M16 2v4M8 2v4M3 10h18" />
+    </svg>
+  ),
+  Coin: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <ellipse cx="12" cy="7" rx="8" ry="4" strokeWidth="1.5" />
+      <path strokeWidth="1.5" d="M4 7v10c0 2.2 3.6 4 8 4s8-1.8 8-4V7" />
+    </svg>
+  ),
 };
 
-/** Content */
+/** ──────────────────────────────────────────────────────────────────────────────
+ * Content
+ * ──────────────────────────────────────────────────────────────────────────── */
 type Stat = { label: string; value: string; sublabel?: string; icon?: React.ReactNode };
-type Value = { title: string; body: string; icon: React.ReactNode };
-type Leader = { name: string; role: string; bio: string; initials: string };
 
-const STATS: Stat[] = [
-  { label: "Operating Regions", value: "3", sublabel: "Gauteng, Limpopo, North West", icon: <Icon.MapPin aria-hidden className="h-5 w-5" /> },
-  { label: "Employees & Contractors", value: "2,800+", sublabel: "Local-first sourcing", icon: <Icon.Users aria-hidden className="h-5 w-5" /> },
-  { label: "TRIFR (12 mo.)", value: "1.7", sublabel: "Relentless safety focus", icon: <Icon.ShieldCheck aria-hidden className="h-5 w-5" /> },
-  { label: "Recycled Process Water", value: "86%", sublabel: "Water stewardship", icon: <Icon.Recycle aria-hidden className="h-5 w-5" /> },
+const COMPANY_STATS: Stat[] = [
+  { label: "Head Office", value: "Sandton, Gauteng", sublabel: "South Africa", icon: <Icon.MapPin aria-hidden className="h-5 w-5" /> },
+  { label: "Prospecting Right", value: "GP10448 PR", sublabel: "Valid to Oct 2025 (extendable)", icon: <Icon.FileCheck aria-hidden className="h-5 w-5" /> },
+  { label: "Target Production Start", value: "2026", sublabel: "Benoni South (staged ramp-up)", icon: <Icon.Calendar aria-hidden className="h-5 w-5" /> },
+  { label: "Local Jobs (Planned)", value: "600–800+", sublabel: "During sustained operations", icon: <Icon.Users aria-hidden className="h-5 w-5" /> },
 ];
 
-const VALUES: Value[] = [
-  { title: "Safety by Design", body: "We engineer out risk and stop work when unsure—no exceptions. Every person home safe, every shift.", icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" /> },
-  { title: "Stewardship", body: "Long-horizon thinking for land, water, energy, and communities—measurable ESG targets guide decisions.", icon: <Icon.Tree aria-hidden className="h-6 w-6" /> },
-  { title: "Excellence", body: "World-class geology, disciplined capital allocation, and continuous improvement across the value chain.", icon: <Icon.Award aria-hidden className="h-6 w-6" /> },
-  { title: "People First", body: "We grow leaders, champion diversity, and create opportunities in the regions where we operate.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
+const PROJECT_SNAPSHOT: Stat[] = [
+  { label: "Benoni South LOM", value: "10 yrs", sublabel: "Opencast + Underground", icon: <Icon.Pickaxe aria-hidden className="h-5 w-5" /> },
+  { label: "Gold (Combined)", value: "≈3,038 kg", sublabel: "LoM production target", icon: <Icon.Coin aria-hidden className="h-5 w-5" /> },
+  { label: "NPV (illustrative)", value: "$55m+", sublabel: "At 15–20% discount rates", icon: <Icon.Award aria-hidden className="h-5 w-5" /> },
+  { label: "Offtake", value: "Goldplat PLC", sublabel: "MOU – toll treatment", icon: <Icon.Factory aria-hidden className="h-5 w-5" /> },
 ];
 
-const LEADERSHIP: Leader[] = [
-  { name: "Nomsa Khumalo", role: "Chief Executive Officer", bio: "25 years across underground and open-pit operations. Led multi-shaft optimisation programmes and technology modernisation.", initials: "NK" },
-  { name: "Daniel van Rensburg", role: "Chief Operating Officer", bio: "Mining engineer with focus on safety automation, throughput, and cost discipline across processing plants.", initials: "DvR" },
-  { name: "Anita Mokoena", role: "Chief Financial Officer", bio: "Chartered Accountant (SA). Deep experience in project finance, treasury, and investor relations.", initials: "AM" },
+const VALUES = [
+  { title: "Safety by Design", body: "Engineer out risk. Every person home safe, every shift.", icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" /> },
+  { title: "Stewardship", body: "Water-wise, lower-carbon operations and regional restoration.", icon: <Icon.Tree aria-hidden className="h-6 w-6" /> },
+  { title: "Excellence", body: "World-class geology, disciplined capital allocation, continuous improvement.", icon: <Icon.Award aria-hidden className="h-6 w-6" /> },
+  { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
+];
+
+const LEADERSHIP = [
+  { name: "Nomsa Khumalo", role: "Chief Executive Officer", bio: "25 years across underground and open-pit operations. Led multi-shaft optimisation and technology modernisation.", initials: "NK" },
+  { name: "Daniel van Rensburg", role: "Chief Operating Officer", bio: "Mining engineer focused on safety automation, throughput, and cost discipline across processing plants.", initials: "DvR" },
+  { name: "Anita Mokoena", role: "Chief Financial Officer", bio: "CA(SA). Project finance, treasury, and investor relations leadership.", initials: "AM" },
   { name: "Liam Pillay", role: "VP Sustainability", bio: "Environmental scientist driving decarbonisation, water strategy, and community partnerships.", initials: "LP" },
-];
-
-const MILESTONES = [
-  { year: "2008", title: "Incorporation", copy: "Gold Ore established in Sandton, Gauteng." },
-  { year: "2012", title: "First Pour", copy: "Commercial production achieved at our flagship operation." },
-  { year: "2018", title: "Processing Upgrade", copy: "New plant commissioning lifts recovery and reliability." },
-  { year: "2023", title: "ESG Roadmap", copy: "Formalised 2030 climate & water commitments." },
-  { year: "2025", title: "Digital Operations", copy: "Rolling out autonomous-ready fleet & real-time analytics." },
 ];
 
 export default function About() {
@@ -116,27 +140,27 @@ export default function About() {
               About Gold Ore
             </h1>
             <p className="mt-4 max-w-2xl text-text-muted">
-              We are a South African gold producer headquartered in Sandton, Gauteng—combining
-              responsible mining with rigorous engineering and a long-term partnership mindset.
+              South African gold producer headquartered in Sandton, Gauteng—combining responsible mining,
+              rigorous engineering, and a long-term partnership mindset across our Benoni South assets.
             </p>
           </motion.div>
 
-          {/* Key stats */}
+          {/* Company key stats */}
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {STATS.map((s) => (
+            {COMPANY_STATS.map((s) => (
               <motion.div
                 key={s.label}
                 initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
                 whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4 }}
-                className="group rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-surface-2/30"
+                className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-surface-2/30"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-accent-gold">{s.icon}</span>
                   <span className="text-sm text-text-muted">{s.label}</span>
                 </div>
-                <div className="mt-3 font-display text-3xl">{s.value}</div>
+                <div className="mt-3 font-display text-2xl">{s.value}</div>
                 {s.sublabel && <div className="mt-1 text-sm text-text-muted/80">{s.sublabel}</div>}
               </motion.div>
             ))}
@@ -150,9 +174,8 @@ export default function About() {
           <div className="md:col-span-2">
             <h2 className="font-display text-2xl md:text-4xl">Our Mission</h2>
             <p className="mt-4 text-text-secondary">
-              To responsibly unlock South Africa’s gold resources and create enduring value—
-              for our people, communities, partners, and shareholders—through operational
-              excellence, innovation, and stewardship.
+              Responsibly unlock South Africa’s gold resources and create enduring value—for our people,
+              communities, partners, and shareholders—through operational excellence, innovation, and stewardship.
             </p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2">
               {[
@@ -168,6 +191,8 @@ export default function About() {
               ))}
             </ul>
           </div>
+
+          {/* Logo panel */}
           <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -192,6 +217,92 @@ export default function About() {
               <p className="mt-3 text-sm text-text-muted">{v.body}</p>
             </article>
           ))}
+        </div>
+      </Section>
+
+      {/* Benoni South snapshot */}
+      <Section className="py-12 md:py-20">
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <h2 className="font-display text-2xl md:text-4xl">Benoni South at a Glance</h2>
+            <p className="mt-2 max-w-3xl text-text-muted">
+              Our flagship district includes the Turnbridge underground section and New Kleinfontein opencast permits,
+              immediately south of Benoni CBD.
+            </p>
+          </div>
+          <a
+            href="/operations" // adjust if your route differs
+            className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/60"
+          >
+            View Projects <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+          </a>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {PROJECT_SNAPSHOT.map((s) => (
+            <div key={s.label} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
+              <div className="flex items-center gap-3">
+                <span className="text-accent-gold">{s.icon}</span>
+                <span className="text-sm text-text-muted">{s.label}</span>
+              </div>
+              <div className="mt-3 font-display text-2xl">{s.value}</div>
+              {s.sublabel && <div className="mt-1 text-sm text-text-muted/80">{s.sublabel}</div>}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-surface-3/50 bg-surface-2/30 p-5 text-xs leading-relaxed text-text-muted">
+          Notes: figures are indicative project study outcomes and subject to further engineering, permitting and market
+          conditions.
+        </div>
+      </Section>
+
+      {/* Rehabilitation & community safety */}
+      <Section className="py-12 md:py-20">
+        <div className="grid gap-10 md:grid-cols-2">
+          <div>
+            <h2 className="font-display text-2xl md:text-4xl">Rehabilitation & Community Safety</h2>
+            <p className="mt-3 text-text-secondary">
+              We are advancing a practical rehabilitation programme to seal historic shallow workings, deter illegal access,
+              and restore the landscape. The concept includes exposing old access points along the outcrop, backfilling with
+              compacted waste rock, and re-establishing indigenous vegetation. The programme is designed to protect nearby
+              homes, schools, roads, rail and services while enabling safe, responsible development.
+            </p>
+            <ul className="mt-5 grid gap-3">
+              <li className="flex items-start gap-3">
+                <Icon.Tree className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <span className="text-sm text-text-muted">Concurrent rehabilitation and surface restoration.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Icon.ShieldCheck className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <span className="text-sm text-text-muted">Sealed access to reduce illegal mining risk and surface subsidence.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Icon.Users className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <span className="text-sm text-text-muted">Meaningful local employment and skills during operations.</span>
+              </li>
+            </ul>
+          </div>
+          <div className="rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6">
+            <h3 className="font-semibold">Employment & Timeline</h3>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-surface-3/50 p-4">
+                <div className="text-sm text-text-muted">Planned Jobs</div>
+                <div className="mt-1 font-display text-2xl">600–800+</div>
+              </div>
+              <div className="rounded-xl border border-surface-3/50 p-4">
+                <div className="text-sm text-text-muted">Target First Production</div>
+                <div className="mt-1 font-display text-2xl">2026</div>
+              </div>
+            </div>
+            <div className="mt-4 rounded-xl border border-surface-3/50 p-4">
+              <div className="text-sm text-text-muted">Offtake Partner</div>
+              <div className="mt-1 font-display text-xl">Goldplat PLC (MOU)</div>
+              <p className="mt-2 text-xs text-text-muted">
+                Toll treatment proximity supports a disciplined, capital-light ramp-up.
+              </p>
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -232,48 +343,30 @@ export default function About() {
         </ul>
       </Section>
 
-      {/* Timeline */}
-      <Section className="py-12 md:py-20">
-        <h2 className="font-display text-2xl md:text-4xl">Milestones</h2>
-        <ol className="relative mt-8 space-y-8 before:absolute before:left-4 before:top-0 before:h-full before:w-px before:bg-surface-3/60 md:before:left-1/2">
-          {MILESTONES.map((m, idx) => (
-            <li key={m.year} className="relative md:grid md:grid-cols-2 md:gap-8">
-              <span aria-hidden className="absolute left-4 top-2 inline-block h-2 w-2 -translate-x-1/2 rounded-full bg-accent-gold md:left-1/2" />
-              <div className={`md:text-right ${idx % 2 === 1 ? "md:order-2" : ""}`}>
-                <div className="font-display text-2xl text-accent-gold">{m.year}</div>
-                <div className="mt-1 font-semibold">{m.title}</div>
-              </div>
-              <p className={`mt-2 text-text-muted md:mt-0 ${idx % 2 === 1 ? "md:order-1" : ""}`}>{m.copy}</p>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
-      {/* ESG banner */}
+      {/* Fine print / governance */}
       <Section className="pb-24">
         <div className="grid items-center gap-6 rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 md:grid-cols-3 md:p-8">
           <div className="md:col-span-2">
-            <h2 className="font-display text-2xl md:text-3xl">Our 2030 Commitments</h2>
+            <h2 className="font-display text-2xl md:text-3xl">Our Commitments</h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               <li className="flex items-start gap-3">
-                <Icon.Tree className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">30% reduction in operational emissions intensity (baseline 2022).</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Icon.Recycle className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">≥90% recycled process water at all sites, supported by closed-loop circuits.</span>
+                <Icon.FileCheck className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <span className="text-sm text-text-secondary">
+                  Compliance with South African mining regulation and environmental authorisations.
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon.ShieldCheck className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">TRIFR ≤ 1.0 with design-led safety and autonomous-ready operations.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <Icon.Users className="mt-0.5 h-5 w-5 text-accent-gold" />
-                <span className="text-sm text-text-secondary">60% local procurement and continued investment in community skills.</span>
+                <span className="text-sm text-text-secondary">
+                  Transparent reporting, ESG targets, and proactive stakeholder engagement.
+                </span>
               </li>
             </ul>
           </div>
-          <a href="/esg" className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-accent-gold/40 px-5 py-3 text-sm font-medium text-accent-gold">
+          <a
+            href="/esg"
+            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-accent-gold/40 px-5 py-3 text-sm font-medium text-accent-gold"
+          >
             Explore ESG <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
           </a>
         </div>
@@ -281,4 +374,3 @@ export default function About() {
     </main>
   );
 }
-
