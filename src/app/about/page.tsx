@@ -96,7 +96,7 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users className="h-6 w-6" /> },
 ];
 
-/** Emblem: bigger logo, same card size */
+/** Emblem: larger logo, same card size; circle border thicker (2px) */
 function Emblem() {
   const candidates = [
     "/Brand/Logo%20Only_Transparent.png",
@@ -116,11 +116,10 @@ function Emblem() {
   return (
     <div
       className="relative rounded-full border bg-black/20"
-      // Keep the circle the same visual size as before (~204px dia) so the card doesn't change.
-      style={{ borderColor: "var(--go-gold,#caa132)", width: 204, height: 204 }}
+      // ⬇️ Thickened the circle border here (from default to 2px) — card size unchanged
+      style={{ borderColor: "var(--go-gold,#caa132)", borderWidth: 2, width: 204, height: 204 }}
     >
       {!fail ? (
-        // Let the image fill almost the whole circle for a larger logo.
         <div className="absolute inset-2 md:inset-[6px]">
           <Image
             src={candidates[i]}
@@ -224,7 +223,7 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel (bigger logo, same card) */}
+          {/* Logo panel */}
           <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -362,7 +361,7 @@ export default function About() {
         </div>
       </Section>
 
-      {/* Shimmer for main title */}
+      {/* Title shimmer */}
       <style jsx>{`
         .text-gold-shimmer {
           background: linear-gradient(100deg,#8f6b29 0%,#e6c46d 20%,#f7e7a1 40%,#cf9f44 60%,#e6c46d 80%,#8f6b29 100%);
