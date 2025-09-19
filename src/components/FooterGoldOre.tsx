@@ -25,7 +25,8 @@ export default function FooterGoldOre() {
               <li>
                 <Link
                   href="/about"
-                  className="transition-colors hover:text-amber-400"
+                  className="transition-opacity hover:opacity-90"
+                  style={{ color: 'var(--go-gold, #caa132)' }}
                 >
                   About
                 </Link>
@@ -33,7 +34,8 @@ export default function FooterGoldOre() {
               <li>
                 <Link
                   href="/operations"
-                  className="transition-colors hover:text-amber-400"
+                  className="transition-opacity hover:opacity-90"
+                  style={{ color: 'var(--go-gold, #caa132)' }}
                 >
                   Operations
                 </Link>
@@ -41,7 +43,8 @@ export default function FooterGoldOre() {
               <li>
                 <Link
                   href="/esg"
-                  className="transition-colors hover:text-amber-400"
+                  className="transition-opacity hover:opacity-90"
+                  style={{ color: 'var(--go-gold, #caa132)' }}
                 >
                   ESG
                 </Link>
@@ -77,7 +80,8 @@ export default function FooterGoldOre() {
               <li className="md:flex md:justify-end">
                 <Link
                   href="/investors"
-                  className="transition-colors hover:text-amber-400"
+                  className="transition-opacity hover:opacity-90"
+                  style={{ color: 'var(--go-gold, #caa132)' }}
                 >
                   Overview
                 </Link>
@@ -85,7 +89,8 @@ export default function FooterGoldOre() {
               <li className="md:flex md:justify-end">
                 <Link
                   href="/news"
-                  className="transition-colors hover:text-amber-400"
+                  className="transition-opacity hover:opacity-90"
+                  style={{ color: 'var(--go-gold, #caa132)' }}
                 >
                   News
                 </Link>
