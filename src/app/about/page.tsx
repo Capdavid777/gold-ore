@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
-import { useState } from "react";
+import type { ReactNode } from "react";
 
-/** Inline SVG icons (no external deps) */
+/** Inline SVG icons (stroke follows currentColor) */
 const Icon = {
   MapPin: (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -75,82 +75,32 @@ const Icon = {
   ),
 };
 
-type Stat = { label: string; value: string; sublabel?: string; icon?: React.ReactNode };
+type Stat = { label: string; value: string; sublabel?: string; icon?: ReactNode };
 
 const COMPANY_STATS: Stat[] = [
-  { label: "Head Office", value: "Sandton, Gauteng", sublabel: "South Africa", icon: <Icon.MapPin aria-hidden className="h-5 w-5" /> },
+  { label: "Head Office", value: "Sandton, Gauteng", sublabel: "South Africa", icon: <Icon.MapPin className="h-5 w-5" /> },
 ];
 
 const PROJECT_SNAPSHOT: Stat[] = [
-  { label: "Benoni South LOM", value: "10 yrs", sublabel: "Opencast + Underground", icon: <Icon.Pickaxe aria-hidden className="h-5 w-5" /> },
-  { label: "Gold (Combined)", value: "≈3,038 kg", sublabel: "LoM production target", icon: <Icon.Coin aria-hidden className="h-5 w-5" /> },
-  { label: "NPV (illustrative)", value: "$55m+", sublabel: "At 15–20% discount rates", icon: <Icon.Award aria-hidden className="h-5 w-5" /> },
-  { label: "Offtake", value: "Goldplat PLC", sublabel: "MOU – toll treatment", icon: <Icon.Factory aria-hidden className="h-5 w-5" /> },
+  { label: "Benoni South LOM", value: "10 yrs", sublabel: "Opencast + Underground", icon: <Icon.Pickaxe className="h-5 w-5" /> },
+  { label: "Gold (Combined)", value: "≈3,038 kg", sublabel: "LoM production target", icon: <Icon.Coin className="h-5 w-5" /> },
+  { label: "NPV (illustrative)", value: "$55m+", sublabel: "At 15–20% discount rates", icon: <Icon.Award className="h-5 w-5" /> },
+  { label: "Offtake", value: "Goldplat PLC", sublabel: "MOU – toll treatment", icon: <Icon.Factory className="h-5 w-5" /> },
 ];
 
 const VALUES = [
-  { title: "Safety by Design", body: "Engineer out risk. Every person home safe, every shift.", icon: <Icon.ShieldCheck aria-hidden className="h-6 w-6" /> },
-  { title: "Stewardship", body: "Water-wise, lower-carbon operations and regional restoration.", icon: <Icon.Tree aria-hidden className="h-6 w-6" /> },
-  { title: "Excellence", body: "World-class geology, disciplined capital allocation, continuous improvement.", icon: <Icon.Award aria-hidden className="h-6 w-6" /> },
-  { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users aria-hidden className="h-6 w-6" /> },
+  { title: "Safety by Design", body: "Engineer out risk. Every person home safe, every shift.", icon: <Icon.ShieldCheck className="h-6 w-6" /> },
+  { title: "Stewardship", body: "Water-wise, lower-carbon operations and regional restoration.", icon: <Icon.Tree className="h-6 w-6" /> },
+  { title: "Excellence", body: "World-class geology, disciplined capital allocation, continuous improvement.", icon: <Icon.Award className="h-6 w-6" /> },
+  { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users className="h-6 w-6" /> },
 ];
-
-/** Emblem with a solid gold border (reliable across browsers) */
-function Emblem() {
-  const candidates = [
-    "/brand/logo-only-transparent.svg",
-    "/brand/logo-only-transparent.png",
-    "/Brand/Logo%20Only_Transparent.svg",
-    "/Brand/Logo%20Only_Transparent.png",
-    "/Brand/Logo Only_Transparent.svg",
-    "/Brand/Logo Only_Transparent.png",
-    "/Logo%20Only_Transparent.svg",
-    "/Logo%20Only_Transparent.png",
-    "/Logo Only_Transparent.svg",
-    "/Logo Only_Transparent.png",
-  ];
-  const [idx, setIdx] = useState(0);
-  const [failed, setFailed] = useState(false);
-
-  return (
-    <div
-      className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border-2 md:border-[3px] z-10"
-      style={{
-        borderColor: "var(--go-gold, #CF9F44)",
-        boxShadow: "0 0 0 0.5px rgba(207,159,68,0.45)",
-      }}
-      aria-hidden={false}
-    >
-      <div className="absolute inset-[1.5px] md:inset-[2px] rounded-full bg-black/20 overflow-hidden">
-        {!failed ? (
-          <Image
-            src={candidates[idx]}
-            alt="Gold Ore emblem"
-            fill
-            sizes="(min-width: 768px) 192px, 160px"
-            className="object-contain"
-            priority
-            onError={() => {
-              if (idx < candidates.length - 1) setIdx((i) => i + 1);
-              else setFailed(true);
-            }}
-          />
-        ) : (
-          <div className="absolute inset-0 grid place-items-center text-[color:var(--go-gold,#CF9F44)]/80 font-semibold">
-            GOLD ORE
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <main id="main" className="relative">
-      {/* Hero */}
+      {/* HERO */}
       <section aria-labelledby="about-hero" className="relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,#a17838_12%,transparent_60%)] opacity-10" />
         <Section className="pt-20 pb-10 md:pt-28 md:pb-16">
@@ -161,12 +111,12 @@ export default function About() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <div className="flex items-center gap-3">
-              <Icon.Pickaxe aria-hidden className="h-6 w-6 text-accent-gold" />
+              <Icon.Pickaxe aria-hidden className="h-6 w-6" style={{ color: "var(--go-gold,#caa132)" }} />
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Company</p>
             </div>
 
             {/* ✨ Gold shimmer title */}
-            <h1 id="about-hero" className="font-display text-4xl md:text-6xl lg:text-7xl mt-3">
+            <h1 id="about-hero" className="mt-3 font-display text-4xl md:text-6xl lg:text-7xl">
               <span className="text-gold-shimmer">About Gold Ore</span>
             </h1>
 
@@ -176,7 +126,7 @@ export default function About() {
             </p>
           </motion.div>
 
-          {/* Company key stat(s) */}
+          {/* Company stat card(s) */}
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {COMPANY_STATS.map((s) => (
               <motion.div
@@ -188,7 +138,7 @@ export default function About() {
                 className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-surface-2/30"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-accent-gold"><Icon.MapPin className="h-5 w-5" /></span>
+                  <span style={{ color: "var(--go-gold,#caa132)" }}>{s.icon}</span>
                   <span className="text-sm text-text-muted">{s.label}</span>
                 </div>
                 <div className="mt-3 font-display text-2xl">{s.value}</div>
@@ -199,7 +149,7 @@ export default function About() {
         </Section>
       </section>
 
-      {/* Mission */}
+      {/* MISSION */}
       <Section className="py-12 md:py-20">
         <div className="grid items-start gap-10 md:grid-cols-3">
           <div className="md:col-span-2">
@@ -208,45 +158,42 @@ export default function About() {
               Responsibly unlock South Africa’s gold resources and create enduring value for our people,
               communities, partners, and shareholders through operational excellence, innovation, and stewardship.
             </p>
+
             <ul className="mt-6 grid gap-4 sm:grid-cols-2">
               {[
-                { icon: <Icon.ShieldCheck aria-hidden className="h-5 w-5" />, text: "Zero Harm culture and design-led safety" },
-                { icon: <Icon.Tree aria-hidden className="h-5 w-5" />, text: "Lower-carbon, water-wise operations" },
-                { icon: <Icon.Award aria-hidden className="h-5 w-5" />, text: "Tier-one orebody understanding & recovery" },
-                { icon: <Icon.Users aria-hidden className="h-5 w-5" />, text: "Skills uplift and inclusive local procurement" },
+                { icon: <Icon.ShieldCheck className="h-5 w-5" />, text: "Zero Harm culture and design-led safety" },
+                { icon: <Icon.Tree className="h-5 w-5" />, text: "Lower-carbon, water-wise operations" },
+                { icon: <Icon.Award className="h-5 w-5" />, text: "Tier-one orebody understanding & recovery" },
+                { icon: <Icon.Users className="h-5 w-5" />, text: "Skills uplift and inclusive local procurement" },
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-xl border border-surface-3/50 p-4">
-                  <span className="text-accent-gold">{item.icon}</span>
+                  <span style={{ color: "var(--go-gold,#caa132)" }}>{item.icon}</span>
                   <span className="text-sm text-text-muted">{item.text}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Logo panel */}
-          <motion.div
-            className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full"
-            initial={false}
-            whileHover={prefersReducedMotion ? {} : { scale: 1.01 }}
-            transition={{ type: "spring", stiffness: 180, damping: 20 }}
-            style={{ perspective: "800px" }}
-          >
-            <div aria-hidden className="absolute inset-0 bg-[radial-gradient(900px_450px_at_50%_-15%,rgba(255,255,255,0.04),transparent_60%)]" />
-            <div className="absolute inset-0 z-10 flex items-center justify-center">
-              <Emblem />
+          {/* Emblem card (unchanged visuals; no BG image) */}
+          <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="rounded-full border border-[var(--go-gold,#caa132)]/35 bg-black/20 p-8">
+                <Image src="/brand/logo-only-transparent.png" alt="Gold Ore emblem" width={120} height={120} priority />
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </Section>
 
-      {/* Values */}
+      {/* VALUES */}
       <Section className="py-12 md:py-20">
         <h2 className="font-display text-2xl md:text-4xl">Our Values</h2>
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {VALUES.map((v) => (
-            <article key={v.title} className="group rounded-2xl border border-surface-3/50 bg-surface-2/30 p-5 transition hover:border-accent-gold/50">
+            <article key={v.title} className="group rounded-2xl border border-surface-3/50 bg-surface-2/30 p-5 transition hover:border-[var(--go-gold,#caa132)]/50">
               <div className="flex items-center gap-3">
-                <span className="text-accent-gold">{v.icon}</span>
+                <span style={{ color: "var(--go-gold,#caa132)" }}>{v.icon}</span>
                 <h3 className="font-semibold">{v.title}</h3>
               </div>
               <p className="mt-3 text-sm text-text-muted">{v.body}</p>
@@ -255,7 +202,7 @@ export default function About() {
         </div>
       </Section>
 
-      {/* Benoni South snapshot */}
+      {/* SNAPSHOT */}
       <Section className="py-12 md:py-20">
         <div className="flex items-end justify-between gap-6">
           <div>
@@ -267,11 +214,10 @@ export default function About() {
           </div>
           <a
             href="/operations"
-            className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/60"
+            className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-[var(--go-gold,#caa132)]/60"
           >
             View Projects
-            {/* make this arrow gold */}
-            <Icon.ArrowRight className="h-4 w-4 text-accent-gold transition group-hover:translate-x-0.5" />
+            <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" style={{ color: "var(--go-gold,#caa132)" }} />
           </a>
         </div>
 
@@ -279,7 +225,7 @@ export default function About() {
           {PROJECT_SNAPSHOT.map((s) => (
             <div key={s.label} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
               <div className="flex items-center gap-3">
-                <span className="text-accent-gold"><Icon.Pickaxe className="h-5 w-5" /></span>
+                <span style={{ color: "var(--go-gold,#caa132)" }}>{s.icon}</span>
                 <span className="text-sm text-text-muted">{s.label}</span>
               </div>
               <div className="mt-3 font-display text-2xl">{s.value}</div>
@@ -294,7 +240,7 @@ export default function About() {
         </div>
       </Section>
 
-      {/* Rehabilitation & community safety */}
+      {/* REHAB & COMMUNITY */}
       <Section className="py-12 md:py-20">
         <div className="grid gap-10 md:grid-cols-2">
           <div>
@@ -307,15 +253,15 @@ export default function About() {
             </p>
             <ul className="mt-5 grid gap-3">
               <li className="flex items-start gap-3">
-                <Icon.Tree className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.Tree className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-muted">Concurrent rehabilitation and surface restoration.</span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.ShieldCheck className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-muted">Sealed access to reduce illegal mining risk and surface subsidence.</span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.Users className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.Users className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-muted">Meaningful local employment and skills during operations.</span>
               </li>
             </ul>
@@ -343,20 +289,20 @@ export default function About() {
         </div>
       </Section>
 
-      {/* Commitments */}
+      {/* COMMITMENTS */}
       <Section className="pb-24">
         <div className="grid items-center gap-6 rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 md:grid-cols-3 md:p-8">
           <div className="md:col-span-2">
             <h2 className="font-display text-2xl md:text-3xl">Our Commitments</h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               <li className="flex items-start gap-3">
-                <Icon.FileCheck className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.FileCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-secondary">
                   Compliance with South African mining regulation and environmental authorisations.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.ShieldCheck className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-secondary">
                   Transparent reporting, ESG targets, and proactive stakeholder engagement.
                 </span>
@@ -365,31 +311,35 @@ export default function About() {
           </div>
           <a
             href="/esg"
-            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-accent-gold/40 px-5 py-3 text-sm font-medium text-accent-gold"
+            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--go-gold,#caa132)]/45 px-5 py-3 text-sm font-medium"
+            style={{ color: "var(--go-gold,#caa132)" }}
           >
             Explore ESG <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
           </a>
         </div>
       </Section>
 
-      {/* Scoped styles */}
+      {/* Scoped shimmer styles */}
       <style jsx>{`
         .text-gold-shimmer {
-          background: linear-gradient(100deg,#8f6b29 0%,#e6c46d 20%,#f7e7a1 40%,#cf9f44 60%,#e6c46d 80%,#8f6b29 100%);
+          background: linear-gradient(
+            100deg,
+            #8f6b29 0%,
+            #e6c46d 20%,
+            #f7e7a1 40%,
+            #cf9f44 60%,
+            #e6c46d 80%,
+            #8f6b29 100%
+          );
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
           text-shadow: 0 2px 10px rgba(0,0,0,.35);
           background-size: 200% auto;
-          animation: shimmerText 4.5s linear infinite;
+          animation: shimmer 4.5s linear infinite;
         }
-        @keyframes shimmerText {
-          0% { background-position: 0% center; }
-          100% { background-position: 200% center; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .text-gold-shimmer { animation: none; }
-        }
+        @keyframes shimmer { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        @media (prefers-reduced-motion: reduce) { .text-gold-shimmer { animation: none; } }
       `}</style>
     </main>
   );
