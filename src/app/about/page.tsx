@@ -96,19 +96,15 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users className="h-6 w-6" /> },
 ];
 
-/** Robust emblem loader with multiple fallbacks (case & space safe) */
+/** Emblem: bigger logo, same card size */
 function Emblem() {
   const candidates = [
-    // Most likely based on your note
     "/Brand/Logo%20Only_Transparent.png",
     "/Brand/Logo Only_Transparent.png",
-    // SVG variants
     "/Brand/Logo%20Only_Transparent.svg",
     "/Brand/Logo Only_Transparent.svg",
-    // lower-case folder/version variants
     "/brand/logo-only-transparent.png",
     "/brand/logo-only-transparent.svg",
-    // other names we saw earlier
     "/Logo%20Transparent.png",
     "/Logo Transparent.png",
     "/logo.png",
@@ -119,25 +115,29 @@ function Emblem() {
 
   return (
     <div
-      className="rounded-full border bg-black/20 p-8 md:p-10"
-      style={{ borderColor: "var(--go-gold,#caa132)" }}
+      className="relative rounded-full border bg-black/20"
+      // Keep the circle the same visual size as before (~204px dia) so the card doesn't change.
+      style={{ borderColor: "var(--go-gold,#caa132)", width: 204, height: 204 }}
     >
       {!fail ? (
-        <Image
-          src={candidates[i]}
-          alt="Gold Ore emblem"
-          width={140}
-          height={140}
-          priority
-          className="object-contain"
-          onError={() => {
-            if (i < candidates.length - 1) setI((v) => v + 1);
-            else setFail(true);
-          }}
-        />
+        // Let the image fill almost the whole circle for a larger logo.
+        <div className="absolute inset-2 md:inset-[6px]">
+          <Image
+            src={candidates[i]}
+            alt="Gold Ore emblem"
+            fill
+            sizes="204px"
+            className="object-contain"
+            priority
+            onError={() => {
+              if (i < candidates.length - 1) setI((v) => v + 1);
+              else setFail(true);
+            }}
+          />
+        </div>
       ) : (
         <div
-          className="grid h-[140px] w-[140px] place-items-center font-semibold"
+          className="grid h-full w-full place-items-center font-semibold"
           style={{ color: "var(--go-gold,#caa132)" }}
         >
           GOLD ORE
@@ -224,7 +224,7 @@ export default function About() {
             </ul>
           </div>
 
-          {/* Logo panel (restored robust loader) */}
+          {/* Logo panel (bigger logo, same card) */}
           <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -296,8 +296,7 @@ export default function About() {
             <p className="mt-3 text-text-secondary">
               We are advancing a practical rehabilitation programme to seal historic shallow workings, deter illegal access,
               and restore the landscape. The concept includes exposing old access points along the outcrop, backfilling with
-              compacted waste rock, and re-establishing indigenous vegetation. The programme is designed to protect nearby
-              homes, schools, roads, rail and services while enabling safe, responsible development.
+              compacted waste rock, and re-establishing indigenous vegetation.
             </p>
             <ul className="mt-5 grid gap-3">
               <li className="flex items-start gap-3">
@@ -306,7 +305,7 @@ export default function About() {
               </li>
               <li className="flex items-start gap-3">
                 <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
-                <span className="text-sm text-text-muted">Sealed access to reduce illegal mining risk and surface subsidence.</span>
+                <span className="text-sm text-text-muted">Sealed access to reduce illegal mining risk and subsidence.</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon.Users className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
@@ -345,15 +344,11 @@ export default function About() {
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               <li className="flex items-start gap-3">
                 <Icon.FileCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
-                <span className="text-sm text-text-secondary">
-                  Compliance with South African mining regulation and environmental authorisations.
-                </span>
+                <span className="text-sm text-text-secondary">Compliance with SA mining regulation and environmental authorisations.</span>
               </li>
               <li className="flex items-start gap-3">
                 <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
-                <span className="text-sm text-text-secondary">
-                  Transparent reporting, ESG targets, and proactive stakeholder engagement.
-                </span>
+                <span className="text-sm text-text-secondary">Transparent reporting, ESG targets, proactive engagement.</span>
               </li>
             </ul>
           </div>
