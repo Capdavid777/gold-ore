@@ -112,9 +112,9 @@ export default function OperationsPage() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            {/* Reverted to original muted color */}
+            {/* Icon gold, text unchanged */}
             <div className="flex items-center gap-3">
-              <Icon.Pickaxe aria-hidden className="h-6 w-6 text-text-muted" />
+              <Icon.Pickaxe aria-hidden className="h-6 w-6" style={{ color: "var(--go-gold,#caa132)" }} />
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Assets</p>
             </div>
 
