@@ -116,7 +116,6 @@ function Emblem() {
   return (
     <div
       className="relative rounded-full border bg-black/20"
-      // ⬇️ Thickened the circle border here (from default to 2px) — card size unchanged
       style={{ borderColor: "var(--go-gold,#caa132)", borderWidth: 2, width: 204, height: 204 }}
     >
       {!fail ? (
@@ -148,6 +147,7 @@ function Emblem() {
 
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
+  const gold = { color: "var(--go-gold,#caa132)" } as const;
 
   return (
     <main id="main" className="relative">
@@ -162,7 +162,7 @@ export default function About() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <div className="flex items-center gap-3">
-              <Icon.Pickaxe className="h-6 w-6" style={{ color: "var(--go-gold,#caa132)" }} />
+              <Icon.Pickaxe className="h-6 w-6" style={gold} />
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Company</p>
             </div>
 
@@ -188,7 +188,7 @@ export default function About() {
                 className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-surface-2/30"
               >
                 <div className="flex items-center gap-3">
-                  <span style={{ color: "var(--go-gold,#caa132)" }}>{s.icon}</span>
+                  <span style={gold}>{s.icon}</span>
                   <span className="text-sm text-text-muted">{s.label}</span>
                 </div>
                 <div className="mt-3 font-display text-2xl">{s.value}</div>
@@ -216,7 +216,7 @@ export default function About() {
                 { icon: <Icon.Users className="h-5 w-5" />, text: "Skills uplift and inclusive local procurement" },
               ].map((it, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-xl border border-surface-3/50 p-4">
-                  <span style={{ color: "var(--go-gold,#caa132)" }}>{it.icon}</span>
+                  <span style={gold}>{it.icon}</span>
                   <span className="text-sm text-text-muted">{it.text}</span>
                 </li>
               ))}
@@ -240,7 +240,7 @@ export default function About() {
           {VALUES.map((v) => (
             <article key={v.title} className="group rounded-2xl border border-surface-3/50 bg-surface-2/30 p-5 transition hover:border-[var(--go-gold,#caa132)]/50">
               <div className="flex items-center gap-3">
-                <span style={{ color: "var(--go-gold,#caa132)" }}>{v.icon}</span>
+                <span style={gold}>{v.icon}</span>
                 <h3 className="font-semibold">{v.title}</h3>
               </div>
               <p className="mt-3 text-sm text-text-muted">{v.body}</p>
@@ -259,12 +259,14 @@ export default function About() {
               immediately south of Benoni CBD.
             </p>
           </div>
+          {/* CTA — text & arrow now gold */}
           <a
             href="/operations"
-            className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-[var(--go-gold,#caa132)]/60"
+            className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm transition hover:border-[var(--go-gold,#caa132)]/60"
+            style={gold}
           >
             View Projects
-            <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" style={{ color: "var(--go-gold,#caa132)" }} />
+            <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" style={gold} />
           </a>
         </div>
 
@@ -272,7 +274,7 @@ export default function About() {
           {PROJECT_SNAPSHOT.map((s) => (
             <div key={s.label} className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5">
               <div className="flex items-center gap-3">
-                <span style={{ color: "var(--go-gold,#caa132)" }}>{s.icon}</span>
+                <span style={gold}>{s.icon}</span>
                 <span className="text-sm text-text-muted">{s.label}</span>
               </div>
               <div className="mt-3 font-display text-2xl">{s.value}</div>
@@ -299,15 +301,15 @@ export default function About() {
             </p>
             <ul className="mt-5 grid gap-3">
               <li className="flex items-start gap-3">
-                <Icon.Tree className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
+                <Icon.Tree className="mt-0.5 h-5 w-5" style={gold} />
                 <span className="text-sm text-text-muted">Concurrent rehabilitation and surface restoration.</span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
+                <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={gold} />
                 <span className="text-sm text-text-muted">Sealed access to reduce illegal mining risk and subsidence.</span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.Users className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
+                <Icon.Users className="mt-0.5 h-5 w-5" style={gold} />
                 <span className="text-sm text-text-muted">Meaningful local employment and skills during operations.</span>
               </li>
             </ul>
@@ -342,21 +344,22 @@ export default function About() {
             <h2 className="font-display text-2xl md:text-3xl">Our Commitments</h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               <li className="flex items-start gap-3">
-                <Icon.FileCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
+                <Icon.FileCheck className="mt-0.5 h-5 w-5" style={gold} />
                 <span className="text-sm text-text-secondary">Compliance with SA mining regulation and environmental authorisations.</span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
+                <Icon.ShieldCheck className="mt-0.5 h-5 w-5" style={gold} />
                 <span className="text-sm text-text-secondary">Transparent reporting, ESG targets, proactive engagement.</span>
               </li>
             </ul>
           </div>
+          {/* CTA — text & arrow now gold */}
           <a
             href="/esg"
             className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--go-gold,#caa132)]/45 px-5 py-3 text-sm font-medium"
-            style={{ color: "var(--go-gold,#caa132)" }}
+            style={gold}
           >
-            Explore ESG <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            Explore ESG <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" style={gold} />
           </a>
         </div>
       </Section>
