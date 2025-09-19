@@ -108,8 +108,9 @@ export default function ESGPage() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
+            {/* Icon now gold to match the rest */}
             <div className="flex items-center gap-3">
-              <Icon.Pickaxe aria-hidden className="h-6 w-6" />
+              <Icon.Pickaxe aria-hidden className="h-6 w-6" style={{ color: "var(--go-gold,#caa132)" }} />
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">ESG & Sustainability</p>
             </div>
             <h1 id="esg-hero" className="mt-3 font-display text-4xl md:text-6xl lg:text-7xl">
@@ -136,7 +137,7 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-[var(--go-gold,#caa132)]/50"
             >
-              {/* Icon gold, heading text default (original) */}
+              {/* Icons are gold; headings remain original text color */}
               <div className="flex items-center gap-2 min-h-[28px]">
                 <span aria-hidden className="inline-block" style={{ color: "var(--go-gold, #caa132)" }}>
                   {p.icon}
@@ -307,30 +308,41 @@ export default function ESGPage() {
             <h2 className="font-display text-2xl md:text-3xl">Read more</h2>
             <ul className="mt-2 grid gap-3 text-sm text-text-secondary sm:grid-cols-2">
               <li className="flex items-start gap-2">
-                <Icon.Pickaxe className="mt-0.5 h-5 w-5" />
+                {/* icons gold */}
+                <Icon.Pickaxe className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span>
                   Operations overview and ramp-up plan (Turnbridge & New Kleinfontein).{" "}
-                  <a className="underline hover:text-[var(--go-gold,#caa132)]" href="/operations">
+                  {/* link text + underline now the same gold */}
+                  <a
+                    href="/operations"
+                    className="underline decoration-[var(--go-gold,#caa132)] text-[var(--go-gold,#caa132)] underline-offset-2 hover:opacity-90"
+                  >
                     View Operations
                   </a>
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <Icon.CheckDoc className="mt-0.5 h-5 w-5" />
+                <Icon.CheckDoc className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span>
                   Investor materials and governance.{" "}
-                  <a className="underline hover:text-[var(--go-gold,#caa132)]" href="/investors">
+                  <a
+                    href="/investors"
+                    className="underline decoration-[var(--go-gold,#caa132)] text-[var(--go-gold,#caa132)] underline-offset-2 hover:opacity-90"
+                  >
                     Investor Overview
                   </a>
                 </span>
               </li>
             </ul>
           </div>
+
+          {/* button border + text + arrow all gold */}
           <a
             href="/contact"
-            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--go-gold,#caa132)] px-5 py-3 text-sm font-medium hover:text-[var(--go-gold,#caa132)]"
+            className="group inline-flex items-center justify-center gap-2 rounded-2xl border px-5 py-3 text-sm font-medium"
+            style={{ borderColor: "var(--go-gold,#caa132)", color: "var(--go-gold,#caa132)" }}
           >
-            Contact Us <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            Contact Us <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" style={{ color: "var(--go-gold,#caa132)" }} />
           </a>
         </div>
       </Section>
