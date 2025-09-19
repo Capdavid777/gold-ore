@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
-/** Minimal, inline icons (no extra deps) */
+/** Minimal, inline icons (no extra deps). Strokes follow currentColor. */
 const Icon = {
   Pickaxe: (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -112,9 +112,11 @@ export default function OperationsPage() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="flex items-center gap-3">
-              <Icon.Pickaxe aria-hidden className="h-6 w-6 text-accent-gold" />
-              <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Assets</p>
+            <div className="flex items-center gap-3" style={{ color: "var(--go-gold,#caa132)" }}>
+              <Icon.Pickaxe aria-hidden className="h-6 w-6" />
+              <p className="text-sm uppercase tracking-[0.18em]" style={{ color: "var(--go-gold,#caa132)" }}>
+                Assets
+              </p>
             </div>
             <h1 id="ops-hero" className="mt-3 font-display text-4xl md:text-6xl lg:text-7xl">
               <span className="text-gold-shimmer">Operations</span>
@@ -137,7 +139,7 @@ export default function OperationsPage() {
                 className="rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-surface-2/30"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-accent-gold">{s.icon}</span>
+                  <span style={{ color: "var(--go-gold,#caa132)" }}>{s.icon}</span>
                   <span className="text-sm text-text-muted">{s.label}</span>
                 </div>
                 <div className="mt-3 font-display text-2xl">{s.value}</div>
@@ -164,13 +166,13 @@ export default function OperationsPage() {
           {ASSETS.map((asset) => (
             <article
               key={asset.key}
-              className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 transition hover:border-accent-gold/50"
+              className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 transition hover:border-[var(--go-gold,#caa132)]/50"
             >
               <div className="flex items-center justify-between gap-4">
                 <h3 className="font-display text-xl md:text-2xl">
                   {asset.name} <span className="text-text-muted font-sans text-base">• {asset.type}</span>
                 </h3>
-                <span className="rounded-full border border-accent-gold/40 px-3 py-1 text-xs text-accent-gold">
+                <span className="rounded-full border border-[var(--go-gold,#caa132)] px-3 py-1 text-xs" style={{ color: "var(--go-gold,#caa132)" }}>
                   {asset.key}
                 </span>
               </div>
@@ -197,19 +199,19 @@ export default function OperationsPage() {
             <h2 className="font-display text-2xl md:text-4xl">Processing & Logistics</h2>
             <ul className="mt-4 grid gap-3">
               <li className="flex items-start gap-3">
-                <Icon.Factory className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.Factory className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-secondary">
                   Toll treatment via Goldplat PLC (MOU) with haulage of ore by road — approximately 8 km to plant.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.Pickaxe className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.Pickaxe className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-secondary">
                   Mobile surface infrastructure for permits; disciplined underground capital for Turnbridge.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <Icon.Calendar className="mt-0.5 h-5 w-5 text-accent-gold" />
+                <Icon.Calendar className="mt-0.5 h-5 w-5" style={{ color: "var(--go-gold,#caa132)" }} />
                 <span className="text-sm text-text-secondary">
                   Target first production in 2026, with staged ramp-up from opencast into underground.
                 </span>
