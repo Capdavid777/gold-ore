@@ -3,72 +3,73 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
+import { useState } from "react";
 import type { ReactNode } from "react";
 
 /** Inline SVG icons (stroke follows currentColor) */
 const Icon = {
-  MapPin: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  MapPin: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M19.5 10.5c0 5.25-7.5 11.25-7.5 11.25S4.5 15.75 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
       <circle cx="12" cy="10.5" r="2.25" strokeWidth="1.5" />
     </svg>
   ),
-  ShieldCheck: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  ShieldCheck: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M12 3.25 4.5 6v6.5c0 4.5 3.5 6.75 7.5 8.25 4-1.5 7.5-3.75 7.5-8.25V6L12 3.25Z" />
       <path strokeWidth="1.5" d="m8.75 12 2.25 2.25 4.25-4.25" />
     </svg>
   ),
-  Tree: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  Tree: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M12 21v-4M6 13h12M7 10h10M8 7h8M12 3l6 9H6l6-9Z" />
     </svg>
   ),
-  Users: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  Users: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <circle cx="9" cy="8" r="3" strokeWidth="1.5" />
       <path strokeWidth="1.5" d="M15 10a3 3 0 1 0 0-6" />
       <path strokeWidth="1.5" d="M3.75 19.5a5.25 5.25 0 0 1 10.5 0M14.25 19.5a5.25 5.25 0 0 1 6 0" />
     </svg>
   ),
-  Award: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  Award: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <circle cx="12" cy="9" r="4.5" strokeWidth="1.5" />
       <path strokeWidth="1.5" d="m8 13 1.5 7L12 18l2.5 2 1.5-7" />
     </svg>
   ),
-  ArrowRight: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  ArrowRight: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M4 12h14M13 6l6 6-6 6" />
     </svg>
   ),
-  Pickaxe: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  Pickaxe: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M3 8.5C6.5 6 10 5.5 13.5 7M21 8.5C17.5 6 14 5.5 10.5 7M12 7v13" />
       <path strokeWidth="1.5" d="m12 13 7 7" />
     </svg>
   ),
-  FileCheck: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  FileCheck: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5Z" />
       <path strokeWidth="1.5" d="M14 2v5h5" />
       <path strokeWidth="1.5" d="m9 14 2 2 4-4" />
     </svg>
   ),
-  Factory: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  Factory: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M3 21V9l6 4V9l6 4V9l6 4v8H3Z" />
       <path strokeWidth="1.5" d="M7 21v-3M11 21v-3M15 21v-3M19 21v-3" />
     </svg>
   ),
-  Calendar: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  Calendar: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth="1.5" />
       <path strokeWidth="1.5" d="M16 2v4M8 2v4M3 10h18" />
     </svg>
   ),
-  Coin: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+  Coin: (p: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <ellipse cx="12" cy="7" rx="8" ry="4" strokeWidth="1.5" />
       <path strokeWidth="1.5" d="M4 7v10c0 2.2 3.6 4 8 4s8-1.8 8-4V7" />
     </svg>
@@ -95,6 +96,57 @@ const VALUES = [
   { title: "People First", body: "Develop leaders, champion diversity, grow local procurement.", icon: <Icon.Users className="h-6 w-6" /> },
 ];
 
+/** Robust emblem loader with multiple fallbacks (case & space safe) */
+function Emblem() {
+  const candidates = [
+    // Most likely based on your note
+    "/Brand/Logo%20Only_Transparent.png",
+    "/Brand/Logo Only_Transparent.png",
+    // SVG variants
+    "/Brand/Logo%20Only_Transparent.svg",
+    "/Brand/Logo Only_Transparent.svg",
+    // lower-case folder/version variants
+    "/brand/logo-only-transparent.png",
+    "/brand/logo-only-transparent.svg",
+    // other names we saw earlier
+    "/Logo%20Transparent.png",
+    "/Logo Transparent.png",
+    "/logo.png",
+    "/logo.svg",
+  ];
+  const [i, setI] = useState(0);
+  const [fail, setFail] = useState(false);
+
+  return (
+    <div
+      className="rounded-full border bg-black/20 p-8 md:p-10"
+      style={{ borderColor: "var(--go-gold,#caa132)" }}
+    >
+      {!fail ? (
+        <Image
+          src={candidates[i]}
+          alt="Gold Ore emblem"
+          width={140}
+          height={140}
+          priority
+          className="object-contain"
+          onError={() => {
+            if (i < candidates.length - 1) setI((v) => v + 1);
+            else setFail(true);
+          }}
+        />
+      ) : (
+        <div
+          className="grid h-[140px] w-[140px] place-items-center font-semibold"
+          style={{ color: "var(--go-gold,#caa132)" }}
+        >
+          GOLD ORE
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
 
@@ -111,11 +163,10 @@ export default function About() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <div className="flex items-center gap-3">
-              <Icon.Pickaxe aria-hidden className="h-6 w-6" style={{ color: "var(--go-gold,#caa132)" }} />
+              <Icon.Pickaxe className="h-6 w-6" style={{ color: "var(--go-gold,#caa132)" }} />
               <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Company</p>
             </div>
 
-            {/* ✨ Gold shimmer title */}
             <h1 id="about-hero" className="mt-3 font-display text-4xl md:text-6xl lg:text-7xl">
               <span className="text-gold-shimmer">About Gold Ore</span>
             </h1>
@@ -158,29 +209,26 @@ export default function About() {
               Responsibly unlock South Africa’s gold resources and create enduring value for our people,
               communities, partners, and shareholders through operational excellence, innovation, and stewardship.
             </p>
-
             <ul className="mt-6 grid gap-4 sm:grid-cols-2">
               {[
                 { icon: <Icon.ShieldCheck className="h-5 w-5" />, text: "Zero Harm culture and design-led safety" },
                 { icon: <Icon.Tree className="h-5 w-5" />, text: "Lower-carbon, water-wise operations" },
                 { icon: <Icon.Award className="h-5 w-5" />, text: "Tier-one orebody understanding & recovery" },
                 { icon: <Icon.Users className="h-5 w-5" />, text: "Skills uplift and inclusive local procurement" },
-              ].map((item, i) => (
+              ].map((it, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-xl border border-surface-3/50 p-4">
-                  <span style={{ color: "var(--go-gold,#caa132)" }}>{item.icon}</span>
-                  <span className="text-sm text-text-muted">{item.text}</span>
+                  <span style={{ color: "var(--go-gold,#caa132)" }}>{it.icon}</span>
+                  <span className="text-sm text-text-muted">{it.text}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Emblem card (unchanged visuals; no BG image) */}
+          {/* Logo panel (restored robust loader) */}
           <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-surface-3/50 md:h-full">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(161,120,56,.14),transparent_40%)]" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="rounded-full border border-[var(--go-gold,#caa132)]/35 bg-black/20 p-8">
-                <Image src="/brand/logo-only-transparent.png" alt="Gold Ore emblem" width={120} height={120} priority />
-              </div>
+              <Emblem />
             </div>
           </div>
         </div>
@@ -319,24 +367,13 @@ export default function About() {
         </div>
       </Section>
 
-      {/* Scoped shimmer styles */}
+      {/* Shimmer for main title */}
       <style jsx>{`
         .text-gold-shimmer {
-          background: linear-gradient(
-            100deg,
-            #8f6b29 0%,
-            #e6c46d 20%,
-            #f7e7a1 40%,
-            #cf9f44 60%,
-            #e6c46d 80%,
-            #8f6b29 100%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
+          background: linear-gradient(100deg,#8f6b29 0%,#e6c46d 20%,#f7e7a1 40%,#cf9f44 60%,#e6c46d 80%,#8f6b29 100%);
+          -webkit-background-clip: text; background-clip: text; color: transparent;
           text-shadow: 0 2px 10px rgba(0,0,0,.35);
-          background-size: 200% auto;
-          animation: shimmer 4.5s linear infinite;
+          background-size: 200% auto; animation: shimmer 4.5s linear infinite;
         }
         @keyframes shimmer { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         @media (prefers-reduced-motion: reduce) { .text-gold-shimmer { animation: none; } }
