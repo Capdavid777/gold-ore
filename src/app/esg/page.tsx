@@ -136,9 +136,11 @@ export default function ESGPage() {
               transition={{ duration: 0.4 }}
               className="group rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 hover:border-[var(--go-gold,#caa132)]/50"
             >
-              {/* Force gold icon + title via inline style (bulletproof) */}
-              <div className="flex items-center gap-2 min-h-[28px]" style={{ color: "var(--go-gold, #caa132)" }}>
-                <span aria-hidden className="inline-block">{p.icon}</span>
+              {/* Icon gold, heading text default (original) */}
+              <div className="flex items-center gap-2 min-h-[28px]">
+                <span aria-hidden className="inline-block" style={{ color: "var(--go-gold, #caa132)" }}>
+                  {p.icon}
+                </span>
                 <h3 className="font-semibold leading-none text-sm md:text-sm xl:text-sm 2xl:text-base xl:whitespace-nowrap">
                   {p.title}
                 </h3>
@@ -221,7 +223,6 @@ export default function ESGPage() {
                 <span className="text-sm text-text-muted">{s.label}</span>
               </div>
 
-              {/* ONE-LINE VALUE HEADING, 1 SIZE SMALLER */}
               <div className="mt-3 font-display whitespace-nowrap overflow-hidden text-ellipsis tracking-tight text-base sm:text-lg md:text-[1.25rem] lg:text-[1.35rem]">
                 {s.value}
               </div>
