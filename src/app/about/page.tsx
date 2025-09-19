@@ -116,14 +116,11 @@ function Emblem() {
     <div
       className="relative h-40 w-40 md:h-48 md:w-48 rounded-full border-2 md:border-[3px] z-10"
       style={{
-        // Use your token if present; otherwise fall back to a logo-matching gold
         borderColor: "var(--go-gold, #CF9F44)",
-        // tiny glow so it stays crisp on dark backgrounds
         boxShadow: "0 0 0 0.5px rgba(207,159,68,0.45)",
       }}
       aria-hidden={false}
     >
-      {/* Inner circle surface */}
       <div className="absolute inset-[1.5px] md:inset-[2px] rounded-full bg-black/20 overflow-hidden">
         {!failed ? (
           <Image
@@ -272,7 +269,9 @@ export default function About() {
             href="/operations"
             className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/60"
           >
-            View Projects <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            View Projects
+            {/* make this arrow gold */}
+            <Icon.ArrowRight className="h-4 w-4 text-accent-gold transition group-hover:translate-x-0.5" />
           </a>
         </div>
 
