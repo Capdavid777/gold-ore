@@ -18,11 +18,6 @@ const Icon = {
       <path strokeWidth="1.5" d="M14 2v5h5" />
     </svg>
   ),
-  Check: (p: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
-      <path strokeWidth="1.5" d="m5 13 4 4L19 7" />
-    </svg>
-  ),
   Factory: (p: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
       <path strokeWidth="1.5" d="M3 21V9l6 4V9l6 4V9l6 4v8H3Z" />
@@ -77,7 +72,6 @@ type Stat = { label: string; value: string; sublabel?: string; icon?: ReactNode 
 
 const gold = { color: "var(--go-gold,#caa132)" } as const;
 
-/** Key investment snapshot */
 const SNAPSHOT: Stat[] = [
   { label: "District", value: "Benoni South, Gauteng", icon: <Icon.MapPin className="h-5 w-5" /> },
   { label: "Development Path", value: "Opencast → Underground", icon: <Icon.Pickaxe className="h-5 w-5" /> },
@@ -142,29 +136,53 @@ export default function InvestorsPage() {
         </Section>
       </section>
 
-      {/* INVESTMENT CASE */}
+      {/* INVESTMENT CASE – fixed layout */}
       <Section className="py-12 md:py-20">
         <div className="grid gap-10 md:grid-cols-2">
           <div>
             <h2 className="font-display text-2xl md:text-4xl">Investment Case</h2>
-            <ul className="mt-4 grid gap-3 text-sm text-text-secondary">
-              <li className="flex items-start gap-3">
-                <Icon.Pickaxe className="mt-0.5 h-5 w-5" style={gold} />
-                Near-surface <strong>opencast ounces</strong> in New Kleinfontein enable early, capital-light cash flow while{" "}
-                <strong>Turnbridge underground</strong> supports long-life production.
+
+            {/* Use a simple vertical stack; each LI is a flex row:
+                [icon] [full-width text block] */}
+            <ul className="mt-4 space-y-4">
+              <li className="flex gap-3">
+                <span className="mt-0.5" style={gold}>
+                  <Icon.Pickaxe className="h-5 w-5" />
+                </span>
+                <div className="text-sm leading-relaxed text-text-secondary">
+                  Near-surface <strong>opencast ounces</strong> in New Kleinfontein enable early, capital-light cash
+                  flow while <strong>Turnbridge underground</strong> supports long-life production.
+                </div>
               </li>
-              <li className="flex items-start gap-3">
-                <Icon.Factory className="mt-0.5 h-5 w-5" style={gold} />
-                <strong>Goldplat PLC MOU</strong> provides toll treatment close to site (~8 km), lowering logistics and capex burden.
+
+              <li className="flex gap-3">
+                <span className="mt-0.5" style={gold}>
+                  <Icon.Factory className="h-5 w-5" />
+                </span>
+                <div className="text-sm leading-relaxed text-text-secondary">
+                  <strong>Goldplat PLC MOU</strong> provides toll treatment close to site (~8 km), lowering logistics
+                  and capex burden.
+                </div>
               </li>
-              <li className="flex items-start gap-3">
-                <Icon.Shield className="mt-0.5 h-5 w-5" style={gold} />
-                <strong>Compliance-first</strong> development: valid PR (GP10448), approved BARs for permits, and a rehabilitation-led
-                surface safety programme.
+
+              <li className="flex gap-3">
+                <span className="mt-0.5" style={gold}>
+                  <Icon.Shield className="h-5 w-5" />
+                </span>
+                <div className="text-sm leading-relaxed text-text-secondary">
+                  <strong>Compliance-first</strong> development: valid PR (GP10448), approved BARs for permits, and a
+                  rehabilitation-led surface safety programme.
+                </div>
               </li>
-              <li className="flex items-start gap-3">
-                <Icon.Users className="mt-0.5 h-5 w-5" style={gold} />
-                <strong>Local jobs & value</strong>: planned <strong>600–800+</strong> roles at steady state, supplier inclusion, and transparent ESG reporting.
+
+              <li className="flex gap-3">
+                <span className="mt-0.5" style={gold}>
+                  <Icon.Users className="h-5 w-5" />
+                </span>
+                <div className="text-sm leading-relaxed text-text-secondary">
+                  <strong>Local jobs & value</strong>: planned <strong>600–800+</strong> roles at steady state, supplier
+                  inclusion, and transparent ESG reporting.
+                </div>
               </li>
             </ul>
           </div>
@@ -201,15 +219,21 @@ export default function InvestorsPage() {
             <h2 className="font-display text-2xl md:text-4xl">Governance & Compliance</h2>
             <ul className="mt-4 grid gap-3 text-sm text-text-secondary">
               <li className="flex items-start gap-3">
-                <Icon.Shield className="mt-0.5 h-5 w-5" style={gold} />
+                <span style={gold}>
+                  <Icon.Shield className="mt-0.5 h-5 w-5" />
+                </span>
                 Compliance with South African mining, water and environmental legislation, with transparent reporting.
               </li>
               <li className="flex items-start gap-3">
-                <Icon.File className="mt-0.5 h-5 w-5" style={gold} />
+                <span style={gold}>
+                  <Icon.File className="mt-0.5 h-5 w-5" />
+                </span>
                 Environmental approvals via Basic Assessment Reports for Mining Permits; PR GP10448 in good standing.
               </li>
               <li className="flex items-start gap-3">
-                <Icon.Factory className="mt-0.5 h-5 w-5" style={gold} />
+                <span style={gold}>
+                  <Icon.Factory className="mt-0.5 h-5 w-5" />
+                </span>
                 Processing partner maintains relevant water/waste licences; haulage distance kept short (~8 km).
               </li>
             </ul>
