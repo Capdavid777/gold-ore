@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
-/** Minimal, inline icons (no extra deps). Strokes follow currentColor. */
+/** Minimal, inline icons (strokes follow currentColor) */
 const Icon = {
   Pickaxe: (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -112,12 +112,12 @@ export default function OperationsPage() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="flex items-center gap-3" style={{ color: "var(--go-gold,#caa132)" }}>
-              <Icon.Pickaxe aria-hidden className="h-6 w-6" />
-              <p className="text-sm uppercase tracking-[0.18em]" style={{ color: "var(--go-gold,#caa132)" }}>
-                Assets
-              </p>
+            {/* Reverted to original muted color */}
+            <div className="flex items-center gap-3">
+              <Icon.Pickaxe aria-hidden className="h-6 w-6 text-text-muted" />
+              <p className="text-sm uppercase tracking-[0.18em] text-text-muted">Assets</p>
             </div>
+
             <h1 id="ops-hero" className="mt-3 font-display text-4xl md:text-6xl lg:text-7xl">
               <span className="text-gold-shimmer">Operations</span>
             </h1>
@@ -172,7 +172,10 @@ export default function OperationsPage() {
                 <h3 className="font-display text-xl md:text-2xl">
                   {asset.name} <span className="text-text-muted font-sans text-base">• {asset.type}</span>
                 </h3>
-                <span className="rounded-full border border-[var(--go-gold,#caa132)] px-3 py-1 text-xs" style={{ color: "var(--go-gold,#caa132)" }}>
+                <span
+                  className="rounded-full border border-[var(--go-gold,#caa132)] px-3 py-1 text-xs"
+                  style={{ color: "var(--go-gold,#caa132)" }}
+                >
                   {asset.key}
                 </span>
               </div>
@@ -294,13 +297,8 @@ export default function OperationsPage() {
           background-size: 200% auto;
           animation: shimmer 4.5s linear infinite;
         }
-        @keyframes shimmer {
-          0% { background-position: 0% center; }
-          100% { background-position: 200% center; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .text-gold-shimmer { animation: none; }
-        }
+        @keyframes shimmer { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        @media (prefers-reduced-motion: reduce) { .text-gold-shimmer { animation: none; } }
       `}</style>
     </main>
   );
