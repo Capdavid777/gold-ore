@@ -74,11 +74,10 @@ const Icon = {
 };
 
 type Stat = { label: string; value: string; sublabel?: string; icon?: ReactNode };
-type Doc = { title: string; desc: string; href: string };
 
 const gold = { color: "var(--go-gold,#caa132)" } as const;
 
-/** Key investment snapshot from your materials */
+/** Key investment snapshot */
 const SNAPSHOT: Stat[] = [
   { label: "District", value: "Benoni South, Gauteng", icon: <Icon.MapPin className="h-5 w-5" /> },
   { label: "Development Path", value: "Opencast → Underground", icon: <Icon.Pickaxe className="h-5 w-5" /> },
@@ -88,14 +87,6 @@ const SNAPSHOT: Stat[] = [
   { label: "Gold (Combined LoM)", value: "≈3,038 kg", icon: <Icon.Coin className="h-5 w-5" /> },
   { label: "Offtake/Processing", value: "Goldplat PLC (MOU)", sublabel: "Toll treatment ~8 km", icon: <Icon.Factory className="h-5 w-5" /> },
   { label: "Planned Jobs", value: "600–800+", sublabel: "During sustained operations", icon: <Icon.Users className="h-5 w-5" /> },
-];
-
-/** Public-facing docs – replace hrefs with real file paths when ready */
-const DOCUMENTS: Doc[] = [
-  { title: "Benoni South – Project Update", desc: "Overview of district, permits, schedule & ESG actions.", href: "/docs/Benoni-South-Project-UPDATE.pdf" },
-  { title: "DMPR Investor Deck", desc: "Development plan, LoM production targets and capital approach.", href: "/docs/DMPR-Presentation.pdf" },
-  { title: "Prospecting Rights Due Diligence", desc: "Summary of rights, tenure, and compliance items.", href: "/docs/Gold-Prospecting-Rights-Due-Diligence-Package.pdf" },
-  { title: "Rehabilitation Motivation (New Kleinfontein)", desc: "Community safety and surface restoration programme.", href: "/docs/Motivational-letter-New-Kleinfontein.pdf" },
 ];
 
 export default function InvestorsPage() {
@@ -159,21 +150,21 @@ export default function InvestorsPage() {
             <ul className="mt-4 grid gap-3 text-sm text-text-secondary">
               <li className="flex items-start gap-3">
                 <Icon.Pickaxe className="mt-0.5 h-5 w-5" style={gold} />
-                Near-surface **opencast ounces** in New Kleinfontein enable early, capital-light cash flow while
-                **Turnbridge underground** supports long-life production.
+                Near-surface <strong>opencast ounces</strong> in New Kleinfontein enable early, capital-light cash flow while{" "}
+                <strong>Turnbridge underground</strong> supports long-life production.
               </li>
               <li className="flex items-start gap-3">
                 <Icon.Factory className="mt-0.5 h-5 w-5" style={gold} />
-                **Goldplat PLC MOU** provides toll treatment close to site (~8 km), lowering logistics and capex burden.
+                <strong>Goldplat PLC MOU</strong> provides toll treatment close to site (~8 km), lowering logistics and capex burden.
               </li>
               <li className="flex items-start gap-3">
                 <Icon.Shield className="mt-0.5 h-5 w-5" style={gold} />
-                **Compliance-first** development: valid PR (GP10448), approved BARs for permits, and rehabilitation-led
+                <strong>Compliance-first</strong> development: valid PR (GP10448), approved BARs for permits, and a rehabilitation-led
                 surface safety programme.
               </li>
               <li className="flex items-start gap-3">
                 <Icon.Users className="mt-0.5 h-5 w-5" style={gold} />
-                **Local jobs & value**: planned **600–800+** roles at steady state, supplier inclusion, and transparent ESG reporting.
+                <strong>Local jobs & value</strong>: planned <strong>600–800+</strong> roles at steady state, supplier inclusion, and transparent ESG reporting.
               </li>
             </ul>
           </div>
@@ -200,43 +191,6 @@ export default function InvestorsPage() {
               </li>
             </ol>
           </div>
-        </div>
-      </Section>
-
-      {/* DOCUMENTS */}
-      <Section className="py-12 md:py-20">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <h2 className="font-display text-2xl md:text-4xl">Documents & Presentations</h2>
-            <p className="mt-2 max-w-3xl text-text-muted">
-              Latest investor materials, technical summaries, and ESG papers. Replace links with live files when hosted.
-            </p>
-          </div>
-          <a
-            href="/news"
-            className="group inline-flex items-center gap-2 rounded-full border border-surface-3/60 px-4 py-2 text-sm transition hover:border-[var(--go-gold,#caa132)]/60"
-            style={gold}
-          >
-            Newsroom <Icon.ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" style={gold} />
-          </a>
-        </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {DOCUMENTS.map((d) => (
-            <a
-              key={d.title}
-              href={d.href}
-              className="group flex items-start gap-4 rounded-2xl border border-surface-3/50 bg-surface-2/40 p-5 transition hover:border-[var(--go-gold,#caa132)]/50"
-            >
-              <span className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--go-gold,#caa132)]/40" style={gold}>
-                <Icon.File className="h-4 w-4" />
-              </span>
-              <span>
-                <span className="font-medium">{d.title}</span>
-                <span className="mt-1 block text-sm text-text-muted">{d.desc}</span>
-              </span>
-            </a>
-          ))}
         </div>
       </Section>
 
