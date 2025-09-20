@@ -61,7 +61,7 @@ const NEWS: NewsItem[] = [
   {
     id: "2025-02-nk-rehab",
     date: "2025-02-10",
-    title: "New Kleinfontein: Rehabilitation & Community Safety Program",
+    title: "Community Safety Program",
     summary:
       "Gold Ore confirms a phased program to seal historic shallow workings, reduce illegal access, and restore the surface with indigenous vegetation. Works prioritise safety near homes, schools, roads, rail and services.",
     image: "/news/rehabilitation.jpg",
@@ -85,7 +85,7 @@ const NEWS: NewsItem[] = [
   {
     id: "2024-12-permitting",
     date: "2024-12-05",
-    title: "Mining Permits supported by Approved Basic Assessment Reports",
+    title: "Mining Permits: BARs Approved",
     summary:
       "Mining Permit BARs are approved for relevant project areas in Benoni South. Water and waste licensing remains with the offtake processor; haulage kept short to reduce impact.",
     image: "/news/permits.jpg",
@@ -97,7 +97,7 @@ const NEWS: NewsItem[] = [
   {
     id: "2024-10-project-update",
     date: "2024-10-18",
-    title: "Benoni South Project Update: Target First Production in 2026",
+    title: "Benoni South Project Update",
     summary:
       "Gold Ore targets 2026 first production with an initial opencast focus and a staged transition to underground at Turnbridge. Planned 600–800+ local jobs at steady state.",
     image: "/news/benoni-aerial.jpg",
@@ -148,7 +148,6 @@ export default function NewsPage() {
               whileInView={r ? {} : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              /* MAKE CARDS EQUAL HEIGHT + BUTTON AT BOTTOM */
               className="group flex h-full flex-col overflow-hidden rounded-3xl border border-surface-3/50 bg-surface-2/40"
             >
               {/* media */}
@@ -168,9 +167,10 @@ export default function NewsPage() {
                 )}
               </div>
 
-              {/* content */}
-              <div className="flex grow flex-col p-5 md:p-6">
-                <div className="flex items-center gap-3 text-xs text-text-muted">
+              {/* content grid: title / meta / summary / button */}
+              <div className="grid grow grid-rows-[auto_auto_1fr_auto] p-5 md:p-6">
+                {/* date + tags (kept inline above title to match your style) */}
+                <div className="mb-1 flex items-center gap-3 text-xs text-text-muted">
                   <span className="inline-flex items-center gap-1.5" style={gold}>
                     <Icon.Calendar className="h-4 w-4" />
                     <span className="text-[inherit]">{formatDate(n.date)}</span>
@@ -183,22 +183,31 @@ export default function NewsPage() {
                   )}
                 </div>
 
-                <h2 className="mt-2 font-display text-2xl md:text-[28px]">
-                  <a
-                    href={n.href ?? "#"}
-                    className="transition hover:opacity-90"
-                    style={{ color: "var(--go-gold,#caa132)" }}
-                  >
-                    {n.title}
-                  </a>
-                </h2>
+                {/* Title with fixed minimum height so sub-head aligns */}
+                <div className="min-h-[56px]">
+                  <h2 className="font-display text-2xl md:text-[28px] leading-snug">
+                    <a
+                      href={n.href ?? "#"}
+                      className="transition hover:opacity-90"
+                      style={{ color: "var(--go-gold,#caa132)" }}
+                    >
+                      {n.title}
+                    </a>
+                  </h2>
+                </div>
 
-                {n.meta && <p className="mt-1 text-xs text-text-muted">{n.meta}</p>}
+                {/* Sub-heading (meta) also fixed height so paragraph tops align */}
+                <div className="min-h-[20px]">
+                  {n.meta && <p className="text-xs text-text-muted">{n.meta}</p>}
+                </div>
 
-                <p className="mt-3 text-sm leading-relaxed text-text-secondary">{n.summary}</p>
+                {/* Summary fills the flexible row; starts aligned across cards */}
+                <div className="mt-2">
+                  <p className="text-sm leading-relaxed text-text-secondary">{n.summary}</p>
+                </div>
 
-                {/* BUTTON AREA PINNED TO BOTTOM */}
-                <div className="mt-auto pt-4">
+                {/* Button pinned to bottom row */}
+                <div className="mt-4 self-start">
                   <a
                     href={n.href ?? "#"}
                     className="group inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition hover:border-[var(--go-gold,#caa132)]/70"
@@ -236,35 +245,13 @@ export default function NewsPage() {
 
       <style jsx>{`
         .text-gold-shimmer {
-          background: linear-gradient(
-            100deg,
-            #8f6b29 0%,
-            #e6c46d 20%,
-            #f7e7a1 40%,
-            #cf9f44 60%,
-            #e6c46d 80%,
-            #8f6b29 100%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-          background-size: 200% auto;
-          animation: shimmer 4.5s linear infinite;
+          background: linear-gradient(100deg,#8f6b29 0%,#e6c46d 20%,#f7e7a1 40%,#cf9f44 60%,#e6c46d 80%,#8f6b29 100%);
+          -webkit-background-clip: text; background-clip: text; color: transparent;
+          text-shadow: 0 2px 10px rgba(0,0,0,.35);
+          background-size: 200% auto; animation: shimmer 4.5s linear infinite;
         }
-        @keyframes shimmer {
-          0% {
-            background-position: 0% center;
-          }
-          100% {
-            background-position: 200% center;
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .text-gold-shimmer {
-            animation: none;
-          }
-        }
+        @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:200% center} }
+        @media (prefers-reduced-motion: reduce){ .text-gold-shimmer{ animation:none } }
       `}</style>
     </main>
   );
@@ -274,11 +261,7 @@ function formatDate(d: string) {
   try {
     const date = new Date(d);
     if (!isNaN(date.getTime())) {
-      return date.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-      });
+      return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
     }
     return d;
   } catch {
