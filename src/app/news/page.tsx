@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
+/* Icons */
 const Icon = {
   Pickaxe: (p: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
@@ -45,6 +46,7 @@ const Icon = {
 
 const gold = { color: "var(--go-gold,#caa132)" } as const;
 
+/* Data */
 type NewsItem = {
   id: string;
   date: string;
@@ -108,12 +110,13 @@ const NEWS: NewsItem[] = [
   },
 ];
 
+/* Page */
 export default function NewsPage() {
   const r = useReducedMotion();
 
   return (
     <main id="main" className="relative">
-      {/* HERO */}
+      {/* Hero */}
       <section aria-labelledby="news-hero" className="relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,#a17838_12%,transparent_60%)] opacity-10" />
         <Section className="pt-20 pb-10 md:pt-28 md:pb-16">
@@ -138,7 +141,7 @@ export default function NewsPage() {
         </Section>
       </section>
 
-      {/* FEED */}
+      {/* Feed */}
       <Section className="py-12 md:py-20">
         <div className="grid gap-6 md:grid-cols-2">
           {NEWS.map((n) => (
@@ -150,7 +153,7 @@ export default function NewsPage() {
               transition={{ duration: 0.4 }}
               className="group flex h-full flex-col overflow-hidden rounded-3xl border border-surface-3/50 bg-surface-2/40"
             >
-              {/* media */}
+              {/* Media */}
               <div className="relative aspect-[16/9] w-full shrink-0">
                 <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/35 via-black/0 to-black/10" />
                 {n.image ? (
@@ -167,25 +170,25 @@ export default function NewsPage() {
                 )}
               </div>
 
-              {/* content grid: title / meta / summary / button */}
-              <div className="grid grow grid-rows-[auto_auto_1fr_auto] p-5 md:p-6">
-                {/* date + tags (kept inline above title to match your style) */}
-                <div className="mb-1 flex items-center gap-3 text-xs text-text-muted">
+              {/* Content grid with fixed rows so paragraphs align */}
+              <div className="grid grow grid-rows-[24px_60px_20px_1fr_auto] p-5 md:p-6">
+                {/* Date + Tags (no wrap to lock height) */}
+                <div className="flex min-h-[24px] items-center gap-3 whitespace-nowrap overflow-hidden text-ellipsis text-xs text-text-muted">
                   <span className="inline-flex items-center gap-1.5" style={gold}>
                     <Icon.Calendar className="h-4 w-4" />
                     <span className="text-[inherit]">{formatDate(n.date)}</span>
                   </span>
                   {n.tags && n.tags.length > 0 && (
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 overflow-hidden text-ellipsis">
                       <Icon.Tag className="h-4 w-4" style={gold} />
-                      <span className="text-text-muted">{n.tags.join(" · ")}</span>
+                      <span className="max-w-[220px] overflow-hidden text-ellipsis">{n.tags.join(" · ")}</span>
                     </span>
                   )}
                 </div>
 
-                {/* Title with fixed minimum height so sub-head aligns */}
-                <div className="min-h-[56px]">
-                  <h2 className="font-display text-2xl md:text-[28px] leading-snug">
+                {/* Title with bottom alignment and fixed height */}
+                <div className="flex min-h-[60px] items-end">
+                  <h2 className="font-display text-2xl leading-snug md:text-[28px]">
                     <a
                       href={n.href ?? "#"}
                       className="transition hover:opacity-90"
@@ -196,17 +199,17 @@ export default function NewsPage() {
                   </h2>
                 </div>
 
-                {/* Sub-heading (meta) also fixed height so paragraph tops align */}
+                {/* Sub-heading (fixed height) */}
                 <div className="min-h-[20px]">
                   {n.meta && <p className="text-xs text-text-muted">{n.meta}</p>}
                 </div>
 
-                {/* Summary fills the flexible row; starts aligned across cards */}
+                {/* Summary (paragraphs now start aligned) */}
                 <div className="mt-2">
                   <p className="text-sm leading-relaxed text-text-secondary">{n.summary}</p>
                 </div>
 
-                {/* Button pinned to bottom row */}
+                {/* Button */}
                 <div className="mt-4 self-start">
                   <a
                     href={n.href ?? "#"}
@@ -223,7 +226,7 @@ export default function NewsPage() {
         </div>
       </Section>
 
-      {/* MEDIA / CONTACT */}
+      {/* Media / Contact */}
       <Section className="pb-24">
         <div className="grid gap-6 rounded-3xl border border-surface-3/50 bg-surface-2/40 p-6 md:grid-cols-3 md:p-8">
           <div className="md:col-span-2">
@@ -243,6 +246,7 @@ export default function NewsPage() {
         </div>
       </Section>
 
+      {/* shimmer */}
       <style jsx>{`
         .text-gold-shimmer {
           background: linear-gradient(100deg,#8f6b29 0%,#e6c46d 20%,#f7e7a1 40%,#cf9f44 60%,#e6c46d 80%,#8f6b29 100%);
@@ -257,6 +261,7 @@ export default function NewsPage() {
   );
 }
 
+/* Utils */
 function formatDate(d: string) {
   try {
     const date = new Date(d);
