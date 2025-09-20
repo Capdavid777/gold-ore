@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import type { ReactNode } from "react";
 
-/* Inline icons (stroke follows currentColor) */
 const Icon = {
   Pickaxe: (p: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...p}>
@@ -48,17 +47,16 @@ const gold = { color: "var(--go-gold,#caa132)" } as const;
 
 type NewsItem = {
   id: string;
-  date: string;              // ISO or human-readable
+  date: string;
   title: string;
   summary: string;
-  image?: string;            // /public/news/...
-  href?: string;             // link to full release / PDF / page
+  image?: string;
+  href?: string;
   tags?: string[];
-  meta?: string;             // optional small line
+  meta?: string;
   icon?: ReactNode;
 };
 
-/* Seed stories drawn from your materials */
 const NEWS: NewsItem[] = [
   {
     id: "2025-02-nk-rehab",
@@ -150,11 +148,11 @@ export default function NewsPage() {
               whileInView={r ? {} : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="group overflow-hidden rounded-3xl border border-surface-3/50 bg-surface-2/40"
+              /* MAKE CARDS EQUAL HEIGHT + BUTTON AT BOTTOM */
+              className="group flex h-full flex-col overflow-hidden rounded-3xl border border-surface-3/50 bg-surface-2/40"
             >
               {/* media */}
-              <div className="relative aspect-[16/9] w-full">
-                {/* Soft overlay adds depth even if image is dark */}
+              <div className="relative aspect-[16/9] w-full shrink-0">
                 <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/35 via-black/0 to-black/10" />
                 {n.image ? (
                   <Image
@@ -171,13 +169,11 @@ export default function NewsPage() {
               </div>
 
               {/* content */}
-              <div className="p-5 md:p-6">
+              <div className="flex grow flex-col p-5 md:p-6">
                 <div className="flex items-center gap-3 text-xs text-text-muted">
                   <span className="inline-flex items-center gap-1.5" style={gold}>
                     <Icon.Calendar className="h-4 w-4" />
-                    <span className="text-[inherit]" style={{ color: "inherit" }}>
-                      {formatDate(n.date)}
-                    </span>
+                    <span className="text-[inherit]">{formatDate(n.date)}</span>
                   </span>
                   {n.tags && n.tags.length > 0 && (
                     <span className="inline-flex items-center gap-1.5">
@@ -201,7 +197,8 @@ export default function NewsPage() {
 
                 <p className="mt-3 text-sm leading-relaxed text-text-secondary">{n.summary}</p>
 
-                <div className="mt-4 flex items-center gap-3">
+                {/* BUTTON AREA PINNED TO BOTTOM */}
+                <div className="mt-auto pt-4">
                   <a
                     href={n.href ?? "#"}
                     className="group inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition hover:border-[var(--go-gold,#caa132)]/70"
@@ -237,7 +234,6 @@ export default function NewsPage() {
         </div>
       </Section>
 
-      {/* Title shimmer (scoped) */}
       <style jsx>{`
         .text-gold-shimmer {
           background: linear-gradient(
@@ -274,7 +270,6 @@ export default function NewsPage() {
   );
 }
 
-/* Utils */
 function formatDate(d: string) {
   try {
     const date = new Date(d);
