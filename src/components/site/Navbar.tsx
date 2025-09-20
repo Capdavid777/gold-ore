@@ -25,25 +25,24 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // 👉 Update this path to your attached circular logo file in /public
-  const logoSrc = '/brand/logo-menu-circle.png';
-  // If your file is named differently, e.g. '/brand/Logo Transparent.png', just change the line above.
+  // ✅ your repo path
+  const logoSrc = '/brand/logo-only-transparent.svg';
 
   return (
     <header className="sticky top-0 z-40 border-b border-[hsl(var(--border-subtle))] bg-[hsl(var(--surface)/0.8)] backdrop-blur-xs">
       <div className="container flex items-center justify-between py-3">
-        {/* Brand: circular logo + gold shimmer wordmark */}
+        {/* Brand: logo + gold shimmer wordmark */}
         <Link
           href="/"
           className="group relative inline-flex items-center gap-3 rounded-xl px-2 py-1 will-change-transform"
           aria-label="Gold Ore – Home"
         >
-          {/* Your provided circular logo (no animated ring) */}
+          {/* Emblem (SVG) */}
           <span className="relative grid h-9 w-9 place-items-center rounded-full overflow-hidden">
             {imgOk ? (
               <Image
                 src={logoSrc}
-                alt=""
+                alt="Gold Ore emblem"
                 width={36}
                 height={36}
                 priority
@@ -107,9 +106,8 @@ export default function Navbar() {
         </nav>
       </div>
 
-      {/* keep shimmer + micro-tilt (no ring styles anymore) */}
+      {/* shimmer + micro-tilt */}
       <style jsx>{`
-        /* Micro-tilt on hover (reduced-motion safe) */
         @media (prefers-reduced-motion: no-preference) {
           a.group:hover {
             transform: translateZ(0) scale(1.02);
@@ -117,7 +115,6 @@ export default function Navbar() {
           }
         }
 
-        /* Gold shimmer text */
         .brand-gold-text {
           background: linear-gradient(
             100deg,
@@ -134,7 +131,7 @@ export default function Navbar() {
           text-shadow: 0 2px 8px rgba(0,0,0,0.35);
           background-size: 220% auto;
           animation: brand-shimmer 7s linear infinite;
-          animation-play-state: paused; /* idle until hover */
+          animation-play-state: paused;
         }
         a.group:hover .brand-gold-text { animation-play-state: running; }
 
