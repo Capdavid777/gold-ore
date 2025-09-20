@@ -38,13 +38,13 @@ export default function Navbar() {
           aria-label="Gold Ore – Home"
         >
           {/* Logo (⬆ two sizes: h-11 w-11; 44x44) */}
-          <span className="relative grid h-11 w-11 place-items-center rounded-full overflow-hidden">
+          <span className="relative grid h-14 w-14 place-items-center rounded-full overflow-hidden">
             {imgOk ? (
               <Image
                 src={logoSrc}
                 alt="Gold Ore emblem"
-                width={44}
-                height={44}
+                width={56}
+                height={56}
                 priority
                 onError={() => setImgOk(false)}
                 className="pointer-events-none select-none h-11 w-11 object-contain"
