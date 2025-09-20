@@ -25,44 +25,44 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // ✅ your repo path
+  // Path you provided
   const logoSrc = '/brand/logo-only-transparent.svg';
 
   return (
     <header className="sticky top-0 z-40 border-b border-[hsl(var(--border-subtle))] bg-[hsl(var(--surface)/0.8)] backdrop-blur-xs">
       <div className="container flex items-center justify-between py-3">
-        {/* Brand: logo + gold shimmer wordmark */}
+        {/* Brand: bigger logo + thicker wordmark */}
         <Link
           href="/"
           className="group relative inline-flex items-center gap-3 rounded-xl px-2 py-1 will-change-transform"
           aria-label="Gold Ore – Home"
         >
-          {/* Emblem (SVG) */}
-          <span className="relative grid h-9 w-9 place-items-center rounded-full overflow-hidden">
+          {/* Logo (⬆ two sizes: h-11 w-11; 44x44) */}
+          <span className="relative grid h-11 w-11 place-items-center rounded-full overflow-hidden">
             {imgOk ? (
               <Image
                 src={logoSrc}
                 alt="Gold Ore emblem"
-                width={36}
-                height={36}
+                width={44}
+                height={44}
                 priority
                 onError={() => setImgOk(false)}
-                className="pointer-events-none select-none h-9 w-9 object-contain"
+                className="pointer-events-none select-none h-11 w-11 object-contain"
               />
             ) : null}
           </span>
 
-          {/* Wordmark (kept shimmer) */}
+          {/* Wordmark (⬆ one weight step: font-semibold) */}
           <span className="leading-none">
             {imgOk ? (
-              <span className="brand-gold-text font-display text-xl tracking-[0.22em] md:text-2xl">
+              <span className="brand-gold-text font-display font-semibold text-xl tracking-[0.22em] md:text-2xl">
                 GOLD ORE
               </span>
             ) : (
               <GoldWordmark
                 text="GOLD ORE"
                 animated={false}
-                className="brand-gold-text text-xl md:text-2xl uppercase tracking-[0.22em]"
+                className="brand-gold-text font-semibold text-xl md:text-2xl uppercase tracking-[0.22em]"
               />
             )}
           </span>
