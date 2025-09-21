@@ -1,4 +1,8 @@
+'use client';
+
 import Link from 'next/link';
+import type { Route } from 'next';
+import type { UrlObject } from 'url';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
 
@@ -14,31 +18,46 @@ const button = cva(
         ghost:
           'bg-transparent text-brand-gold-400 hover:bg-[hsl(var(--surface-alt))]',
       },
-      size: { sm: 'px-3 py-1.5 text-sm', md: 'px-4 py-2', lg: 'px-6 py-3 text-lg' },
+      size: {
+        sm: 'px-3 py-1.5 text-sm',
+        md: 'px-4 py-2',
+        lg: 'px-6 py-3 text-lg'
+      },
     },
     defaultVariants: { variant: 'primary', size: 'md' },
   }
 );
 
+type Href = Route | UrlObject | URL | string;
+
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof button> & {
-    href?: string; // NEW: render as Link when present
+    /** When provided, renders as a Next.js Link */
+    href?: Href;
+    className?: string;
   };
 
-export function Button({ variant, size, className, href, ...props }: ButtonProps) {
+export function Button({ variant, size, className, href, children, ...props }: ButtonProps) {
   const cls = twMerge(button({ variant, size }), className);
 
   if (href) {
     return (
       <Link
-        href={href}
+        href={href as Route | UrlObject | string}
         className={cls}
-        aria-label={typeof props.children === 'string' ? (props.children as string) : 'Button link'}
+        prefetch={false}
+        aria-label={typeof children === 'string' ? (children as string) : undefined}
       >
-        {props.children}
+        {children}
       </Link>
     );
   }
 
-  return <button className={cls} {...props} />;
+  return (
+    <button className={cls} {...props}>
+      {children}
+    </button>
+  );
 }
+
+export default Button;
