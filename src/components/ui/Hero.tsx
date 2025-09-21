@@ -1,14 +1,17 @@
 'use client';
 
+import React, { useEffect, useRef, ReactNode } from 'react';
 import Image from 'next/image';
-import { useEffect, useRef, type ReactNode, type ElementType } from 'react';
 
 type VideoSource = { src: string; type?: string };
 
 type HeroProps = {
   /** Title content (text or a component, e.g., a logo) */
   title: ReactNode;
-  /** Which element should wrap the title. Defaults to 'h1' for accessibility/SEO. */
+  /**
+   * Which element should wrap the title.
+   * Defaults to 'h1'; use 'div' if you’re rendering a logo image.
+   */
   titleTag?: 'h1' | 'div' | 'span' | 'p' | 'figure';
   subtitle?: string;
   background?: string;
@@ -17,6 +20,7 @@ type HeroProps = {
     poster?: string;
     preload?: 'none' | 'metadata' | 'auto';
   };
+  /** Align content left or center (both axis centering when 'center') */
   align?: 'left' | 'center';
   respectReducedMotion?: boolean;
 };
@@ -50,11 +54,9 @@ export default function Hero({
     else v.addEventListener('canplay', tryPlay, { once: true });
   }, [respectReducedMotion]);
 
-  // Use React.ElementType instead of JSX.IntrinsicElements to avoid TS "Cannot find namespace 'JSX'" errors
-  const TitleTag = (titleTag as unknown) as ElementType;
-
   return (
-    <div className="relative min-h-[52vh] md:min-h-[64vh] w-full">
+    // ↓ Reduce hero height by ~20% (52→41.6vh, 64→51.2vh)
+    <div className="relative min-h-[41.6vh] md:min-h-[51.2vh] w-full">
       {video ? (
         <video
           ref={ref}
@@ -81,24 +83,36 @@ export default function Hero({
 
       <div className="absolute inset-0 hero-overlay" />
 
+      {/* Content */}
       <div
-        className={`relative z-10 container py-24 md:py-36 ${
-          align === 'center' ? 'text-center' : ''
-        }`}
+        className={[
+          'relative z-10 container',
+          // ↓ Less vertical padding & centered layout when requested
+          align === 'center'
+            ? 'flex min-h-[41.6vh] md:min-h-[51.2vh] items-center justify-center text-center py-12 md:py-16'
+            : 'py-20 md:py-28',
+        ].join(' ')}
       >
-        <TitleTag className="font-display text-4xl md:text-6xl">
-          {title}
-        </TitleTag>
+        <div className={align === 'center' ? 'max-w-4xl' : ''}>
+          {/* Render chosen tag without relying on JSX namespace types */}
+          {React.createElement(
+            titleTag,
+            { className: 'font-display text-4xl md:text-6xl' },
+            title
+          )}
 
-        {subtitle && (
-          <p
-            className={`mt-4 max-w-2xl on-image text-lg ${
-              align === 'center' ? 'mx-auto' : ''
-            }`}
-          >
-            {subtitle}
-          </p>
-        )}
+          {subtitle && (
+            // ↓ Bring subtitle closer to the logo (mt-4 → mt-2)
+            <p
+              className={[
+                'on-image text-lg',
+                align === 'center' ? 'mx-auto mt-2 max-w-2xl' : 'mt-2 max-w-2xl',
+              ].join(' ')}
+            >
+              {subtitle}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
