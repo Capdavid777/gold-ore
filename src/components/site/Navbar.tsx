@@ -1,10 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState } from 'react';
 import type { Route } from 'next';
-import GoldWordmark from '@/components/ui/GoldWordmark';
 
 type NavItem = { label: string; href: Route };
 
@@ -18,54 +16,22 @@ const NAV_ITEMS: readonly NavItem[] = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [imgOk, setImgOk] = useState(true);
-
-  // Path you provided
-  const logoSrc = '/brand/logo-only-transparent.svg';
 
   return (
     <header className="sticky top-0 z-40 border-b border-[hsl(var(--border-subtle))] bg-[hsl(var(--surface)/0.8)] backdrop-blur-xs">
       <div className="container flex items-center justify-between py-3">
-        {/* Brand: bigger logo + thicker wordmark */}
+        {/* Brand: text only (icon removed) */}
         <Link
           href="/"
-          className="group relative inline-flex items-center gap-3 rounded-xl px-2 py-1 will-change-transform"
+          className="group relative inline-flex items-center rounded-xl px-2 py-1 will-change-transform"
           aria-label="Gold Ore – Home"
         >
-          {/* Logo (⬆ two sizes: h-11 w-11; 44x44) */}
-          <span className="relative grid h-14 w-14 place-items-center rounded-full overflow-hidden">
-            {imgOk ? (
-              <Image
-                src={logoSrc}
-                alt="Gold Ore emblem"
-                width={56}
-                height={56}
-                priority
-                onError={() => setImgOk(false)}
-                className="pointer-events-none select-none h-11 w-11 object-contain"
-              />
-            ) : null}
-          </span>
-
-          {/* Wordmark (⬆ one weight step: font-semibold) */}
-          <span className="leading-none">
-            {imgOk ? (
-              <span className="brand-gold-text font-display font-semibold text-xl tracking-[0.22em] md:text-2xl">
-                GOLD ORE
-              </span>
-            ) : (
-              <GoldWordmark
-                text="GOLD ORE"
-                animated={false}
-                className="brand-gold-text font-semibold text-xl md:text-2xl uppercase tracking-[0.22em]"
-              />
-            )}
+          <span className="brand-gold-text font-display font-semibold text-xl tracking-[0.22em] md:text-2xl">
+            GOLD ORE
           </span>
         </Link>
 
         <div className="flex items-center gap-2">
-          {/* Theme toggle removed */}
-
           <button
             className="md:hidden focus-ring rounded-xl px-3 py-2"
             onClick={() => setOpen((s) => !s)}
@@ -94,7 +60,7 @@ export default function Navbar() {
         </nav>
       </div>
 
-      {/* shimmer + micro-tilt */}
+      {/* shimmer on hover */}
       <style jsx>{`
         @media (prefers-reduced-motion: no-preference) {
           a.group:hover {
@@ -102,7 +68,6 @@ export default function Navbar() {
             transition: transform .25s cubic-bezier(.2,.8,.2,1);
           }
         }
-
         .brand-gold-text {
           background: linear-gradient(
             100deg,
@@ -127,7 +92,6 @@ export default function Navbar() {
           0% { background-position: 0% center; }
           100% { background-position: 220% center; }
         }
-
         @media (prefers-reduced-motion: reduce) {
           a.group:hover { transform: none !important; }
           .brand-gold-text { animation: none !important; }
