@@ -31,7 +31,7 @@ export default function Home() {
         title={
           <span className="inline-block w-[220px] sm:w-[280px] md:w-[360px] lg:w-[440px]">
             <Image
-              src="/brand/logo-footer.png" /* change to your actual footer-logo path if different */
+              src="/brand/logo-goldore.svg" /* change to your actual footer-logo path if different */
               alt="Gold Ore"
               width={880}
               height={220}
