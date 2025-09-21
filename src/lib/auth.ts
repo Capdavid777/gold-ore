@@ -1,8 +1,24 @@
-import type { NextAuthOptions } from 'next-auth'
+import type { NextAuthOptions, Session, Account } from 'next-auth'
 import AzureAD_B2C from 'next-auth/providers/azure-ad-b2c'
-import { mapRolesFromToken } from '@/lib/rbac'
+import type { JWT } from 'next-auth/jwt'
+import { mapRolesFromToken, type Role } from '@/lib/rbac'
 
-const roleClaim = process.env.AZURE_B2C_ROLE_CLAIM || 'extension_Roles'
+type TokenWithRoles = JWT & { roles?: Role[] }
+type SessionWithRoles = Session & { roles?: Role[] }
+
+const ROLE_CLAIM = process.env.AZURE_B2C_ROLE_CLAIM || 'extension_Roles'
+
+function safeDecodeJwtPayload(idToken?: string): Record<string, unknown> | undefined {
+  if (!idToken) return undefined
+  const parts = idToken.split('.')
+  if (parts.length < 2) return undefined
+  try {
+    const json = Buffer.from(parts[1], 'base64').toString('utf8')
+    return JSON.parse(json) as Record<string, unknown>
+  } catch {
+    return undefined
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,16 +33,19 @@ export const authOptions: NextAuthOptions = {
   ],
   session: { strategy: 'jwt' },
   callbacks: {
-    async jwt({ token, account }) {
-      // capture roles from the ID token on sign-in
-      const idt = (account as any)?.id_token
-      const decoded = idt ? JSON.parse(Buffer.from(idt.split('.')[1], 'base64').toString()) : undefined
-      token.roles = mapRolesFromToken(decoded ?? token, roleClaim)
-      return token
+    async jwt({ token, account }): Promise<TokenWithRoles> {
+      const t = token as TokenWithRoles
+      // On sign-in, prefer roles from the provider ID token; otherwise keep existing
+      const claims = safeDecodeJwtPayload((account as Account | null | undefined)?.id_token)
+      const roles = mapRolesFromToken(claims ?? (token as unknown as Record<string, unknown>), ROLE_CLAIM)
+      if (roles.length) t.roles = roles
+      t.roles ??= []
+      return t
     },
-    async session({ session, token }) {
-      (session as any).roles = (token as any).roles || []
-      return session
+    async session({ session, token }): Promise<SessionWithRoles> {
+      const s = session as SessionWithRoles
+      s.roles = (token as TokenWithRoles).roles ?? []
+      return s
     },
   },
   pages: { signIn: '/login' },
