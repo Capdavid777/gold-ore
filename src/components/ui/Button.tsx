@@ -1,51 +1,53 @@
 'use client';
 
 import Link from 'next/link';
+import type { ReactNode, ButtonHTMLAttributes } from 'react';
 import type { Route } from 'next';
 import type { UrlObject } from 'url';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { twMerge } from 'tailwind-merge';
 
-const button = cva(
-  'inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition-colors focus:outline-none focus-visible:ring-0 focus-ring',
-  {
-    variants: {
-      variant: {
-        primary:
-          'bg-brand-gold-500 text-black hover:bg-brand-gold-400',
-        secondary:
-          'bg-[hsl(var(--surface-elevated))] text-[hsl(var(--text))] hover:bg-[hsl(var(--surface-alt))] border border-[hsl(var(--border))]',
-        ghost:
-          'bg-transparent text-brand-gold-400 hover:bg-[hsl(var(--surface-alt))]',
-      },
-      size: {
-        sm: 'px-3 py-1.5 text-sm',
-        md: 'px-4 py-2',
-        lg: 'px-6 py-3 text-lg'
-      },
-    },
-    defaultVariants: { variant: 'primary', size: 'md' },
-  }
-);
+type InternalHref = Route | UrlObject;
+type ExternalHref = `http://${string}` | `https://${string}` | `mailto:${string}` | `tel:${string}`;
 
-type Href = Route | UrlObject | URL | string;
+type Props = {
+  children: ReactNode;
+  /** Internal app route or external URL */
+  href?: InternalHref | ExternalHref;
+  className?: string;
+  prefetch?: boolean;
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'children'>;
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof button> & {
-    /** When provided, renders as a Next.js Link */
-    href?: Href;
-    className?: string;
-  };
+function isExternal(href: InternalHref | ExternalHref): href is ExternalHref {
+  return typeof href === 'string' && /^(https?:\/\/|mailto:|tel:)/i.test(href);
+}
 
-export function Button({ variant, size, className, href, children, ...props }: ButtonProps) {
-  const cls = twMerge(button({ variant, size }), className);
+export default function Button({
+  children,
+  href,
+  className,
+  prefetch = false,
+  type = 'button',
+  ...btnProps
+}: Props) {
+  const cls =
+    className ??
+    'inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium ' +
+      'bg-[#b08d2b] text-black hover:bg-[#d4af37] transition';
 
   if (href) {
+    if (isExternal(href)) {
+      return (
+        <a href={href} className={cls} target="_blank" rel="noopener noreferrer"
+           aria-label={typeof children === 'string' ? (children as string) : undefined}>
+          {children}
+        </a>
+      );
+    }
+    // Internal, typed route
     return (
       <Link
-        href={href as Route | UrlObject | string}
+        href={href as InternalHref}
         className={cls}
-        prefetch={false}
+        prefetch={prefetch}
         aria-label={typeof children === 'string' ? (children as string) : undefined}
       >
         {children}
@@ -53,11 +55,10 @@ export function Button({ variant, size, className, href, children, ...props }: B
     );
   }
 
+  // Regular button
   return (
-    <button className={cls} {...props}>
+    <button type={type} className={cls} {...btnProps}>
       {children}
     </button>
   );
 }
-
-export default Button;
