@@ -1,12 +1,11 @@
 import Hero from '@/components/ui/Hero';
-import GoldWordmark from '@/components/ui/GoldWordmark';
 import { Section } from '@/components/ui/Section';
 import { Card, CardContent } from '@/components/ui/Card';
 import ESGBanner from '@/components/sections/ESGBanner';
 import ContactCTA from '@/components/sections/ContactCTA';
+import Image from 'next/image';
 
 export default function Home() {
-  // Card content
   const cards = [
     {
       title: 'Geological Location',
@@ -28,7 +27,21 @@ export default function Home() {
   return (
     <main id="main">
       <Hero
-        title={<GoldWordmark as="span" text="GOLD ORE" animated className="uppercase tracking-wide" />}
+        /* Center the logo in the middle of the hero */
+        title={
+          <span className="inline-block w-[220px] sm:w-[280px] md:w-[360px] lg:w-[440px]">
+            <Image
+              src="/brand/logo-goldore.svg" /* use your footer logo path */
+              alt="Gold Ore"
+              width={880}
+              height={220}
+              priority
+              className="h-auto w-full object-contain select-none"
+            />
+          </span>
+        }
+        titleTag="div"          /* logo shouldn't be wrapped in an <h1> */
+        align="center"          /* center both horizontally and vertically */
         subtitle="A gold mining company based in Gauteng, South Africa."
         video={{
           sources: [
@@ -53,19 +66,17 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* ESG banner */}
       <ESGBanner
         imageSrc="/media/esg-hero.jpg"
         imageAlt="Mine headgear at sunrise"
         title="Sustainability at our core"
         subtitle="We align with global best practices, measure our impact transparently, and invest in projects that create shared value."
         ctaLabel="Our ESG Approach"
-        ctaHref="/esg" // ensure the CTA matches main menu + footer
+        ctaHref="/esg"
         align="left"
-        minVH={70}
+        minVH={63}
       />
 
-      {/* NEW: Contact CTA section */}
       <ContactCTA />
     </main>
   );

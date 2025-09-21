@@ -2,120 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* ===== Design Tokens (HSL) ===== */
-:root {
-    --gold-50: 46 100% 97%;
-    --gold-100: 45 90% 92%;
-    --gold-200: 43 88% 82%;
-    --gold-300: 42 80% 72%;
-    --gold-400: 41 75% 60%;
-    --gold-500: 39 85% 50%;
-    --gold-600: 37 88% 44%;
-    --gold-700: 35 90% 36%;
-    --gold-800: 33 85% 28%;
-    --gold-900: 30 78% 20%;
-
-
-    --obsidian: 220 15% 8%;
-    --steel: 220 6% 28%;
-
-
-    --surface: 220 16% 9%;
-    --surface-alt: 220 14% 12%;
-    --surface-elevated: 220 13% 16%;
-
-
-    --text: 210 22% 96%;
-    --text-muted: 210 10% 75%;
-    --text-on-dark: 0 0% 100%;
-    --text-on-image: 0 0% 100%;
-
-
-    --ring: 39 85% 50%;
-    --border: 220 8% 22%;
-    --border-subtle: 220 7% 18%;
-
-
-    --radius-xl: 1rem;
-    --radius-2xl: 1.25rem;
+:root{
+  --gold-50:46 100% 97%;--gold-100:45 90% 92%;--gold-200:43 88% 82%;
+  --gold-300:42 80% 72%;--gold-400:41 75% 60%;--gold-500:39 85% 50%;
+  --gold-600:37 88% 44%;--gold-700:35 90% 36%;--gold-800:33 85% 28%;
+  --gold-900:30 78% 20%;
+  --obsidian:220 15% 8%;--steel:220 6% 28%;
+  --surface:220 16% 9%;--surface-alt:220 14% 12%;--surface-elevated:220 13% 16%;
+  --text:210 22% 96%;--text-muted:210 10% 75%;
+  --ring:39 85% 50%;--border:220 8% 22%;--border-subtle:220 7% 18%;
+  --radius-xl:1rem;--radius-2xl:1.25rem;
 }
 
-
-@layer base {
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        @apply bg-[hsl(var(--surface))] text-[hsl(var(--text))] antialiased;
-    }
-
-    a {
-        @apply text-brand-gold-400 hover:text-brand-gold-300 transition-colors;
-    }
-
-    :focus-visible {
-        box-shadow: 0 0 0 3px hsl(var(--ring));
-        outline: none;
-    }
+@layer base{
+  html{scroll-behavior:smooth;}
+  body{@apply bg-[hsl(var(--surface))] text-[hsl(var(--text))] antialiased;}
+  a{@apply text-amber-400 hover:text-amber-300 transition-colors;}
+  :focus-visible{box-shadow:0 0 0 3px hsl(var(--ring));outline:none;}
 }
 
-
-@layer components {
-    .hero-overlay {
-        background: linear-gradient(180deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .7));
-    }
+@layer components{
+  .hero-overlay{background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.7));}
+  /* Dark text for gold/orange banners */
+  .text-cta-dark{@apply text-[hsl(var(--steel))];}
 }
 
-
-/* Prose defaults */
-.prose {
-    --tw-prose-body: hsl(var(--text));
-    --tw-prose-headings: hsl(var(--text));
-    --tw-prose-links: hsl(var(--gold-400));
+/* Prose defaults (if @tailwind/typography is used) */
+.prose{
+  --tw-prose-body:hsl(var(--text));
+  --tw-prose-headings:hsl(var(--text));
+  --tw-prose-links:hsl(var(--gold-400));
 }
 
-/* ========== Metallic Gold text effect ========== */
-@keyframes goldShift {
-    0% {
-        background-position: 0% 50%, -30% 50%;
-    }
-
-    100% {
-        background-position: 100% 50%, 130% 50%;
-    }
+/* Metallic gold text effect */
+@keyframes goldShift{0%{background-position:0% 50%,-30% 50%;}100%{background-position:100% 50%,130% 50%;}}
+.metallic-gold{
+  background-image:
+    linear-gradient(115deg,
+      hsl(var(--gold-900)) 0%,
+      hsl(var(--gold-700)) 12%,
+      hsl(var(--gold-500)) 24%,
+      hsl(var(--gold-300)) 40%,
+      hsl(var(--gold-700)) 60%,
+      hsl(var(--gold-400)) 78%,
+      hsl(var(--gold-800)) 100%),
+    linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.55) 50%,rgba(255,255,255,0) 100%);
+  background-size:200% 100%,30% 100%;
+  background-position:0% 50%,-30% 50%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 2px 12px rgba(0,0,0,.55);
 }
+.metallic-animate{animation:goldShift 7.5s linear infinite;}
+@media (prefers-reduced-motion:reduce){.metallic-animate{animation:none;}}
 
-.metallic-gold {
-    /* Layer 1: multi-stop gold gradient */
-    background-image:
-        linear-gradient(115deg,
-            hsl(var(--gold-900)) 0%,
-            hsl(var(--gold-700)) 12%,
-            hsl(var(--gold-500)) 24%,
-            hsl(var(--gold-300)) 40%,
-            hsl(var(--gold-700)) 60%,
-            hsl(var(--gold-400)) 78%,
-            hsl(var(--gold-800)) 100%),
-        /* Layer 2: moving specular highlight */
-        linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .55) 50%, rgba(255, 255, 255, 0) 100%);
-    background-size: 200% 100%, 30% 100%;
-    background-position: 0% 50%, -30% 50%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    /* reveal gradient within glyphs */
-    text-shadow: 0 2px 12px rgba(0, 0, 0, .55);
-    /* readability on imagery */
-}
+/* ===== Footer hard overrides (highest reliability) ===== */
+/* 1) Top-align all columns in the footer grid */
+#site-footer :where(.grid){align-items:start !important;}
 
-.metallic-animate {
-    animation: goldShift 7.5s linear infinite;
-}
+/* 2) Remove any global margins that typography plugins may add */
+#site-footer :where(p){margin-top:.5rem !important;margin-bottom:0 !important;}
 
-@media (prefers-reduced-motion: reduce) {
-    .metallic-animate {
-        animation: none;
-    }
+/* 3) Ensure the logo sits snugly above the address */
+#site-footer :where(.brand-stack){margin:0 !important;gap:.5rem !important;}
+#site-footer :where(img){display:block !important;} /* removes baseline gap */
+
+/* 4) Guard against any .prose rules leaking into footer */
+#site-footer :where(.prose, .prose p, .prose *){
+  margin:0 !important;
+  line-height:inherit !important;
 }

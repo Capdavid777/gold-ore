@@ -1,8 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link'; // used only to derive the correct href type
+import type { ComponentProps } from 'react';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
+
+// Derive exactly what <Link> accepts for `href` in your Next.js version.
+type LinkHref = ComponentProps<typeof Link>['href'];
 
 type ESGBannerProps = {
   imageSrc?: string;
@@ -10,7 +15,7 @@ type ESGBannerProps = {
   title?: string;
   subtitle?: string;
   ctaLabel?: string;
-  ctaHref?: string; // defaults to /esg
+  ctaHref?: LinkHref; // ✅ make CTA href compatible with Next <Link>
   align?: 'left' | 'center' | 'right';
   minVH?: number; // viewport height (70 = 70vh)
 };
@@ -56,8 +61,8 @@ export default function ESGBanner({
     align === 'center'
       ? 'items-center text-center'
       : align === 'right'
-        ? 'items-end text-right'
-        : 'items-start text-left';
+      ? 'items-end text-right'
+      : 'items-start text-left';
 
   return (
     <section aria-label="ESG banner" className="relative w-full bg-[hsl(var(--surface))]">
