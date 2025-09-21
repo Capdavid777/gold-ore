@@ -6,7 +6,6 @@ import ContactCTA from '@/components/sections/ContactCTA';
 import Image from 'next/image';
 
 export default function Home() {
-  // Card content
   const cards = [
     {
       title: 'Geological Location',
@@ -28,11 +27,11 @@ export default function Home() {
   return (
     <main id="main">
       <Hero
-        /** Replace text title with the same logo used in the footer */
+        /* Replace text title with the same logo used in the footer */
         title={
           <span className="inline-block w-[220px] sm:w-[280px] md:w-[360px] lg:w-[440px]">
             <Image
-              src="/brand/logo-goldore.svg" // <- use the exact asset your footer uses (svg/png)
+              src="/brand/logo-footer.png" /* change to your actual footer-logo path if different */
               alt="Gold Ore"
               width={880}
               height={220}
@@ -41,7 +40,7 @@ export default function Home() {
             />
           </span>
         }
-        titleTag="div" /* render logo without wrapping it in a heading */
+        titleTag="div" /* logo should not be inside an <h1> */
         subtitle="A gold mining company based in Gauteng, South Africa."
         video={{
           sources: [
@@ -66,7 +65,6 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* ESG banner */}
       <ESGBanner
         imageSrc="/media/esg-hero.jpg"
         imageAlt="Mine headgear at sunrise"
@@ -78,7 +76,6 @@ export default function Home() {
         minVH={63}
       />
 
-      {/* Contact CTA section */}
       <ContactCTA />
     </main>
   );
