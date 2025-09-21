@@ -1,9 +1,9 @@
 import Hero from '@/components/ui/Hero';
-import GoldWordmark from '@/components/ui/GoldWordmark';
 import { Section } from '@/components/ui/Section';
 import { Card, CardContent } from '@/components/ui/Card';
 import ESGBanner from '@/components/sections/ESGBanner';
 import ContactCTA from '@/components/sections/ContactCTA';
+import Image from 'next/image';
 
 export default function Home() {
   // Card content
@@ -28,7 +28,20 @@ export default function Home() {
   return (
     <main id="main">
       <Hero
-        title={<GoldWordmark as="span" text="GOLD ORE" animated className="uppercase tracking-wide" />}
+        /** Replace text title with the same logo used in the footer */
+        title={
+          <span className="inline-block w-[220px] sm:w-[280px] md:w-[360px] lg:w-[440px]">
+            <Image
+              src="/brand/logo-footer.png" // <- use the exact asset your footer uses (svg/png)
+              alt="Gold Ore"
+              width={880}
+              height={220}
+              priority
+              className="h-auto w-full object-contain select-none"
+            />
+          </span>
+        }
+        titleTag="div" /* render logo without wrapping it in a heading */
         subtitle="A gold mining company based in Gauteng, South Africa."
         video={{
           sources: [
@@ -60,12 +73,12 @@ export default function Home() {
         title="Sustainability at our core"
         subtitle="We align with global best practices, measure our impact transparently, and invest in projects that create shared value."
         ctaLabel="Our ESG Approach"
-        ctaHref="/esg" // ensure the CTA matches main menu + footer
+        ctaHref="/esg"
         align="left"
         minVH={63}
       />
 
-      {/* NEW: Contact CTA section */}
+      {/* Contact CTA section */}
       <ContactCTA />
     </main>
   );
