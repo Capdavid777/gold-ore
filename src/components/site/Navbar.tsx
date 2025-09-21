@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { useTheme } from 'next-themes';
+import { useState } from 'react';
 import type { Route } from 'next';
 import GoldWordmark from '@/components/ui/GoldWordmark';
 
@@ -20,10 +19,6 @@ const NAV_ITEMS: readonly NavItem[] = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [imgOk, setImgOk] = useState(true);
-
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
 
   // Path you provided
   const logoSrc = '/brand/logo-only-transparent.svg';
@@ -69,14 +64,7 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <button
-            className="hidden md:inline-flex focus-ring rounded-xl px-3 py-2 text-sm"
-            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-            aria-label="Toggle theme"
-            title="Toggle theme"
-          >
-            <span aria-hidden="true">{mounted ? (resolvedTheme === 'dark' ? '☀️' : '🌙') : ''}</span>
-          </button>
+          {/* Theme toggle removed */}
 
           <button
             className="md:hidden focus-ring rounded-xl px-3 py-2"
