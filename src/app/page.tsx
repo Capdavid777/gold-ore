@@ -27,11 +27,11 @@ export default function Home() {
   return (
     <main id="main">
       <Hero
-        /* Replace text title with the same logo used in the footer */
+        /* Center the logo in the middle of the hero */
         title={
           <span className="inline-block w-[220px] sm:w-[280px] md:w-[360px] lg:w-[440px]">
             <Image
-              src="/brand/logo-goldore.svg" /* change to your actual footer-logo path if different */
+              src="/brand/logo-footer.png" /* use your footer logo path */
               alt="Gold Ore"
               width={880}
               height={220}
@@ -40,7 +40,8 @@ export default function Home() {
             />
           </span>
         }
-        titleTag="div" /* logo should not be inside an <h1> */
+        titleTag="div"          /* logo shouldn't be wrapped in an <h1> */
+        align="center"          /* center both horizontally and vertically */
         subtitle="A gold mining company based in Gauteng, South Africa."
         video={{
           sources: [
