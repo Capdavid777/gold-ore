@@ -1,6 +1,7 @@
 'use client';
+
 import Image from 'next/image';
-import { useEffect, useRef, ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode, type ElementType } from 'react';
 
 type VideoSource = { src: string; type?: string };
 
@@ -37,17 +38,20 @@ export default function Hero({
       respectReducedMotion &&
       typeof window !== 'undefined' &&
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
     if (reduce) {
       ref.current.pause();
       return;
     }
+
     const v = ref.current;
     const tryPlay = () => v.play().catch(() => {});
     if (v.readyState >= 2) tryPlay();
     else v.addEventListener('canplay', tryPlay, { once: true });
   }, [respectReducedMotion]);
 
-  const TitleTag = titleTag as keyof JSX.IntrinsicElements;
+  // Use React.ElementType instead of JSX.IntrinsicElements to avoid TS "Cannot find namespace 'JSX'" errors
+  const TitleTag = (titleTag as unknown) as ElementType;
 
   return (
     <div className="relative min-h-[52vh] md:min-h-[64vh] w-full">
