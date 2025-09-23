@@ -1,52 +1,69 @@
-import type { NextAuthOptions, Session, Account } from 'next-auth'
-import AzureAD_B2C from 'next-auth/providers/azure-ad-b2c'
-import type { JWT } from 'next-auth/jwt'
-import { mapRolesFromToken, type Role } from '@/lib/rbac'
+// src/lib/auth.ts
+import type { NextAuthOptions } from "next-auth";
+import Auth0Provider from "next-auth/providers/auth0";
+import type { DefaultSession } from "next-auth";
 
-type TokenWithRoles = JWT & { roles?: Role[] }
-type SessionWithRoles = Session & { roles?: Role[] }
+// Namespaced claim where your Action writes roles
+const ROLE_CLAIM = process.env.ROLE_CLAIM ?? "https://goldoresa.com/roles";
 
-const ROLE_CLAIM = process.env.AZURE_B2C_ROLE_CLAIM || 'extension_Roles'
+/**
+ * Module augmentation: add `roles` to JWT & Session so we can type safely.
+ */
+declare module "next-auth/jwt" {
+  interface JWT {
+    roles?: string[];
+  }
+}
 
-function safeDecodeJwtPayload(idToken?: string): Record<string, unknown> | undefined {
-  if (!idToken) return undefined
-  const parts = idToken.split('.')
-  if (parts.length < 2) return undefined
-  try {
-    const json = Buffer.from(parts[1], 'base64').toString('utf8')
-    return JSON.parse(json) as Record<string, unknown>
-  } catch {
-    return undefined
+declare module "next-auth" {
+  interface Session {
+    roles: string[];
+    user: DefaultSession["user"];
   }
 }
 
 export const authOptions: NextAuthOptions = {
+  session: { strategy: "jwt" },
+
   providers: [
-    AzureAD_B2C({
-      tenantId: process.env.AZURE_AD_B2C_TENANT!,
-      clientId: process.env.AZURE_AD_B2C_CLIENT_ID!,
-      clientSecret: process.env.AZURE_AD_B2C_CLIENT_SECRET!,
-      primaryUserFlow: process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW!,
-      authorization: { params: { scope: 'openid profile email' } },
-      checks: ['pkce', 'state'],
+    Auth0Provider({
+      id: "auth0",
+      clientId: process.env.AUTH0_CLIENT_ID!,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET!,
+      issuer: `https://${process.env.AUTH0_DOMAIN}`,
+      // optional: force fresh login each time while testing
+      // authorization: { params: { prompt: "login" } },
     }),
   ],
-  session: { strategy: 'jwt' },
+
   callbacks: {
-    async jwt({ token, account }): Promise<TokenWithRoles> {
-      const t = token as TokenWithRoles
-      // On sign-in, prefer roles from the provider ID token; otherwise keep existing
-      const claims = safeDecodeJwtPayload((account as Account | null | undefined)?.id_token)
-      const roles = mapRolesFromToken(claims ?? (token as unknown as Record<string, unknown>), ROLE_CLAIM)
-      if (roles.length) t.roles = roles
-      t.roles ??= []
-      return t
+    async jwt({ token, account }) {
+      // On first sign-in, read roles from the ID Token (namespaced claim)
+      if (account?.id_token) {
+        try {
+          const [, payloadB64] = account.id_token.split(".");
+          const json = Buffer.from(payloadB64, "base64").toString("utf8");
+          const payload = JSON.parse(json) as Record<string, unknown>;
+          const claim = payload[ROLE_CLAIM];
+
+          if (Array.isArray(claim)) {
+            token.roles = claim as string[];
+          }
+        } catch {
+          // ignore decode errors; token.roles will default to []
+        }
+      }
+
+      if (!Array.isArray(token.roles)) token.roles = [];
+      return token;
     },
-    async session({ session, token }): Promise<SessionWithRoles> {
-      const s = session as SessionWithRoles
-      s.roles = (token as TokenWithRoles).roles ?? []
-      return s
+
+    async session({ session, token }) {
+      session.roles = Array.isArray(token.roles) ? token.roles : [];
+      return session;
     },
   },
-  pages: { signIn: '/login' },
-}
+
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV !== "production",
+};

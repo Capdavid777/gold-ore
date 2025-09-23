@@ -1,14 +1,9 @@
 'use client';
-import { ThemeProvider } from 'next-themes';
-import { ReactNode, useEffect } from 'react';
-import { initAnalytics } from '@/lib/analytics';
 
+import { SessionProvider } from 'next-auth/react';
+import type { ReactNode } from 'react';
 
 export default function Providers({ children }: { children: ReactNode }) {
-useEffect(() => { initAnalytics(); }, []);
-return (
-<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-{children}
-</ThemeProvider>
-);
+  // Turn off tab-switch re-fetch to avoid flicker on static pages
+  return <SessionProvider refetchOnWindowFocus={false}>{children}</SessionProvider>;
 }
