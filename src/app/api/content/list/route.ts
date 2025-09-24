@@ -1,117 +1,123 @@
-// src/app/api/content/list/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import {
   S3Client,
   ListObjectsV2Command,
-  ListObjectsV2CommandInput,
-  _Object as S3Object,
+  type _Object as S3Object,
+  type ListObjectsV2CommandOutput,
 } from "@aws-sdk/client-s3";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 
-export const dynamic = "force-dynamic";
+/**
+ * The shape your UI expects for each file card.
+ * Adjust fields if your frontend expects more/less.
+ */
+export interface ContentItem {
+  id: string;
+  name: string;
+  type: string;
+  tags: string[];
+  modified: string; // ISO date
+  size: number;
+}
 
-type Permission = "view" | "download" | "edit";
+/**
+ * Build a typed S3 client from env.
+ */
+function createS3(): S3Client {
+  const region = process.env.S3_REGION;
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-type ContentItem = {
-  id: string;                // object key
-  name: string;              // file name
-  type: string;              // extension (e.g., 'pdf')
-  tags: string[];            // optional - empty by default
-  modified: string;          // ISO date
-  size: number;              // bytes
-  acl: Record<string, Permission[]>; // role -> perms (for the current session's roles)
-};
+  if (!region || !accessKeyId || !secretAccessKey) {
+    throw new Error(
+      "Missing S3 credentials. Please set S3_REGION, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
+    );
+  }
 
-type ListResponse = {
-  items: ContentItem[];
-  nextToken?: string;
-};
-
-// ---- ENV ----
-// Works with AWS S3 and any S3-compatible service (Cloudflare R2, MinIO, Wasabi...).
-// For R2/MinIO, set S3_ENDPOINT and S3_FORCE_PATH_STYLE=true.
-const S3_REGION = process.env.S3_REGION || "auto";
-const S3_BUCKET = process.env.S3_BUCKET_NAME!;
-const S3_PREFIX = (process.env.S3_PREFIX || "").replace(/^\/+/, "").replace(/\/+$/, ""); // optional virtual folder
-const S3_ENDPOINT = process.env.S3_ENDPOINT; // e.g., https://<accountid>.r2.cloudflarestorage.com
-const S3_FORCE_PATH_STYLE = /^true$/i.test(process.env.S3_FORCE_PATH_STYLE || "");
-
-function s3() {
   return new S3Client({
-    region: S3_REGION,
-    endpoint: S3_ENDPOINT,
-    forcePathStyle: S3_FORCE_PATH_STYLE,
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
   });
 }
 
-// Very simple role → permissions policy. Adjust to your needs.
-function permissionsForRole(role: string): Permission[] {
-  const r = role.toLowerCase();
-  if (r.includes("admin") || r.includes("owner") || r.includes("staff")) return ["view", "download", "edit"];
-  if (r.includes("investor") || r.includes("partner")) return ["view", "download"];
-  if (r.includes("viewer") || r.includes("guest")) return ["view"];
-  return [];
+/**
+ * Best-effort mapping from filename extension to a simple type label
+ * you use on the card (e.g., 'pdf', 'docx', 'ppt', etc.)
+ */
+function guessTypeFromKey(key: string): string {
+  const ext = key.split(".").pop()?.toLowerCase() ?? "";
+  if (["pdf"].includes(ext)) return "pdf";
+  if (["doc", "docx"].includes(ext)) return "docx";
+  if (["ppt", "pptx"].includes(ext)) return "pptx";
+  if (["xls", "xlsx", "csv"].includes(ext)) return "sheet";
+  if (["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) return "image";
+  if (["txt", "md"].includes(ext)) return "text";
+  return "file";
 }
 
-function pickAcl(roles: string[]): Record<string, Permission[]> {
-  const acl: Record<string, Permission[]> = {};
-  for (const r of roles) {
-    const perms = permissionsForRole(r);
-    if (perms.length) acl[r] = perms;
-  }
-  return acl;
+function fileNameFromKey(key: string): string {
+  const parts = key.split("/");
+  return decodeURIComponent(parts[parts.length - 1] ?? key);
 }
 
-function toItem(obj: S3Object, roles: string[]): ContentItem | null {
-  if (!obj.Key) return null;
-  if (obj.Key.endsWith("/")) return null; // ignore folder placeholders
+function mapS3ObjectToItem(obj: S3Object): ContentItem | null {
+  const key = obj.Key ?? null;
+  if (!key) return null;
 
-  const name = obj.Key.split("/").pop() || obj.Key;
-  const ext = name.includes(".") ? name.split(".").pop()!.toLowerCase() : "";
+  const name = fileNameFromKey(key);
+  const type = guessTypeFromKey(key);
+  const id = key; // stable ID — use key itself
+  const size = typeof obj.Size === "number" ? obj.Size : 0;
+  const modified =
+    obj.LastModified instanceof Date
+      ? obj.LastModified.toISOString()
+      : new Date().toISOString();
 
   return {
-    id: obj.Key,
+    id,
     name,
-    type: ext,
-    tags: [],
-    modified: (obj.LastModified ?? new Date()).toISOString(),
-    size: Number(obj.Size ?? 0),
-    acl: pickAcl(roles),
+    type,
+    tags: [], // you can enrich later (e.g., with object metadata or a DB)
+    modified,
+    size,
   };
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    const roles: string[] = Array.isArray((session as any)?.roles) ? (session as any).roles : [];
+    const bucket = process.env.S3_BUCKET;
+    if (!bucket) {
+      return NextResponse.json(
+        { error: "Missing S3_BUCKET env var" },
+        { status: 500 }
+      );
+    }
 
-    const url = new URL(req.url);
-    const q = (url.searchParams.get("q") || "").trim().toLowerCase();
-    const prefixQuery = (url.searchParams.get("prefix") || S3_PREFIX).replace(/^\/+/, "");
-    const pageSize = Math.min(Number(url.searchParams.get("pageSize") ?? "50"), 200);
-    const continuation = url.searchParams.get("cursor") || undefined;
+    const prefix = process.env.S3_PREFIX ?? ""; // optional folder filter
+    const s3 = createS3();
 
-    const prefix = prefixQuery ? `${prefixQuery}/` : "";
+    const command = new ListObjectsV2Command({
+      Bucket: bucket,
+      Prefix: prefix.length > 0 ? prefix : undefined,
+      MaxKeys: 1000,
+    });
 
-    const input: ListObjectsV2CommandInput = {
-      Bucket: S3_BUCKET,
-      Prefix: prefix || undefined,
-      ContinuationToken: continuation,
-      MaxKeys: pageSize,
-    };
+    const result: ListObjectsV2CommandOutput = await s3.send(command);
+    const contents = result.Contents ?? [];
 
-    const { Contents, NextContinuationToken } = await s3().send(new ListObjectsV2Command(input));
+    const items: ContentItem[] = contents
+      .map(mapS3ObjectToItem)
+      .filter((x): x is ContentItem => x !== null);
 
-    const items = (Contents || [])
-      .map((o) => toItem(o, roles))
-      .filter((i): i is ContentItem => !!i)
-      .filter((i) => (q ? (i.name.toLowerCase().includes(q) || i.id.toLowerCase().includes(q)) : true));
+    // Optionally sort newest first
+    items.sort((a, b) => (a.modified > b.modified ? -1 : 1));
 
-    const body: ListResponse = { items, nextToken: NextContinuationToken };
-    return NextResponse.json(body, { status: 200 });
-  } catch (err: any) {
-    console.error("[content.list] error:", err);
-    return NextResponse.json({ error: err?.message || "Failed to list content" }, { status: 500 });
+    return NextResponse.json({ items });
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "Failed to list S3 objects";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
