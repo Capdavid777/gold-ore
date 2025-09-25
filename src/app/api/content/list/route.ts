@@ -37,7 +37,7 @@ function createS3() {
 export async function GET(req: NextRequest) {
   try {
     const s3 = createS3();
-    const bucket = requireEnv('S3_BUCKET_NAME');
+    const bucket = requireEnv('S3_BUCKET');
     const defaultPrefix = process.env.S3_PREFIX ?? '';
     const url = new URL(req.url);
     const prefix = url.searchParams.get('prefix') ?? defaultPrefix;
