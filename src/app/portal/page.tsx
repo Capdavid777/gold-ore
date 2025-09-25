@@ -5,10 +5,11 @@ import { authOptions } from "@/lib/auth";
 import type { Session } from "next-auth";
 import type { Role } from "@/lib/rbac";
 import { Heading, FadeIn, Card } from "@/lib/ui";
-import dynamic from "next/dynamic";
+import NextDynamic from "next/dynamic"; // ← alias to avoid clashing with the special export above
 import { redirect } from "next/navigation";
 
-const DocumentGrid = dynamic(() => import("./_components/DocumentGrid"), {
+// Dynamically import the client-only component (no SSR to avoid hydration mismatch)
+const DocumentGrid = NextDynamic(() => import("./_components/DocumentGrid"), {
   ssr: false,
 });
 
@@ -20,7 +21,7 @@ function rolesFromSession(s: Session | null): Role[] {
 export default async function PortalPage() {
   const session = await getServerSession(authOptions);
 
-  // If your portal is protected, redirect unauthenticated users.
+  // Protect the route (adjust if your portal should be public)
   if (!session) {
     redirect("/login");
   }
@@ -37,7 +38,6 @@ export default async function PortalPage() {
       />
       <FadeIn>
         <Card>
-          {/* The grid is purely client-side to avoid SSR mismatch errors. */}
           <div className="p-6">
             <DocumentGrid />
           </div>
