@@ -1,123 +1,106 @@
-import { NextResponse } from "next/server";
+// Node runtime – AWS SDK needs Node, not Edge.
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+import { NextRequest } from "next/server";
 import {
   S3Client,
   ListObjectsV2Command,
-  type _Object as S3Object,
-  type ListObjectsV2CommandOutput,
+  _Object as S3Object,
 } from "@aws-sdk/client-s3";
 
-/**
- * The shape your UI expects for each file card.
- * Adjust fields if your frontend expects more/less.
- */
-export interface ContentItem {
-  id: string;
+type DocItem = {
+  key: string;
   name: string;
-  type: string;
-  tags: string[];
-  modified: string; // ISO date
   size: number;
-}
+  lastModified: string;
+};
 
-/**
- * Build a typed S3 client from env.
- */
-function createS3(): S3Client {
-  const region = process.env.S3_REGION;
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+type ListResponse =
+  | { items: DocItem[]; prefix: string }
+  | { error: string };
 
-  if (!region || !accessKeyId || !secretAccessKey) {
-    throw new Error(
-      "Missing S3 credentials. Please set S3_REGION, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
-    );
+function required(name: string, value: string | undefined): string {
+  if (!value || !value.trim()) {
+    throw new Error(`Missing required env var: ${name}`);
   }
-
-  return new S3Client({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  });
+  return value;
 }
 
-/**
- * Best-effort mapping from filename extension to a simple type label
- * you use on the card (e.g., 'pdf', 'docx', 'ppt', etc.)
- */
-function guessTypeFromKey(key: string): string {
-  const ext = key.split(".").pop()?.toLowerCase() ?? "";
-  if (["pdf"].includes(ext)) return "pdf";
-  if (["doc", "docx"].includes(ext)) return "docx";
-  if (["ppt", "pptx"].includes(ext)) return "pptx";
-  if (["xls", "xlsx", "csv"].includes(ext)) return "sheet";
-  if (["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) return "image";
-  if (["txt", "md"].includes(ext)) return "text";
-  return "file";
-}
-
-function fileNameFromKey(key: string): string {
-  const parts = key.split("/");
-  return decodeURIComponent(parts[parts.length - 1] ?? key);
-}
-
-function mapS3ObjectToItem(obj: S3Object): ContentItem | null {
-  const key = obj.Key ?? null;
-  if (!key) return null;
-
-  const name = fileNameFromKey(key);
-  const type = guessTypeFromKey(key);
-  const id = key; // stable ID — use key itself
-  const size = typeof obj.Size === "number" ? obj.Size : 0;
-  const modified =
-    obj.LastModified instanceof Date
-      ? obj.LastModified.toISOString()
-      : new Date().toISOString();
+function env() {
+  // Support both historic and current names if you ever renamed them.
+  const bucket = process.env.S3_BUCKET_NAME ?? process.env.S3_BUCKET;
+  const region = process.env.S3_REGION;
+  // Optional prefix to keep objects under a folder-like namespace.
+  const prefix = process.env.S3_PREFIX ?? "";
 
   return {
-    id,
-    name,
-    type,
-    tags: [], // you can enrich later (e.g., with object metadata or a DB)
-    modified,
-    size,
+    bucket: required("S3_BUCKET_NAME", bucket),
+    region: required("S3_REGION", region),
+    prefix,
   };
 }
 
-export async function GET() {
+function toDocItem(o: S3Object): DocItem | null {
+  if (!o.Key) return null;
+  return {
+    key: o.Key,
+    name: o.Key.split("/").pop() ?? o.Key,
+    size: typeof o.Size === "number" ? o.Size : 0,
+    lastModified: o.LastModified
+      ? new Date(o.LastModified).toISOString()
+      : new Date(0).toISOString(),
+  };
+}
+
+export async function GET(req: NextRequest) {
+  let cfg;
   try {
-    const bucket = process.env.S3_BUCKET;
-    if (!bucket) {
-      return NextResponse.json(
-        { error: "Missing S3_BUCKET env var" },
-        { status: 500 }
-      );
-    }
+    cfg = env();
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Config error";
+    return Response.json<ListResponse>({ error: msg }, { status: 500 });
+  }
 
-    const prefix = process.env.S3_PREFIX ?? ""; // optional folder filter
-    const s3 = createS3();
+  // Allow an optional ?prefix= override (but constrain to configured base prefix).
+  const url = new URL(req.url);
+  const qsPrefix = url.searchParams.get("prefix") ?? "";
+  const effectivePrefix =
+    cfg.prefix && qsPrefix
+      ? `${cfg.prefix.replace(/\/?$/, "/")}${qsPrefix.replace(/^\/+/, "")}`
+      : cfg.prefix || qsPrefix || ""; // one of them or empty
 
-    const command = new ListObjectsV2Command({
-      Bucket: bucket,
-      Prefix: prefix.length > 0 ? prefix : undefined,
+  const client = new S3Client({
+    region: cfg.region,
+    // Credentials will be picked from env (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY) automatically.
+  });
+
+  try {
+    const cmd = new ListObjectsV2Command({
+      Bucket: cfg.bucket,
+      Prefix: effectivePrefix || undefined,
       MaxKeys: 1000,
     });
+    const res = await client.send(cmd);
+    const items =
+      (res.Contents ?? [])
+        .map(toDocItem)
+        .filter((v): v is DocItem => Boolean(v)) ?? [];
 
-    const result: ListObjectsV2CommandOutput = await s3.send(command);
-    const contents = result.Contents ?? [];
-
-    const items: ContentItem[] = contents
-      .map(mapS3ObjectToItem)
-      .filter((x): x is ContentItem => x !== null);
-
-    // Optionally sort newest first
-    items.sort((a, b) => (a.modified > b.modified ? -1 : 1));
-
-    return NextResponse.json({ items });
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to list S3 objects";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return Response.json<ListResponse>(
+      { items, prefix: effectivePrefix },
+      {
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
+  } catch (e) {
+    // Be descriptive but not leak credentials.
+    const msg =
+      e instanceof Error
+        ? e.message
+        : "Failed to list objects from S3 (unknown error)";
+    return Response.json<ListResponse>({ error: msg }, { status: 500 });
   }
 }
