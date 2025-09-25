@@ -1,59 +1,87 @@
-import { NextResponse } from "next/server";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+import { NextRequest } from "next/server";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-function createS3(): S3Client {
-  const region = process.env.S3_REGION;
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+type SasResponse = { url: string } | { error: string };
 
-  if (!region || !accessKeyId || !secretAccessKey) {
-    throw new Error(
-      "Missing S3 credentials. Please set S3_REGION, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
+function required(name: string, value: string | undefined): string {
+  if (!value || !value.trim()) {
+    throw new Error(`Missing required env var: ${name}`);
+  }
+  return value;
+}
+
+function env() {
+  const bucket = process.env.S3_BUCKET_NAME ?? process.env.S3_BUCKET;
+  const region = process.env.S3_REGION;
+  const basePrefix = process.env.S3_PREFIX ?? "";
+  const ttlMinRaw = process.env.SAS_TTL_MIN ?? "10";
+
+  const ttlMinutes = Number.parseInt(ttlMinRaw, 10);
+  const ttl = Number.isFinite(ttlMinutes) && ttlMinutes > 0 ? ttlMinutes : 10;
+
+  return {
+    bucket: required("S3_BUCKET_NAME", bucket),
+    region: required("S3_REGION", region),
+    basePrefix,
+    ttlSeconds: Math.min(ttl, 120) * 60, // clamp to <= 2 hours for safety
+  };
+}
+
+// Simple guard to ensure downloads stay in the configured namespace.
+function isAllowedKey(key: string, basePrefix: string): boolean {
+  if (!basePrefix) return true;
+  const normalized = basePrefix.replace(/\/+$/, "") + "/";
+  return key === basePrefix || key.startsWith(normalized);
+}
+
+export async function GET(req: NextRequest) {
+  let cfg;
+  try {
+    cfg = env();
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Config error";
+    return Response.json<SasResponse>({ error: msg }, { status: 500 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const key = searchParams.get("key") ?? "";
+  const mode = searchParams.get("mode") ?? "inline"; // "inline" | "attachment"
+
+  if (!key) {
+    return Response.json<SasResponse>(
+      { error: "Missing required query param: key" },
+      { status: 400 }
     );
   }
 
-  return new S3Client({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  });
-}
+  if (!isAllowedKey(key, cfg.basePrefix)) {
+    return Response.json<SasResponse>(
+      { error: "Requested key is outside the allowed prefix" },
+      { status: 403 }
+    );
+  }
 
-export async function GET(req: Request) {
+  const client = new S3Client({ region: cfg.region });
+
   try {
-    const bucket = process.env.S3_BUCKET;
-    if (!bucket) {
-      return NextResponse.json(
-        { error: "Missing S3_BUCKET env var" },
-        { status: 500 }
-      );
-    }
-
-    const { searchParams } = new URL(req.url);
-    const keyParam = searchParams.get("key");
-
-    if (!keyParam || keyParam.trim().length === 0) {
-      return NextResponse.json({ error: "Missing 'key' parameter" }, { status: 400 });
-    }
-
-    const key = decodeURIComponent(keyParam);
-
-    const s3 = createS3();
-    const getCmd = new GetObjectCommand({
-      Bucket: bucket,
+    const cmd = new GetObjectCommand({
+      Bucket: cfg.bucket,
       Key: key,
+      ResponseContentDisposition:
+        mode === "attachment" ? "attachment" : "inline",
     });
 
-    // URL is valid for 15 minutes. Adjust if you prefer.
-    const url = await getSignedUrl(s3, getCmd, { expiresIn: 15 * 60 });
-
-    return NextResponse.json({ url });
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to create pre-signed URL";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const url = await getSignedUrl(client, cmd, { expiresIn: cfg.ttlSeconds });
+    return Response.json<SasResponse>({ url }, { status: 200 });
+  } catch (e) {
+    const msg =
+      e instanceof Error
+        ? e.message
+        : "Failed to generate signed URL (unknown error)";
+    return Response.json<SasResponse>({ error: msg }, { status: 500 });
   }
 }
