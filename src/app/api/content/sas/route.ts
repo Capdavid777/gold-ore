@@ -24,7 +24,7 @@ function createS3() {
 
 export async function GET(req: NextRequest) {
   try {
-    const bucket = requireEnv('S3_BUCKET_NAME');
+    const bucket = requireEnv('S3_BUCKET');
     const s3 = createS3();
 
     const { searchParams } = new URL(req.url);
