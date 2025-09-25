@@ -5,13 +5,8 @@ import { authOptions } from '@/lib/auth';
 import type { Session } from 'next-auth';
 import type { Role } from '@/lib/rbac';
 import { Heading, FadeIn, Card } from '@/lib/ui';
-import NextDynamic from 'next/dynamic'; // alias to avoid name clash with the `dynamic` export
+import NextDynamic from 'next/dynamic';
 import { redirect } from 'next/navigation';
-
-const DocumentGrid = NextDynamic(() => import('./_components/DocumentGrid'), {
-  ssr: false,
-  loading: () => <div className="text-muted">Loading documents…</div>,
-});
 
 type FileItem = {
   key: string;
@@ -25,6 +20,17 @@ type ListResponse = {
   items: FileItem[];
 };
 
+// 👇 Tell TS what props DocumentGrid expects
+type DocumentGridProps = { prefix: string; items: FileItem[] };
+
+const DocumentGrid = NextDynamic<DocumentGridProps>(
+  () => import('./_components/DocumentGrid'),
+  {
+    ssr: false,
+    loading: () => <div className="text-muted">Loading documents…</div>,
+  }
+);
+
 async function fetchList(prefix?: string): Promise<ListResponse> {
   const qs = prefix ? `?prefix=${encodeURIComponent(prefix)}` : '';
   const base =
@@ -34,7 +40,7 @@ async function fetchList(prefix?: string): Promise<ListResponse> {
   const res = await fetch(`${base}/api/content/list${qs}`, { cache: 'no-store' });
 
   if (!res.ok) {
-    const j = await res.json().catch(() => ({}));
+    const j = await res.json().catch(() => ({} as any));
     throw new Error(j?.error ?? `Failed to load list (${res.status})`);
   }
   return (await res.json()) as ListResponse;
@@ -91,6 +97,7 @@ export default async function PortalPage() {
       </FadeIn>
 
       <section className="mt-10">
+        {/* ✅ TS now knows these props are valid */}
         <DocumentGrid prefix={data!.prefix} items={data!.items} />
       </section>
     </main>
