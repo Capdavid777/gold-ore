@@ -1,48 +1,91 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'; // allow fresh list on each request
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import type { Session } from "next-auth";
-import type { Role } from "@/lib/rbac";
-import { Heading, FadeIn, Card } from "@/lib/ui";
-import NextDynamic from "next/dynamic"; // ← alias to avoid clashing with the special export above
-import { redirect } from "next/navigation";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import type { Session } from 'next-auth';
+import type { Role } from '@/lib/rbac';
+import { Heading, FadeIn, Card } from '@/lib/ui';
+import NextDynamic from 'next/dynamic'; // alias to avoid name clash
+import { redirect } from 'next/navigation';
 
-// Dynamically import the client-only component (no SSR to avoid hydration mismatch)
-const DocumentGrid = NextDynamic(() => import("./_components/DocumentGrid"), {
+const DocumentGrid = NextDynamic(() => import('./_components/DocumentGrid'), {
   ssr: false,
+  loading: () => <div className="text-muted">Loading documents…</div>,
 });
 
-function rolesFromSession(s: Session | null): Role[] {
-  const maybe = s as (Session & { roles?: Role[] }) | null;
-  return maybe?.roles ?? [];
+type FileItem = {
+  key: string;
+  name: string;
+  size: number;
+  lastModified?: string;
+};
+
+type ListResponse = {
+  prefix: string;
+  items: FileItem[];
+};
+
+async function fetchList(prefix?: string): Promise<ListResponse> {
+  const qs = prefix ? `?prefix=${encodeURIComponent(prefix)}` : '';
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/content/list${qs}`, {
+    // ensure no caching between users/sessions
+    cache: 'no-store',
+  });
+  if (!res.ok) {
+    const j = await res.json().catch(() => ({}));
+    throw new Error(j?.error ?? `Failed to load list (${res.status})`);
+  }
+  return (await res.json()) as ListResponse;
 }
 
 export default async function PortalPage() {
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as Session & {
+    user?: { roles?: Role[] };
+  };
+  if (!session) redirect('/login');
 
-  // Protect the route (adjust if your portal should be public)
-  if (!session) {
-    redirect("/login");
+  const roles = session.user?.roles ?? [];
+  // optional: gate access
+  if (!roles.length) {
+    return (
+      <main className="container py-14">
+        <Heading level={1}>Secure Portal</Heading>
+        <p className="mt-3 text-muted">You’re signed in but do not have any assigned roles.</p>
+      </main>
+    );
   }
 
-  const roles = rolesFromSession(session);
+  let data: ListResponse | null = null;
+  try {
+    data = await fetchList();
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Failed to load';
+    return (
+      <main className="container py-14">
+        <Heading level={1}>Secure Portal</Heading>
+        <Card className="mt-6 p-6">
+          <p className="text-danger">Error: {msg}</p>
+          <p className="mt-2 text-sm text-muted">
+            If you just changed AWS permissions, give it a minute and refresh.
+          </p>
+        </Card>
+      </main>
+    );
+  }
 
   return (
-    <main className="px-6 py-8">
-      <Heading
-        title="Secure Portal"
-        subtitle={`Signed in as ${session?.user?.email ?? "unknown"} • Roles: ${
-          roles.length ? roles.join(", ") : "none"
-        }`}
-      />
+    <main className="container py-14">
       <FadeIn>
-        <Card>
-          <div className="p-6">
-            <DocumentGrid />
-          </div>
-        </Card>
+        <Heading level={1}>Secure Portal</Heading>
+        <p className="mt-2 text-muted">
+          Signed in as <strong>{session.user?.email}</strong>
+          {roles.length ? ` • Roles: ${roles.join(', ')}` : null}
+        </p>
       </FadeIn>
+
+      <section className="mt-10">
+        <DocumentGrid prefix={data!.prefix} items={data!.items} />
+      </section>
     </main>
   );
 }
