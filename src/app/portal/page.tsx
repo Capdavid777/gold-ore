@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'; // always fetch fresh list
+export const dynamic = 'force-dynamic';
 
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -20,7 +20,7 @@ type ListResponse = {
   items: FileItem[];
 };
 
-// 👇 Tell TS what props DocumentGrid expects
+// Tell TS what props the dynamically imported component expects
 type DocumentGridProps = { prefix: string; items: FileItem[] };
 
 const DocumentGrid = NextDynamic<DocumentGridProps>(
@@ -40,10 +40,34 @@ async function fetchList(prefix?: string): Promise<ListResponse> {
   const res = await fetch(`${base}/api/content/list${qs}`, { cache: 'no-store' });
 
   if (!res.ok) {
-    const j = await res.json().catch(() => ({} as any));
-    throw new Error(j?.error ?? `Failed to load list (${res.status})`);
+    // Parse JSON safely without using `any`
+    let errorDetail: string | undefined;
+    try {
+      const raw = (await res.json()) as unknown;
+      if (raw && typeof raw === 'object' && 'error' in raw) {
+        const err = (raw as { error?: unknown }).error;
+        if (typeof err === 'string') errorDetail = err;
+      }
+    } catch {
+      /* ignore JSON parse errors */
+    }
+    throw new Error(errorDetail ?? `Failed to load list (${res.status})`);
   }
-  return (await res.json()) as ListResponse;
+
+  const data = (await res.json()) as unknown;
+  // runtime check to satisfy TS without any
+  if (
+    !data ||
+    typeof data !== 'object' ||
+    !('prefix' in data) ||
+    !('items' in data) ||
+    typeof (data as { prefix: unknown }).prefix !== 'string' ||
+    !Array.isArray((data as { items: unknown }).items)
+  ) {
+    throw new Error('Invalid list response');
+  }
+
+  return data as ListResponse;
 }
 
 export default async function PortalPage() {
@@ -97,7 +121,6 @@ export default async function PortalPage() {
       </FadeIn>
 
       <section className="mt-10">
-        {/* ✅ TS now knows these props are valid */}
         <DocumentGrid prefix={data!.prefix} items={data!.items} />
       </section>
     </main>
