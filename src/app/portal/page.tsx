@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth';
 import type { Session } from 'next-auth';
 import type { Role } from '@/lib/rbac';
 import { Heading, FadeIn, Card } from '@/lib/ui';
-import NextDynamic from 'next/dynamic'; // alias to avoid name clash with `dynamic` export
+import NextDynamic from 'next/dynamic'; // alias to avoid name clash with the `dynamic` export
 import { redirect } from 'next/navigation';
 
 const DocumentGrid = NextDynamic(() => import('./_components/DocumentGrid'), {
@@ -27,9 +27,12 @@ type ListResponse = {
 
 async function fetchList(prefix?: string): Promise<ListResponse> {
   const qs = prefix ? `?prefix=${encodeURIComponent(prefix)}` : '';
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/content/list${qs}`, {
-    cache: 'no-store',
-  });
+  const base =
+    process.env.NEXT_PUBLIC_BASE_URL && process.env.NEXT_PUBLIC_BASE_URL.length > 0
+      ? process.env.NEXT_PUBLIC_BASE_URL
+      : '';
+  const res = await fetch(`${base}/api/content/list${qs}`, { cache: 'no-store' });
+
   if (!res.ok) {
     const j = await res.json().catch(() => ({}));
     throw new Error(j?.error ?? `Failed to load list (${res.status})`);
@@ -46,7 +49,6 @@ export default async function PortalPage() {
 
   const roles = session.user?.roles ?? [];
 
-  // No roles case
   if (!roles.length) {
     return (
       <main className="container py-14">
@@ -58,7 +60,6 @@ export default async function PortalPage() {
     );
   }
 
-  // Load list
   let data: ListResponse | null = null;
   try {
     data = await fetchList();
@@ -67,12 +68,14 @@ export default async function PortalPage() {
     return (
       <main className="container py-14">
         <Heading title="Secure Portal" />
-        <Card className="mt-6 p-6">
-          <p className="text-danger">Error: {msg}</p>
-          <p className="mt-2 text-sm text-muted">
-            If you just changed AWS permissions, give it a minute and refresh.
-          </p>
-        </Card>
+        <div className="mt-6">
+          <Card>
+            <p className="text-danger">Error: {msg}</p>
+            <p className="mt-2 text-sm text-muted">
+              If you just changed AWS permissions, give it a minute and refresh.
+            </p>
+          </Card>
+        </div>
       </main>
     );
   }
