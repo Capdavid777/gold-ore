@@ -1,128 +1,53 @@
-export const dynamic = 'force-dynamic';
+// Server Component – no "use client"
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import type { Session } from 'next-auth';
-import type { Role } from '@/lib/rbac';
-import { Heading, FadeIn, Card } from '@/lib/ui';
-import NextDynamic from 'next/dynamic';
-import { redirect } from 'next/navigation';
+// If you use your own UI primitives, keep these imports as they are in your repo
+import { Heading } from "@/lib/ui/heading";
+import { Card } from "@/lib/ui/card";
+import DocumentGrid from "./_components/DocumentGrid";
 
-type FileItem = {
-  key: string;
-  name: string;
-  size: number;
-  lastModified?: string;
-};
+// Don't cache this page (avoids seeing a stale "no roles" view)
+export const dynamic = "force-dynamic";
 
-type ListResponse = {
-  prefix: string;
-  items: FileItem[];
-};
+function extractRoles(session: any): string[] {
+  // We put roles on the root of the session in callbacks,
+  // but also fall back to user.* and a namespaced claim just in case.
+  const raw =
+    session?.roles ??
+    session?.user?.roles ??
+    session?.user?.["https://goldoresa.com/roles"] ??
+    [];
 
-// Tell TS what props the dynamically imported component expects
-type DocumentGridProps = { prefix: string; items: FileItem[] };
-
-const DocumentGrid = NextDynamic<DocumentGridProps>(
-  () => import('./_components/DocumentGrid'),
-  {
-    ssr: false,
-    loading: () => <div className="text-muted">Loading documents…</div>,
-  }
-);
-
-async function fetchList(prefix?: string): Promise<ListResponse> {
-  const qs = prefix ? `?prefix=${encodeURIComponent(prefix)}` : '';
-  const base =
-    process.env.NEXT_PUBLIC_BASE_URL && process.env.NEXT_PUBLIC_BASE_URL.length > 0
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : '';
-  const res = await fetch(`${base}/api/content/list${qs}`, { cache: 'no-store' });
-
-  if (!res.ok) {
-    // Parse JSON safely without using `any`
-    let errorDetail: string | undefined;
-    try {
-      const raw = (await res.json()) as unknown;
-      if (raw && typeof raw === 'object' && 'error' in raw) {
-        const err = (raw as { error?: unknown }).error;
-        if (typeof err === 'string') errorDetail = err;
-      }
-    } catch {
-      /* ignore JSON parse errors */
-    }
-    throw new Error(errorDetail ?? `Failed to load list (${res.status})`);
-  }
-
-  const data = (await res.json()) as unknown;
-  // runtime check to satisfy TS without any
-  if (
-    !data ||
-    typeof data !== 'object' ||
-    !('prefix' in data) ||
-    !('items' in data) ||
-    typeof (data as { prefix: unknown }).prefix !== 'string' ||
-    !Array.isArray((data as { items: unknown }).items)
-  ) {
-    throw new Error('Invalid list response');
-  }
-
-  return data as ListResponse;
+  return Array.isArray(raw) ? raw : [];
 }
 
 export default async function PortalPage() {
-  const session = (await getServerSession(authOptions)) as Session & {
-    user?: { roles?: Role[]; email?: string };
-  };
+  const session = await getServerSession(); // App Router can infer options
+  if (!session) redirect("/login");
 
-  if (!session) redirect('/login');
-
-  const roles = session.user?.roles ?? [];
-
-  if (!roles.length) {
-    return (
-      <main className="container py-14">
-        <Heading title="Secure Portal" />
-        <p className="mt-3 text-muted">
-          You’re signed in but do not have any assigned roles.
-        </p>
-      </main>
-    );
-  }
-
-  let data: ListResponse | null = null;
-  try {
-    data = await fetchList();
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : 'Failed to load';
-    return (
-      <main className="container py-14">
-        <Heading title="Secure Portal" />
-        <div className="mt-6">
-          <Card>
-            <p className="text-danger">Error: {msg}</p>
-            <p className="mt-2 text-sm text-muted">
-              If you just changed AWS permissions, give it a minute and refresh.
-            </p>
-          </Card>
-        </div>
-      </main>
-    );
-  }
+  const roles = extractRoles(session);
+  // Gate however you want; here we allow anyone with at least one role.
+  // If you want only Admins:
+  // const allowed = roles.some(r => r.toLowerCase() === "admin");
+  const allowed = roles.length > 0;
 
   return (
     <main className="container py-14">
-      <FadeIn>
-        <Heading title="Secure Portal" />
-        <p className="mt-2 text-muted">
-          Signed in as <strong>{session.user?.email}</strong>
-          {roles.length ? ` • Roles: ${roles.join(', ')}` : null}
-        </p>
-      </FadeIn>
+      <Heading title="Secure Portal" />
 
-      <section className="mt-10">
-        <DocumentGrid prefix={data!.prefix} items={data!.items} />
-      </section>
+      {!allowed ? (
+        <Card className="mt-6 p-6">
+          <p className="text-muted-foreground">
+            You’re signed in but do not have any assigned roles.
+          </p>
+        </Card>
+      ) : (
+        <section className="mt-10">
+          {/* Use your configured prefix if you added one via env; default to "secure" */}
+          <DocumentGrid prefix={process.env.S3_PREFIX || "secure"} />
+        </section>
+      )}
     </main>
   );
 }
