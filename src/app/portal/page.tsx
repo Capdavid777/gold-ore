@@ -1,51 +1,45 @@
-// Server Component – no "use client"
+// Server Component
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-
-// If you use your own UI primitives, keep these imports as they are in your repo
-import { Heading } from "@/lib/ui/heading";
-import { Card } from "@/lib/ui/card";
+// If you have a client DocumentGrid component, keep this path:
 import DocumentGrid from "./_components/DocumentGrid";
 
-// Don't cache this page (avoids seeing a stale "no roles" view)
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"; // avoid stale cached render
 
 function extractRoles(session: any): string[] {
-  // We put roles on the root of the session in callbacks,
-  // but also fall back to user.* and a namespaced claim just in case.
+  // We store roles on the root of the session; also fall back to user.*
   const raw =
     session?.roles ??
     session?.user?.roles ??
     session?.user?.["https://goldoresa.com/roles"] ??
     [];
-
   return Array.isArray(raw) ? raw : [];
 }
 
 export default async function PortalPage() {
-  const session = await getServerSession(); // App Router can infer options
+  const session = await getServerSession();
   if (!session) redirect("/login");
 
   const roles = extractRoles(session);
-  // Gate however you want; here we allow anyone with at least one role.
-  // If you want only Admins:
-  // const allowed = roles.some(r => r.toLowerCase() === "admin");
-  const allowed = roles.length > 0;
+  const allowed = roles.length > 0; // change if you want only Admins
+
+  const prefix = process.env.S3_PREFIX || "secure";
 
   return (
-    <main className="container py-14">
-      <Heading title="Secure Portal" />
+    <main className="container mx-auto px-4 py-14">
+      <h1 className="text-3xl font-semibold tracking-tight">Secure Portal</h1>
 
       {!allowed ? (
-        <Card className="mt-6 p-6">
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
           <p className="text-muted-foreground">
             You’re signed in but do not have any assigned roles.
           </p>
-        </Card>
+        </div>
       ) : (
         <section className="mt-10">
-          {/* Use your configured prefix if you added one via env; default to "secure" */}
-          <DocumentGrid prefix={process.env.S3_PREFIX || "secure"} />
+          {/* If TS complains about props typing between server/client, we silence it */}
+          {/* @ts-expect-error Server-to-client prop typing */}
+          <DocumentGrid prefix={prefix} />
         </section>
       )}
     </main>
