@@ -1,11 +1,11 @@
-export const dynamic = 'force-dynamic'; // allow fresh list on each request
+export const dynamic = 'force-dynamic'; // always fetch fresh list
 
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import type { Session } from 'next-auth';
 import type { Role } from '@/lib/rbac';
 import { Heading, FadeIn, Card } from '@/lib/ui';
-import NextDynamic from 'next/dynamic'; // alias to avoid name clash
+import NextDynamic from 'next/dynamic'; // alias to avoid name clash with `dynamic` export
 import { redirect } from 'next/navigation';
 
 const DocumentGrid = NextDynamic(() => import('./_components/DocumentGrid'), {
@@ -28,7 +28,6 @@ type ListResponse = {
 async function fetchList(prefix?: string): Promise<ListResponse> {
   const qs = prefix ? `?prefix=${encodeURIComponent(prefix)}` : '';
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/content/list${qs}`, {
-    // ensure no caching between users/sessions
     cache: 'no-store',
   });
   if (!res.ok) {
@@ -40,21 +39,26 @@ async function fetchList(prefix?: string): Promise<ListResponse> {
 
 export default async function PortalPage() {
   const session = (await getServerSession(authOptions)) as Session & {
-    user?: { roles?: Role[] };
+    user?: { roles?: Role[]; email?: string };
   };
+
   if (!session) redirect('/login');
 
   const roles = session.user?.roles ?? [];
-  // optional: gate access
+
+  // No roles case
   if (!roles.length) {
     return (
       <main className="container py-14">
-        <Heading level={1}>Secure Portal</Heading>
-        <p className="mt-3 text-muted">You’re signed in but do not have any assigned roles.</p>
+        <Heading title="Secure Portal" />
+        <p className="mt-3 text-muted">
+          You’re signed in but do not have any assigned roles.
+        </p>
       </main>
     );
   }
 
+  // Load list
   let data: ListResponse | null = null;
   try {
     data = await fetchList();
@@ -62,7 +66,7 @@ export default async function PortalPage() {
     const msg = e instanceof Error ? e.message : 'Failed to load';
     return (
       <main className="container py-14">
-        <Heading level={1}>Secure Portal</Heading>
+        <Heading title="Secure Portal" />
         <Card className="mt-6 p-6">
           <p className="text-danger">Error: {msg}</p>
           <p className="mt-2 text-sm text-muted">
@@ -76,7 +80,7 @@ export default async function PortalPage() {
   return (
     <main className="container py-14">
       <FadeIn>
-        <Heading level={1}>Secure Portal</Heading>
+        <Heading title="Secure Portal" />
         <p className="mt-2 text-muted">
           Signed in as <strong>{session.user?.email}</strong>
           {roles.length ? ` • Roles: ${roles.join(', ')}` : null}
