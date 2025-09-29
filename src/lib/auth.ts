@@ -1,5 +1,5 @@
-// src/lib/auth.ts
 import type { NextAuthOptions } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import CognitoProvider from "next-auth/providers/cognito";
 import { jwtDecode } from "jwt-decode";
 
@@ -21,46 +21,52 @@ export const authOptions: NextAuthOptions = {
     CognitoProvider({
       clientId: process.env.COGNITO_CLIENT_ID!,
       ...(hasClientSecret ? { clientSecret: process.env.COGNITO_CLIENT_SECRET! } : {}),
-      issuer: process.env.COGNITO_ISSUER!, // e.g. https://cognito-idp.af-south-1.amazonaws.com/af-south-1_XXXXX
+      issuer: process.env.COGNITO_ISSUER!, // e.g. https://cognito-idp.af-south-1.amazonaws.com/af-south-1_XXXX
       checks: hasClientSecret ? ["state"] : ["pkce", "state"],
     }),
   ],
   session: { strategy: "jwt" },
 
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account }): Promise<JWT> {
       if (account?.id_token) {
         const claims = jwtDecode<CognitoIdToken>(account.id_token);
 
-        // Base fields
-        token.email = claims.email ?? token.email;
-        (token as any).email_verified = claims.email_verified ?? null;
+        // Email + verification
+        token.email = claims.email ?? token.email ?? null;
+        token.email_verified =
+          typeof claims.email_verified === "boolean"
+            ? claims.email_verified
+            : token.email_verified ?? null;
 
-        // Name without mixing ?? and ||
-        const given = (claims.given_name || "").trim();
-        const family = (claims.family_name || "").trim();
+        // Name resolution (no nullish/logical mixing)
+        const given = (claims.given_name ?? "").trim();
+        const family = (claims.family_name ?? "").trim();
         const joined = [given, family].filter(Boolean).join(" ");
-        const currentName = (token as any).name as string | undefined;
-        const resolvedName = claims.name ?? (joined ? joined : currentName ?? null);
-        (token as any).name = resolvedName;
+        token.name = claims.name ?? (joined.length > 0 ? joined : token.name ?? null);
 
-        // RBAC-ish data
-        (token as any).groups = claims["cognito:groups"] ?? [];
-        (token as any).role = claims["custom:role"] ?? null;
+        // RBAC-style data
+        token.groups = claims["cognito:groups"] ?? token.groups ?? [];
+        token.role = claims["custom:role"] ?? token.role ?? null;
       }
       return token;
     },
 
     async session({ session, token }) {
+      // user
       session.user = {
         ...session.user,
-        name: ((token as any).name as string | null) ?? session.user?.name ?? null,
-        email: ((token as any).email as string | null) ?? session.user?.email ?? null,
+        email: token.email ?? session.user?.email ?? null,
+        name: token.name ?? session.user?.name ?? null,
       };
-      (session as any).email_verified =
-        ((token as any).email_verified as boolean | null) ?? null;
-      (session as any).groups = ((token as any).groups as string[] | undefined) ?? [];
-      (session as any).role = ((token as any).role as string | null) ?? null;
+
+      // extras
+      session.groups = Array.isArray(token.groups) ? token.groups : [];
+      session.role = typeof token.role === "string" || token.role === null ? token.role : null;
+      session.email_verified =
+        typeof token.email_verified === "boolean" || token.email_verified === null
+          ? token.email_verified
+          : null;
 
       return session;
     },
