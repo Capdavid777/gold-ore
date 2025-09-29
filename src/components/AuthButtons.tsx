@@ -2,7 +2,6 @@
 
 import { signIn } from "next-auth/react";
 import { useCallback } from "react";
-import { useSearchParams } from "next/navigation";
 
 function buildHostedUiUrl(): string {
   const hosted = (process.env.NEXT_PUBLIC_COGNITO_HOSTED_UI || "").replace(/\/$/, "");
@@ -10,27 +9,17 @@ function buildHostedUiUrl(): string {
   const redirectUri = `${window.location.origin}/api/auth/callback/cognito`;
   const scope = encodeURIComponent("openid email profile");
 
-  const url = `${hosted}/oauth2/authorize?client_id=${encodeURIComponent(
+  return `${hosted}/oauth2/authorize?client_id=${encodeURIComponent(
     clientId
   )}&response_type=code&scope=${scope}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-
-  return url;
 }
 
-export function LoginButton() {
-  const qp = useSearchParams();
-  const oauthError = qp.get("error");
-
+export function LoginButton({ oauthError }: { oauthError?: string }) {
   const handleClick = useCallback(async () => {
-    // Try NextAuth (preferred)
     try {
-      // This does a 302 to /api/auth/signin/cognito which should then bounce to Hosted UI
       await signIn("cognito", { callbackUrl: "/portal" });
-      return;
     } catch {
-      // If NextAuth throws, fall back to direct Hosted UI
-      const direct = buildHostedUiUrl();
-      window.location.assign(direct);
+      window.location.assign(buildHostedUiUrl());
     }
   }, []);
 
@@ -59,7 +48,6 @@ export function LoginButton() {
 }
 
 export function LogoutButton() {
-  // NextAuth signOut works fine as-is
   return (
     <a
       href="/api/auth/signout"
