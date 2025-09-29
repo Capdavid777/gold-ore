@@ -1,21 +1,14 @@
-'use client';
-
-import { signIn } from 'next-auth/react';
+import { LoginButton } from "@/components/AuthButtons";
 
 export default function LoginPage() {
   return (
-    <main className="grid min-h-[70dvh] place-items-center">
-      <div className="rounded-2xl border border-[#654e1a]/40 bg-black/40 backdrop-blur p-8 w-[min(92vw,480px)]">
-        <h1 className="font-serif text-4xl md:text-5xl text-[#d4af37] mb-6">Welcome</h1>
-        <button
-          onClick={() => signIn('cognito', { callbackUrl: '/portal' })} // <- use Cognito
-          className="w-full rounded-xl bg-[#b08d2b] text-black font-semibold py-3 hover:bg-[#d4af37] transition"
-        >
-          Login to Gold Ore
-        </button>
-        <p className="mt-4 text-sm text-gray-400">
-          Staff & Investors secure access. By continuing you agree to our policies.
+    <main className="min-h-[60vh] flex items-center justify-center bg-[#0B0E13] text-white">
+      <div className="max-w-md w-full rounded-2xl border border-zinc-800 p-8 bg-black/40 shadow-xl">
+        <h1 className="text-3xl font-semibold mb-4 text-[#C4A04A]">Welcome</h1>
+        <p className="text-sm text-zinc-400 mb-6">
+          Staff & investors secure access. By continuing you agree to our policies.
         </p>
+        <LoginButton />
       </div>
     </main>
   );
