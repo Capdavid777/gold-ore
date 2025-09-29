@@ -1,3 +1,4 @@
+// src/lib/auth.ts
 import type { NextAuthOptions } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import CognitoProvider from "next-auth/providers/cognito";
@@ -13,16 +14,20 @@ type CognitoIdToken = {
   "custom:role"?: string;
 };
 
-const hasClientSecret = Boolean(process.env.COGNITO_CLIENT_SECRET);
+function mustGetEnv(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing required env var: ${name}`);
+  return v;
+}
 
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: mustGetEnv("NEXTAUTH_SECRET"),
   providers: [
     CognitoProvider({
-      clientId: process.env.COGNITO_CLIENT_ID!,
-      ...(hasClientSecret ? { clientSecret: process.env.COGNITO_CLIENT_SECRET! } : {}),
-      issuer: process.env.COGNITO_ISSUER!, // e.g. https://cognito-idp.af-south-1.amazonaws.com/af-south-1_XXXX
-      checks: hasClientSecret ? ["state"] : ["pkce", "state"],
+      clientId: mustGetEnv("COGNITO_CLIENT_ID"),
+      clientSecret: mustGetEnv("COGNITO_CLIENT_SECRET"), // ensure it's always a string
+      issuer: mustGetEnv("COGNITO_ISSUER"), // e.g. https://cognito-idp.af-south-1.amazonaws.com/af-south-1_XXXX
+      // (No explicit `checks`; NextAuth will handle this. PKCE works with Cognito.)
     }),
   ],
   session: { strategy: "jwt" },
@@ -53,14 +58,12 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      // user
       session.user = {
         ...session.user,
         email: token.email ?? session.user?.email ?? null,
         name: token.name ?? session.user?.name ?? null,
       };
 
-      // extras
       session.groups = Array.isArray(token.groups) ? token.groups : [];
       session.role = typeof token.role === "string" || token.role === null ? token.role : null;
       session.email_verified =
