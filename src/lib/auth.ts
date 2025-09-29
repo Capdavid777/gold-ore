@@ -14,45 +14,54 @@ type CognitoIdToken = {
   "custom:role"?: string;
 };
 
-function mustGetEnv(name: string): string {
+function must(name: string): string {
   const v = process.env[name];
   if (!v) throw new Error(`Missing required env var: ${name}`);
   return v;
 }
 
+const ISSUER = must("COGNITO_ISSUER"); // https://cognito-idp.af-south-1.amazonaws.com/<poolId>
+const HOSTED = must("COGNITO_HOSTED_UI").replace(/\/$/, ""); // https://auth.goldoresa.com OR https://<prefix>.auth.af-south-1.amazoncognito.com
+
 export const authOptions: NextAuthOptions = {
-  secret: mustGetEnv("NEXTAUTH_SECRET"),
+  secret: must("NEXTAUTH_SECRET"),
   providers: [
     CognitoProvider({
-      clientId: mustGetEnv("COGNITO_CLIENT_ID"),
-      clientSecret: mustGetEnv("COGNITO_CLIENT_SECRET"), // ensure it's always a string
-      issuer: mustGetEnv("COGNITO_ISSUER"), // e.g. https://cognito-idp.af-south-1.amazonaws.com/af-south-1_XXXX
-      // (No explicit `checks`; NextAuth will handle this. PKCE works with Cognito.)
+      clientId: must("COGNITO_CLIENT_ID"),
+      clientSecret: must("COGNITO_CLIENT_SECRET"),
+      issuer: ISSUER,
+      // Pin endpoints to Hosted UI so we never hit the wrong domain
+      wellKnown: `${ISSUER}/.well-known/openid-configuration`,
+      authorization: {
+        url: `${HOSTED}/oauth2/authorize`,
+        params: { scope: "openid email profile" },
+      },
+      token: `${HOSTED}/oauth2/token`,
+      userinfo: `${HOSTED}/oauth2/userInfo`,
     }),
   ],
   session: { strategy: "jwt" },
+  pages: { signIn: "/login" }, // keeps UX on your branded page
 
   callbacks: {
     async jwt({ token, account }): Promise<JWT> {
       if (account?.id_token) {
-        const claims = jwtDecode<CognitoIdToken>(account.id_token);
+        const c = jwtDecode<CognitoIdToken>(account.id_token);
 
-        // Email + verification
-        token.email = claims.email ?? token.email ?? null;
+        token.email = c.email ?? token.email ?? null;
         token.email_verified =
-          typeof claims.email_verified === "boolean"
-            ? claims.email_verified
+          typeof c.email_verified === "boolean"
+            ? c.email_verified
             : token.email_verified ?? null;
 
-        // Name resolution (no nullish/logical mixing)
-        const given = (claims.given_name ?? "").trim();
-        const family = (claims.family_name ?? "").trim();
-        const joined = [given, family].filter(Boolean).join(" ");
-        token.name = claims.name ?? (joined.length > 0 ? joined : token.name ?? null);
+        const joined = [c.given_name ?? "", c.family_name ?? ""]
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .join(" ");
+        token.name = c.name ?? (joined ? joined : token.name ?? null);
 
-        // RBAC-style data
-        token.groups = claims["cognito:groups"] ?? token.groups ?? [];
-        token.role = claims["custom:role"] ?? token.role ?? null;
+        token.groups = c["cognito:groups"] ?? token.groups ?? [];
+        token.role = c["custom:role"] ?? token.role ?? null;
       }
       return token;
     },
@@ -63,15 +72,16 @@ export const authOptions: NextAuthOptions = {
         email: token.email ?? session.user?.email ?? null,
         name: token.name ?? session.user?.name ?? null,
       };
-
       session.groups = Array.isArray(token.groups) ? token.groups : [];
       session.role = typeof token.role === "string" || token.role === null ? token.role : null;
       session.email_verified =
         typeof token.email_verified === "boolean" || token.email_verified === null
           ? token.email_verified
           : null;
-
       return session;
     },
   },
+
+  // Helpful if you need to see exact provider errors in Vercel logs
+  debug: process.env.NODE_ENV === "development" ? true : false,
 };
