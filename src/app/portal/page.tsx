@@ -1,4 +1,3 @@
-// src/app/portal/page.tsx
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
@@ -26,39 +25,33 @@ function formatSize(bytes: number) {
 }
 
 function getBaseUrl() {
-  // Prefer explicit env, then platform var, then derive from request headers.
   if (process.env.NEXTAUTH_URL) return process.env.NEXTAUTH_URL;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-
   const h = headers();
-  const proto = h.get("x-forwarded-proto") || "http";
-  const host = h.get("x-forwarded-host") || h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const host = h.get("x-forwarded-host") ?? h.get("host");
   return host ? `${proto}://${host}` : "";
 }
 
 export default async function PortalPage() {
   const session = await getServerSession(authOptions);
 
-  // Expect middleware to protect this route, but handle gracefully if not.
   if (!session) {
     return (
       <main className="min-h-[60vh] bg-[#0B0E13] text-white">
         <div className="max-w-3xl mx-auto py-16 px-6">
           <h1 className="text-3xl font-semibold">Secure Portal</h1>
-          <p className="mt-6 text-zinc-400">
-            You must be signed in to view this page.
-          </p>
+          <p className="mt-6 text-zinc-400">You must be signed in to view this page.</p>
           <p className="mt-2 text-zinc-500">Please use the Login button above.</p>
         </div>
       </main>
     );
   }
 
-  // Cognito → NextAuth mapping (set in src/lib/auth.ts)
-  const groups: string[] = (session as any).groups ?? [];
-  const role: string | null = (session as any).role ?? null;
+  const groups = session.groups ?? [];
+  const role = session.role ?? null;
 
-  if (!groups.length) {
+  if (groups.length === 0) {
     return (
       <main className="min-h-[60vh] bg-[#0B0E13] text-white">
         <div className="max-w-3xl mx-auto py-16 px-6">
@@ -76,7 +69,6 @@ export default async function PortalPage() {
     );
   }
 
-  // Fetch file list from your API (no caching)
   const base = getBaseUrl();
   const res = await fetch(`${base}/api/content/list`, { cache: "no-store" });
 
@@ -86,18 +78,14 @@ export default async function PortalPage() {
       <main className="min-h-[60vh] bg-[#0B0E13] text-white">
         <div className="max-w-3xl mx-auto py-16 px-6">
           <h1 className="text-3xl font-semibold">Secure Portal</h1>
-          <p className="mt-6 text-red-500">
-            Error loading files: {msg || res.statusText}
-          </p>
+          <p className="mt-6 text-red-500">Error loading files: {msg || res.statusText}</p>
         </div>
       </main>
     );
   }
 
   const data = (await res.json()) as ListResponse;
-  const files = (data.items || []).filter(
-    (i) => i && typeof i.name === "string" && i.name.trim().length > 0
-  );
+  const files = (data.items ?? []).filter((i) => i && i.name?.trim().length > 0);
 
   return (
     <main className="min-h-[60vh] bg-[#0B0E13] text-white">
@@ -112,12 +100,8 @@ export default async function PortalPage() {
                   {" "}
                   • Role: <span className="text-white">{role}</span>
                 </>
-              ) : null}
-              {" "}
-              • Groups:{" "}
-              <span className="text-white">
-                {groups.length ? groups.join(", ") : "—"}
-              </span>
+              ) : null}{" "}
+              • Groups: <span className="text-white">{groups.join(", ")}</span>
             </p>
           </div>
         </div>
@@ -127,29 +111,21 @@ export default async function PortalPage() {
         ) : (
           <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {files.map((f) => (
-              <article
-                key={f.key}
-                className="rounded-xl border border-zinc-800 p-4 bg-black/30"
-              >
+              <article key={f.key} className="rounded-xl border border-zinc-800 p-4 bg-black/30">
                 <h2 className="font-medium">{f.name}</h2>
                 <p className="mt-1 text-sm text-zinc-400">
-                  {formatSize(f.size)} ·{" "}
-                  {new Date(f.lastModified).toLocaleDateString()}
+                  {formatSize(f.size)} · {new Date(f.lastModified).toLocaleDateString()}
                 </p>
                 <div className="mt-4 flex gap-3">
                   <Link
                     className="rounded-md px-3 py-2 bg-zinc-900 text-white hover:bg-zinc-800"
-                    href={`/api/content/sas?key=${encodeURIComponent(
-                      f.key
-                    )}&mode=inline`}
+                    href={`/api/content/sas?key=${encodeURIComponent(f.key)}&mode=inline`}
                   >
                     Preview
                   </Link>
                   <Link
                     className="rounded-md px-3 py-2 border border-zinc-800 hover:bg-zinc-900"
-                    href={`/api/content/sas?key=${encodeURIComponent(
-                      f.key
-                    )}&mode=download`}
+                    href={`/api/content/sas?key=${encodeURIComponent(f.key)}&mode=download`}
                   >
                     Download
                   </Link>
