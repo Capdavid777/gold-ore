@@ -1,7 +1,6 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useCallback } from "react";
 
 function buildHostedUiUrl(): string {
   const hosted = (process.env.NEXT_PUBLIC_COGNITO_HOSTED_UI || "").replace(/\/$/, "");
@@ -15,19 +14,21 @@ function buildHostedUiUrl(): string {
 }
 
 export function LoginButton({ oauthError }: { oauthError?: string }) {
-  const handleClick = useCallback(async () => {
-    try {
-      await signIn("cognito", { callbackUrl: "/portal" });
-    } catch {
-      window.location.assign(buildHostedUiUrl());
-    }
-  }, []);
+  const isOauthSignin = oauthError === "OAuthSignin";
 
-  const showFallbackHint = oauthError === "OAuthSignin";
+  // When NextAuth signals OAuthSignin, skip it and go straight to Hosted UI.
+  const handleClick = () => {
+    if (isOauthSignin) {
+      window.location.assign(buildHostedUiUrl());
+      return;
+    }
+    // Normal path (will redirect to /api/auth/signin/cognito)
+    void signIn("cognito", { callbackUrl: "/portal" });
+  };
 
   return (
     <div className="grid gap-3">
-      {showFallbackHint && (
+      {isOauthSignin && (
         <div
           role="alert"
           className="rounded-md bg-red-900/40 border border-red-700 text-red-200 px-3 py-2 text-sm"
@@ -41,7 +42,7 @@ export function LoginButton({ oauthError }: { oauthError?: string }) {
         className="rounded-2xl px-5 py-2.5 bg-[#C4A04A] text-black font-semibold hover:opacity-90 transition"
         aria-label="Login to Gold Ore"
       >
-        {showFallbackHint ? "Continue with Cognito" : "Login to Gold Ore"}
+        {isOauthSignin ? "Continue with Cognito" : "Login to Gold Ore"}
       </button>
     </div>
   );
