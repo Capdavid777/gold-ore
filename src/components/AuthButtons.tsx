@@ -1,24 +1,23 @@
+// src/components/AuthButtons.tsx
 "use client";
 
-export function LoginButton({ oauthError }: { oauthError?: string }) {
-  // Show banner for common NextAuth OAuth errors
-  const showHint =
-    oauthError === "OAuthSignin" || oauthError === "OAuthCallback";
+import { signIn } from "next-auth/react";
 
+export function LoginButton({ oauthError }: { oauthError?: string }) {
   const handleClick = () => {
-    // Server builds the full authorize URL and 307-redirects to Cognito
-    window.location.assign("/api/cognito/redirect");
+    // This hits /api/auth/signin/cognito which sets NextAuth's state/nonce cookie
+    void signIn("cognito", { callbackUrl: "/portal" });
   };
 
   return (
     <div className="grid gap-3">
-      {showHint && (
+      {oauthError && (
         <div
           role="alert"
           className="rounded-md bg-red-900/40 border border-red-700 text-red-200 px-3 py-2 text-sm"
         >
           We couldn’t start the sign-in automatically. Click the button below to
-          continue via Cognito.
+          continue.
         </div>
       )}
 
@@ -30,9 +29,9 @@ export function LoginButton({ oauthError }: { oauthError?: string }) {
         Login to Gold Ore
       </button>
 
-      {/* Non-JS fallback link */}
+      {/* Non-JS fallback that also goes through NextAuth to set cookies */}
       <a
-        href="/api/cognito/redirect"
+        href="/api/auth/signin/cognito?callbackUrl=%2Fportal"
         className="text-xs text-zinc-400 underline text-center"
       >
         If the button doesn’t work, click here.
