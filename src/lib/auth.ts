@@ -20,8 +20,8 @@ function must(name: string): string {
   return v;
 }
 
-const ISSUER = must("COGNITO_ISSUER"); // https://cognito-idp.af-south-1.amazonaws.com/<poolId>
-const HOSTED = must("COGNITO_HOSTED_UI").replace(/\/$/, ""); // https://<prefix>.auth.af-south-1.amazoncognito.com (or your custom domain)
+// Example: https://cognito-idp.af-south-1.amazonaws.com/af-south-1_XXXXXX
+const ISSUER = must("COGNITO_ISSUER");
 
 export const authOptions: NextAuthOptions = {
   secret: must("NEXTAUTH_SECRET"),
@@ -30,18 +30,10 @@ export const authOptions: NextAuthOptions = {
       clientId: must("COGNITO_CLIENT_ID"),
       clientSecret: must("COGNITO_CLIENT_SECRET"), // confidential client => secret required
       issuer: ISSUER,
-
-      // IMPORTANT: confidential clients must NOT use PKCE
+      // IMPORTANT: confidential apps should not use PKCE
       checks: ["state"],
-
-      // Pin endpoints to the Hosted UI domain to avoid domain/host mismatches
-      wellKnown: `${ISSUER}/.well-known/openid-configuration`,
-      authorization: {
-        url: `${HOSTED}/oauth2/authorize`,
-        params: { scope: "openid email profile" },
-      },
-      token: `${HOSTED}/oauth2/token`,
-      userinfo: `${HOSTED}/oauth2/userInfo`,
+      // Do NOT override authorization/token/userinfo here.
+      // NextAuth will use the issuer's OIDC discovery to get the correct endpoints.
     }),
   ],
   session: { strategy: "jwt" },
