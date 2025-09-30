@@ -20,33 +20,44 @@ function must(name: string): string {
   return v;
 }
 
-// Both must exist at runtime; ISSUER is now actively used (fixes lint)
-const ISSUER = must("COGNITO_ISSUER"); // e.g. https://cognito-idp.af-south-1.amazonaws.com/<poolId>
-const HOSTED = must("COGNITO_HOSTED_UI").replace(/\/$/, ""); // e.g. https://<prefix>.auth.af-south-1.amazoncognito.com
+const ISSUER = must("COGNITO_ISSUER"); // https://cognito-idp.af-south-1.amazonaws.com/<poolId>
+const HOSTED = must("COGNITO_HOSTED_UI").replace(/\/$/, ""); // https://<prefix>.auth.af-south-1.amazoncognito.com (or managed CF host)
 
 const HAS_SECRET = Boolean(process.env.COGNITO_CLIENT_SECRET && process.env.COGNITO_CLIENT_SECRET.length);
 
+// Common endpoints (pinned to Hosted UI)
+const wellKnown = `${ISSUER}/.well-known/openid-configuration`;
+const authorization = { url: `${HOSTED}/oauth2/authorize`, params: { scope: "openid email profile" } };
+const tokenEndpoint = `${HOSTED}/oauth2/token`;
+const userinfoEndpoint = `${HOSTED}/oauth2/userInfo`;
+
+// Build provider config in two typed branches to avoid TS union issues
+const cognitoProvider = HAS_SECRET
+  ? CognitoProvider({
+      // Confidential app client (has secret) — NO PKCE
+      clientId: must("COGNITO_CLIENT_ID"),
+      clientSecret: must("COGNITO_CLIENT_SECRET"),
+      issuer: ISSUER,
+      checks: ["state"],
+      wellKnown,
+      authorization,
+      token: tokenEndpoint,
+      userinfo: userinfoEndpoint,
+    })
+  : CognitoProvider({
+      // Public app client (no secret) — PKCE
+      clientId: must("COGNITO_CLIENT_ID"),
+      issuer: ISSUER,
+      checks: ["pkce", "state"],
+      wellKnown,
+      authorization,
+      token: tokenEndpoint,
+      userinfo: userinfoEndpoint,
+    });
+
 export const authOptions: NextAuthOptions = {
   secret: must("NEXTAUTH_SECRET"),
-  providers: [
-    CognitoProvider({
-      clientId: must("COGNITO_CLIENT_ID"),
-      // If a secret is provided, treat as Confidential (no PKCE). Otherwise Public (PKCE).
-      ...(HAS_SECRET ? { clientSecret: must("COGNITO_CLIENT_SECRET") } : {}),
-      issuer: ISSUER, // <-- actively used, resolves ESLint "unused" error
-
-      checks: HAS_SECRET ? ["state"] : ["pkce", "state"],
-
-      // Pin endpoints to the Hosted UI domain to avoid cross-domain issues
-      wellKnown: `${ISSUER}/.well-known/openid-configuration`,
-      authorization: {
-        url: `${HOSTED}/oauth2/authorize`,
-        params: { scope: "openid email profile" },
-      },
-      token: `${HOSTED}/oauth2/token`,
-      userinfo: `${HOSTED}/oauth2/userInfo`,
-    }),
-  ],
+  providers: [cognitoProvider],
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
 
@@ -57,7 +68,9 @@ export const authOptions: NextAuthOptions = {
 
         token.email = c.email ?? token.email ?? null;
         token.email_verified =
-          typeof c.email_verified === "boolean" ? c.email_verified : token.email_verified ?? null;
+          typeof c.email_verified === "boolean"
+            ? c.email_verified
+            : token.email_verified ?? null;
 
         const joined = [c.given_name ?? "", c.family_name ?? ""]
           .map((s) => s.trim())
