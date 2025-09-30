@@ -27,13 +27,19 @@ export const authOptions: NextAuthOptions = {
   secret: must("NEXTAUTH_SECRET"),
   providers: [
     CognitoProvider({
-      clientId: must("COGNITO_CLIENT_ID"),
-      clientSecret: must("COGNITO_CLIENT_SECRET"), // confidential client => secret required
-      issuer: ISSUER,
+      clientId: process.env.COGNITO_CLIENT_ID!,
+      clientSecret: process.env.COGNITO_CLIENT_SECRET!, // must be present
+      issuer: process.env.COGNITO_ISSUER!,
       // IMPORTANT: confidential apps should not use PKCE
       checks: ["state"],
       // Do NOT override authorization/token/userinfo here.
       // NextAuth will use the issuer's OIDC discovery to get the correct endpoints.
+      authorization: {
+        url: `${HOSTED}/oauth2/authorize`,
+        params: { scope: "openid email profile" },
+      },
+      token: `${HOSTED}/oauth2/token`,
+      userinfo: `${HOSTED}/oauth2/userInfo`,
     }),
   ],
   session: { strategy: "jwt" },
