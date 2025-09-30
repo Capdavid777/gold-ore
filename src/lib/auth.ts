@@ -20,44 +20,32 @@ function must(name: string): string {
   return v;
 }
 
-const ISSUER = must("COGNITO_ISSUER"); // https://cognito-idp.af-south-1.amazonaws.com/<poolId>
-const HOSTED = must("COGNITO_HOSTED_UI").replace(/\/$/, ""); // https://<prefix>.auth.af-south-1.amazoncognito.com (or managed CF host)
-
-const HAS_SECRET = Boolean(process.env.COGNITO_CLIENT_SECRET && process.env.COGNITO_CLIENT_SECRET.length);
-
-// Common endpoints (pinned to Hosted UI)
-const wellKnown = `${ISSUER}/.well-known/openid-configuration`;
-const authorization = { url: `${HOSTED}/oauth2/authorize`, params: { scope: "openid email profile" } };
-const tokenEndpoint = `${HOSTED}/oauth2/token`;
-const userinfoEndpoint = `${HOSTED}/oauth2/userInfo`;
-
-// Build provider config in two typed branches to avoid TS union issues
-const cognitoProvider = HAS_SECRET
-  ? CognitoProvider({
-      // Confidential app client (has secret) — NO PKCE
-      clientId: must("COGNITO_CLIENT_ID"),
-      clientSecret: must("COGNITO_CLIENT_SECRET"),
-      issuer: ISSUER,
-      checks: ["state"],
-      wellKnown,
-      authorization,
-      token: tokenEndpoint,
-      userinfo: userinfoEndpoint,
-    })
-  : CognitoProvider({
-      // Public app client (no secret) — PKCE
-      clientId: must("COGNITO_CLIENT_ID"),
-      issuer: ISSUER,
-      checks: ["pkce", "state"],
-      wellKnown,
-      authorization,
-      token: tokenEndpoint,
-      userinfo: userinfoEndpoint,
-    });
+const ISSUER = must("COGNITO_ISSUER");                          // e.g. https://cognito-idp.af-south-1.amazonaws.com/<poolId>
+const HOSTED = must("COGNITO_HOSTED_UI").replace(/\/$/, "");    // e.g. https://<prefix>.auth.af-south-1.amazoncognito.com (or CF domain)
+const CLIENT_ID = must("COGNITO_CLIENT_ID");
+const CLIENT_SECRET = must("COGNITO_CLIENT_SECRET");            // confidential client => must exist
 
 export const authOptions: NextAuthOptions = {
   secret: must("NEXTAUTH_SECRET"),
-  providers: [cognitoProvider],
+  providers: [
+    CognitoProvider({
+      clientId: CLIENT_ID,
+      clientSecret: CLIENT_SECRET, // NextAuth v4 requires this type-wise; matches your Confidential app client
+      issuer: ISSUER,
+
+      // Confidential clients must NOT use PKCE
+      checks: ["state"],
+
+      // Pin endpoints to Hosted UI to avoid domain mismatches
+      wellKnown: `${ISSUER}/.well-known/openid-configuration`,
+      authorization: {
+        url: `${HOSTED}/oauth2/authorize`,
+        params: { scope: "openid email profile" },
+      },
+      token: `${HOSTED}/oauth2/token`,
+      userinfo: `${HOSTED}/oauth2/userInfo`,
+    }),
+  ],
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
 
